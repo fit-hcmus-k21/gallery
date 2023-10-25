@@ -54,6 +54,4 @@ dependencies {
     implementation("androidx.room:room-runtime:2.6.0")
     annotationProcessor("androidx.room:room-compiler:2.6.0")
 
-    // fast networking
-    implementation("com.amitshekhar.android:android-networking:1.0.2")
 }
