@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">gallery</string>
+    <string name="find_hint">Enter your key</string>
+    <string name="add_photo">Enter name photo</string>
 </resources>
