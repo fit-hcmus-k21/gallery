@@ -50,8 +50,21 @@ dependencies {
 //    ---------------------------------------------------------
     implementation("android.arch.lifecycle:extensions:1.1.1")
 
+    // recyclerView
+    implementation("com.androidx.support:recyclerview-v7:28.0.0")
+
     // room database
     implementation("androidx.room:room-runtime:2.6.0")
     annotationProcessor("androidx.room:room-compiler:2.6.0")
 
+    // Glide for image loading
+    implementation("com.github.bumptech.glide:glide:4.8.0")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.8.0")
+
+    // image management lib, has multimedia , including gif files
+    implementation("com.facebook.fresco:fresco:3.1.3")
+
+    // for Rest API calling and fetching data from remote
+    implementation("com.squareup.retrofit2:retrofit:2.4.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.4.0")
 }

@@ -2,8 +2,5 @@
     <string name="app_name">gallery</string>
 
 <!--    addition     -->
-    <string name="heading">MVVM Architecture Pattern</string>
-    <string name="email_hint">Enter your Email ID</string>
-    <string name="password_hint">Enter your password</string>
-    <string name="button_text">Login</string>
+
 </resources>
