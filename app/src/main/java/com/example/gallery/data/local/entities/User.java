@@ -31,6 +31,9 @@ public class User  {
     @ColumnInfo(name = "email")
     private String email;
 
+    @ColumnInfo(name = "accessToken")
+    private String accessToken;
+
     @ColumnInfo(name = "googleToken")
     private String googleToken;
 

@@ -25,13 +25,14 @@ public abstract class GalleryDatabase extends RoomDatabase {
 
     private static GalleryDatabase sInstance;
 
-    public static GalleryDatabase getInstance() {
+    public static synchronized GalleryDatabase getInstance() {
         if (sInstance == null) {
             sInstance = Room.databaseBuilder(
                     App.getInstance(),
                     GalleryDatabase.class,
-                    "Gallery.db"
-            ).build();
+                    "Gallery_Database"
+                    ).fallbackToDestructiveMigration()
+                    .build();
         }
         return sInstance;
     }

@@ -28,9 +28,13 @@ import androidx.room.ForeignKey;
 )
 public class MediaItem {
 
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
     @ColumnInfo(name = "id")
     private int id;
+
+    @PrimaryKey
+    @ColumnInfo(name = "userID")
+    private int userID;
 
     @ColumnInfo(name = "name")
     private String name;
@@ -62,8 +66,6 @@ public class MediaItem {
     @ColumnInfo(name = "location")
     private String location;
 
-    @ColumnInfo(name = "userID")
-    private int userID;
 
     @ColumnInfo(name = "albumName")
     private String albumName;

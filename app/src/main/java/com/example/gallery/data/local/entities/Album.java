@@ -38,4 +38,13 @@ public class Album {
 
         @ColumnInfo(name = "userID")
         private int userID;
+
+        // constructor
+
+
+        // setters
+
+
+        // getters
+
 }
