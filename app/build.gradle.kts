@@ -51,7 +51,7 @@ dependencies {
     implementation("android.arch.lifecycle:extensions:1.1.1")
 
     // recyclerView
-    implementation("com.androidx.support:recyclerview-v7:28.0.0")
+    implementation("androidx.recyclerview:recyclerview:1.1.0")
 
     // room database
     implementation("androidx.room:room-runtime:2.6.0")
@@ -67,4 +67,9 @@ dependencies {
     // for Rest API calling and fetching data from remote
     implementation("com.squareup.retrofit2:retrofit:2.4.0")
     implementation("com.squareup.retrofit2:converter-gson:2.4.0")
+
+    // google drive api services
+    implementation("com.google.api-client:google-api-client:2.0.0")
+    implementation("com.google.oauth-client:google-oauth-client-jetty:1.34.1")
+    implementation("com.google.apis:google-api-services-drive:v3-rev20220815-2.0.0")
 }
