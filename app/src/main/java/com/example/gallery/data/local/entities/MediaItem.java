@@ -15,24 +15,25 @@ import androidx.room.ForeignKey;
         foreignKeys = {
             @ForeignKey(
                     entity = User.class,
-                    parentColumns = "userID",
-                    childColumns = "id",
+                    parentColumns = "id",
+                    childColumns = "userID",
                     onDelete = ForeignKey.CASCADE
             ),
             @ForeignKey(
                         entity = Album.class,
-                        parentColumns = "albumName",
-                        childColumns = "name"
+                        parentColumns = "name",
+                        childColumns = "albumName"
                 )
+        },
+        primaryKeys = {
+            "id", "userID"
         }
 )
 public class MediaItem {
 
-    @PrimaryKey
     @ColumnInfo(name = "id")
     private int id;
 
-    @PrimaryKey
     @ColumnInfo(name = "userID")
     private int userID;
 
@@ -70,4 +71,110 @@ public class MediaItem {
     @ColumnInfo(name = "albumName")
     private String albumName;
 
+    // setters and getters
+
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getUserID() {
+        return userID;
+    }
+
+    public void setUserID(int userID) {
+        this.userID = userID;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getTag() {
+        return tag;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+    public long getFileSize() {
+        return fileSize;
+    }
+
+    public void setFileSize(long fileSize) {
+        this.fileSize = fileSize;
+    }
+
+    public String getFileExtension() {
+        return fileExtension;
+    }
+
+    public void setFileExtension(String fileExtension) {
+        this.fileExtension = fileExtension;
+    }
+
+    public String getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(String creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getAlbumName() {
+        return albumName;
+    }
+
+    public void setAlbumName(String albumName) {
+        this.albumName = albumName;
+    }
 }

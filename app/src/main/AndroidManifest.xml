@@ -21,7 +21,7 @@
         android:theme="@style/Theme.Gallery"
         tools:targetApi="31" >
 
-        <activity android:name=".MainActivity"
+        <activity android:name=".ui.main.Slide07_PhotosGridviewScreenActivity"
                   android:exported="true"
             >
             <intent-filter>

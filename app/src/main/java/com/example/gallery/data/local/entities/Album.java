@@ -3,6 +3,7 @@ package com.example.gallery.data.local.entities;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 import androidx.room.ForeignKey;
 
@@ -16,7 +17,8 @@ import androidx.room.ForeignKey;
                 parentColumns = "id",
                 childColumns = "userID",
                 onDelete = ForeignKey.CASCADE
-        )
+        ),
+        indices = {@Index(value = "name", unique = true)}
 )
 public class Album {
 
@@ -42,9 +44,52 @@ public class Album {
         // constructor
 
 
-        // setters
+        // setters and getters
+        public int getId() {
+                return id;
+        }
 
+        public void setId(int id) {
+                this.id = id;
+        }
 
-        // getters
+        public String getName() {
+                return name;
+        }
 
+        public void setName(String name) {
+                this.name = name;
+        }
+
+        public String getDescription() {
+                return description;
+        }
+
+        public void setDescription(String description) {
+                this.description = description;
+        }
+
+        public String getCreationDate() {
+                return creationDate;
+        }
+
+        public void setCreationDate(String creationDate) {
+                this.creationDate = creationDate;
+        }
+
+        public String getCoverPhotoPath() {
+                return coverPhotoPath;
+        }
+
+        public void setCoverPhotoPath(String coverPhotoPath) {
+                this.coverPhotoPath = coverPhotoPath;
+        }
+
+        public int getUserID() {
+                return userID;
+        }
+
+        public void setUserID(int userID) {
+                this.userID = userID;
+        }
 }
