@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_photos"
+        android:enabled="true"
+        android:icon="@drawable/icon_photos"
+        android:title="photos"
+
+        />
+    <item
+        android:id="@+id/nav_albums"
+        android:enabled="true"
+        android:icon="@drawable/icon_albums"
+        android:title="albums" />
+
+    <item
+        android:id="@+id/nav_finding"
+        android:enabled="true"
+        android:icon="@drawable/icon_search"
+        android:title="search"
+
+        />
+
+    <item
+        android:id="@+id/nav_memories"
+        android:enabled="true"
+        android:icon="@drawable/icon_memories"
+        android:title="memories"
+
+        />
+</menu>
