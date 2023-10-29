@@ -1,8 +1,7 @@
 plugins {
     id("com.android.application")
+    id("com.google.gms.google-services")
 
-    // google services gradle plugin
-    id("com.google.gms.google-services") version "4.4.0" apply false
 }
 
 android {
@@ -89,6 +88,14 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:32.4.0"))
     implementation("com.google.firebase:firebase-analytics")
 
+    // Add the dependency for the Firebase Authentication library
+    implementation("com.google.firebase:firebase-auth")
+
+    // Also add the dependency for the Google Play services library and specify its version
+    implementation("com.google.android.gms:play-services-auth:20.7.0")
+
+    // Add the dependency for the Realtime Database library
+    implementation("com.google.firebase:firebase-database")
 
 
 }

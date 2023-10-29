@@ -180,4 +180,13 @@ public class MediaItem {
     public void setAlbumName(String albumName) {
         this.albumName = albumName;
     }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
 }
+
