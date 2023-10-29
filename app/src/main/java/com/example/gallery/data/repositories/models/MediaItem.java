@@ -13,6 +13,7 @@ public class MediaItem {
     private String tag;
     private String description;
     private Metadata metadata;
+    private String url;
 
     // constructors
 
@@ -68,6 +69,14 @@ public class MediaItem {
 
     public Metadata getMetadata() {
         return metadata;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     // other methods

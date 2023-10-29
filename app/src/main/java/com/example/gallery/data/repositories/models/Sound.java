@@ -12,6 +12,7 @@ public class Sound {
     private String genre;
     private String tag;
     private String path;
+    private String url;
 
     // getters and setters
 
@@ -63,6 +64,13 @@ public class Sound {
         this.path = path;
     }
 
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
 
     // methods
 

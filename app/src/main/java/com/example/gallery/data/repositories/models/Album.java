@@ -18,6 +18,8 @@ public class Album {
     private ArrayList<Integer> listMediaItems;
     private MediaItem coverPhoto;
     private int quantity;
+    private String path;
+    private String url;
 
 
     // constructors
@@ -98,6 +100,21 @@ public class Album {
         return quantity;
     }
 
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
 
     // other methods
 

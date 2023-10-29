@@ -41,6 +41,9 @@ public class Album {
         @ColumnInfo(name = "userID")
         private int userID;
 
+        @ColumnInfo(name = "path")
+        private String path;
+
         // constructor
 
 
@@ -91,5 +94,13 @@ public class Album {
 
         public void setUserID(int userID) {
                 this.userID = userID;
+        }
+
+        public String getPath() {
+                return path;
+        }
+
+        public void setPath(String path) {
+                this.path = path;
         }
 }

@@ -1,5 +1,8 @@
 plugins {
     id("com.android.application")
+
+    // google services gradle plugin
+    id("com.google.gms.google-services") version "4.4.0" apply false
 }
 
 android {
@@ -81,4 +84,11 @@ dependencies {
     implementation("com.google.api-client:google-api-client:2.0.0")
     implementation("com.google.oauth-client:google-oauth-client-jetty:1.34.1")
     implementation("com.google.apis:google-api-services-drive:v3-rev20220815-2.0.0")
+
+    // Import the Firebase BoM
+    implementation(platform("com.google.firebase:firebase-bom:32.4.0"))
+    implementation("com.google.firebase:firebase-analytics")
+
+
+
 }

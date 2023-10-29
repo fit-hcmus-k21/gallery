@@ -71,6 +71,9 @@ public class MediaItem {
     @ColumnInfo(name = "albumName")
     private String albumName;
 
+    @ColumnInfo(name = "url")
+    private String url;
+
     // setters and getters
 
 
