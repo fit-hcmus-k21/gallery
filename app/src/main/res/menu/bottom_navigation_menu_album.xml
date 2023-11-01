@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_photos"
+        android:enabled="true"
+        android:icon="@drawable/baseline_grid_view_24"
+        android:title="Grid"
+
+        />
+    <item
+        android:id="@+id/nav_albums"
+        android:enabled="true"
+        android:icon="@drawable/baseline_text_snippet_24"
+        android:title="Detail" />
+
+
+</menu>
