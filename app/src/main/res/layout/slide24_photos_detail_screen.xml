@@ -66,5 +66,3 @@
             bind:ignore="MissingConstraints" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
-
-    <!--    android:onClick="@{()-> viewModel.onButtonClicked()}"-->
