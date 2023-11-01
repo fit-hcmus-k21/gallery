@@ -21,12 +21,13 @@
         android:theme="@style/Theme.Gallery"
         tools:targetApi="31" >
 
-        <activity android:name=".ui.main.Slide02_LoginScreenActivity"
+        <activity android:name=".ui.main.Slide24_PhotoDetailViewScreenActivity"
                   android:exported="true"
             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
+
             </intent-filter>
         </activity>
     </application>

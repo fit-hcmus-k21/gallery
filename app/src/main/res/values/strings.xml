@@ -3,4 +3,7 @@
 
 <!--    addition     -->
 
+
+    <string name="find_hint">Enter your key</string>
+    <string name="add_photo">Enter name photo</string>
 </resources>

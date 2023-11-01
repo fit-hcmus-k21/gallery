@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.gallery"
-        minSdk = 24
+        minSdk = 28
         targetSdk = 33
         versionCode = 1
         versionName = "1.0"
@@ -32,6 +32,7 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
 
+
 //    -----------------------------------------------------------------
     buildFeatures {
         viewBinding = true
@@ -46,6 +47,7 @@ android {
         resources.excludes.add("META-INF/LICENSE")
         resources.excludes.add("META-INF/LICENSE.txt")
     }
+
 
 
 }
@@ -96,6 +98,7 @@ dependencies {
 
     // Add the dependency for the Realtime Database library
     implementation("com.google.firebase:firebase-database")
+
 
 
 }
