@@ -22,9 +22,9 @@ import retrofit2.Call;
 public class RegisterViewModel extends BaseViewModel<RegisterNavigator> {
 
 
-    public boolean isUsernameAndPasswordValid(String username, String password) {
-        // validate username and password
-        if (TextUtils.isEmpty(username)) {
+    public boolean isUsernameAndPasswordValid(String email, String password) {
+        // validate email and password
+        if (TextUtils.isEmpty(email)) {
             return false;
         }
 
@@ -34,11 +34,11 @@ public class RegisterViewModel extends BaseViewModel<RegisterNavigator> {
         return true;
     }
 
-    public void register(String username, String password) {
+    public void register(String email, String password) {
 
         Toast.makeText(App.getInstance(), "handle register", Toast.LENGTH_SHORT).show();
 
-        Call<RegisterResponse> call = AppApiHelper.getInstance().doServerRegisterApiCall(new RegisterRequest.ServerRegisterRequest(username, password));
+        Call<RegisterResponse> call = AppApiHelper.getInstance().doServerRegisterApiCall(new RegisterRequest.ServerRegisterRequest(email, password));
         call.enqueue(new retrofit2.Callback<RegisterResponse>() {
             @Override
             public void onResponse(Call<RegisterResponse> call, retrofit2.Response<RegisterResponse> response) {

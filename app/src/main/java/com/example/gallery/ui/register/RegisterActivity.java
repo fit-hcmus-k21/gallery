@@ -40,21 +40,21 @@ public class RegisterActivity extends BaseActivity<Slide03RegisterScreenBinding,
 
     @Override
     public void register() {
-        String username = mRegisterBinding.textUsername.getText().toString();
+        String email = mRegisterBinding.textEmail.getText().toString();
         String password = mRegisterBinding.textPassword.getText().toString();
 
-        // toast to show username and password
-        Toast.makeText(this, "Username: " + username + "\nPassword: " + password, Toast.LENGTH_SHORT).show();
+        // toast to show email and password
+        Toast.makeText(this, "Username: " + email + "\nPassword: " + password, Toast.LENGTH_SHORT).show();
 
 
-        if (mViewModel.isUsernameAndPasswordValid(username, password)) {
+        if (mViewModel.isUsernameAndPasswordValid(email, password)) {
 //            View view = this.getCurrentFocus();
 //            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 //            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
 
-            mViewModel.register(username, password);
+            mViewModel.register(email, password);
         } else {
-            Toast.makeText(this, "Invalid username/ password !" , Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Invalid email/ password !" , Toast.LENGTH_SHORT).show();
         }
     }
 

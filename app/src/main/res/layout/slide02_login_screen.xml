@@ -56,14 +56,14 @@
 
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/text_username"
+                android:id="@+id/text_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
 
                 android:drawableStart="@drawable/baseline_person_outline_24"
-                android:hint="username"
-                android:inputType="text"
+                android:hint=" Email"
+                android:inputType="textEmailAddress"
                 android:textColor="#333333"
                 android:textSize="20dp"
 
@@ -85,13 +85,13 @@
                 android:layout_marginTop="32dp"
                 android:layout_marginEnd="8dp"
                 android:drawableStart="@drawable/outline_lock_24"
-                android:hint="password"
+                android:hint=" Password"
                 android:inputType="textPassword"
                 android:textColor="#333333"
                 android:textSize="20dp"
 
 
-                app:layout_constraintBottom_toBottomOf="@id/text_username"
+                app:layout_constraintBottom_toBottomOf="@id/text_email"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
@@ -121,7 +121,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/text_password"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/text_username"
+            app:layout_constraintTop_toBottomOf="@+id/text_email"
             app:layout_constraintVertical_bias="0.347"
             />
 

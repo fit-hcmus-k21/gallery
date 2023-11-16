@@ -45,21 +45,21 @@ public class LoginActivity extends BaseActivity<Slide02LoginScreenBinding, Login
 
     @Override
     public void login() {
-        String username = mLoginBinding.textUsername.getText().toString();
+        String email = mLoginBinding.textEmail.getText().toString();
         String password = mLoginBinding.textPassword.getText().toString();
 
-        // toast to show username and password
-        Toast.makeText(this, "Username: " + username + "\nPassword: " + password, Toast.LENGTH_SHORT).show();
+        // toast to show email and password
+        Toast.makeText(this, "Email: " + email + "\nPassword: " + password, Toast.LENGTH_SHORT).show();
 
 
-        if (mViewModel.isUsernameAndPasswordValid(username, password)) {
+        if (mViewModel.isEmailAndPasswordValid(email, password)) {
 //            View view = this.getCurrentFocus();
 //            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 //            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
 
-            mViewModel.login(username, password);
+            mViewModel.login(email, password);
         } else {
-            Toast.makeText(this, "Invalid username/ password !" , Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Invalid email/ password !" , Toast.LENGTH_SHORT).show();
         }
     }
 

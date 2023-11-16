@@ -83,13 +83,13 @@
 
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/text_username"
+                android:id="@+id/text_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
 
                 android:drawableStart="@drawable/baseline_person_outline_24"
-                android:hint="username"
+                android:hint="email"
                 android:inputType="text"
                 android:textColor="#333333"
                 android:textSize="20dp"
