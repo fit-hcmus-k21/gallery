@@ -2,14 +2,33 @@ package com.example.gallery.data;
 
 import androidx.lifecycle.LiveData;
 
+import com.example.gallery.data.local.db.AppDBHelper;
+import com.example.gallery.data.local.prefs.AppPreferencesHelper;
+import com.example.gallery.data.models.api.LoginRequest;
+import com.example.gallery.data.models.api.LoginResponse;
 import com.example.gallery.data.models.db.Album;
 import com.example.gallery.data.models.db.MediaItem;
+import com.example.gallery.data.remote.ApiHeader;
+import com.example.gallery.data.remote.ApiHelper;
+import com.example.gallery.data.local.db.DBHelper;
+import com.example.gallery.data.local.prefs.PreferencesHelper;
+import com.example.gallery.data.remote.AppApiHelper;
 
 import java.util.List;
 
+import retrofit2.Call;
 public class AppDataManager implements DataManager {
+    private final ApiHelper mApiHelper;
+
+    private final DBHelper mDbHelper;
+
+
+    private final PreferencesHelper mPreferencesHelper;
 
     public  AppDataManager() {
+        mApiHelper = AppApiHelper.getInstance();
+        mDbHelper = AppDBHelper.getInstance();
+        mPreferencesHelper = AppPreferencesHelper.getInstance();
     }
 
     @Override
@@ -83,7 +102,28 @@ public class AppDataManager implements DataManager {
     }
 
     @Override
-    public void updateUserInfo(Long userID, String fullName, String username, String password, String email, String profilePicUrl, LoggedInMode loggedInMode) {
+    public void updateUserInfo(Long userID, String fullName, String username, String accessToken, String email, String profilePicUrl, LoggedInMode loggedInMode) {
 
+    }
+
+
+    @Override
+    public Call<LoginResponse> doFacebookLoginApiCall(LoginRequest.FacebookLoginRequest request) {
+        return mApiHelper.doFacebookLoginApiCall(request);
+    }
+
+    @Override
+    public Call<LoginResponse> doGoogleLoginApiCall(LoginRequest.GoogleLoginRequest request) {
+        return mApiHelper.doGoogleLoginApiCall(request);
+    }
+
+    @Override
+    public Call<LoginResponse> doServerLoginApiCall(LoginRequest.ServerLoginRequest request) {
+        return mApiHelper.doServerLoginApiCall(request);
+    }
+
+    @Override
+    public ApiHeader getApiHeader() {
+        return mApiHelper.getApiHeader();
     }
 }

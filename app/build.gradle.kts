@@ -19,6 +19,10 @@ android {
     }
 
     buildTypes {
+        debug {
+            buildConfigField("String", "BASE_URL", "\"http://hihi\"")
+            buildConfigField(("String"), "API_KEY", "\"123\"" )
+        }
         release {
             isMinifyEnabled = false
             proguardFiles(
@@ -35,6 +39,7 @@ android {
 
 //    -----------------------------------------------------------------
     buildFeatures {
+        buildConfig = true
         viewBinding = true
         dataBinding = true
     }
@@ -99,6 +104,11 @@ dependencies {
     // Add the dependency for the Realtime Database library
     implementation("com.google.firebase:firebase-database")
 
+    // reactive for using async task
+    implementation("io.reactivex.rxjava2:rxjava:2.1.9")
+
+    // R2xAndroidNetworking for Rest API calling and fetching data from remote
+    implementation("com.amitshekhar.android:rx2-android-networking:1.0.1")
 
 
 }

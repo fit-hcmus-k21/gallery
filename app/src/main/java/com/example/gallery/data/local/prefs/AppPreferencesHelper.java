@@ -1,7 +1,10 @@
 package com.example.gallery.data.local.prefs;
 
+import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
+
+import com.example.gallery.App;
 import com.example.gallery.data.DataManager;
 
 public class AppPreferencesHelper implements PreferencesHelper {
@@ -17,6 +20,16 @@ public class AppPreferencesHelper implements PreferencesHelper {
 
 
     private final SharedPreferences mPrefs;
+
+    private static AppPreferencesHelper sInstance;
+
+    public static AppPreferencesHelper getInstance() {
+
+        if (sInstance == null) {
+            sInstance = new AppPreferencesHelper(App.getInstance(), "gallery_pref");
+        }
+        return sInstance;
+    }
 
     public AppPreferencesHelper(Context context, String prefFileName ) {
         mPrefs = context.getSharedPreferences(prefFileName, Context.MODE_PRIVATE);

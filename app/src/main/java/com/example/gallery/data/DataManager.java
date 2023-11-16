@@ -1,6 +1,6 @@
 package com.example.gallery.data;
 
-import com.example.gallery.data.api.ApiHelper;
+import com.example.gallery.data.remote.ApiHelper;
 import com.example.gallery.data.local.db.DBHelper;
 import com.example.gallery.data.local.prefs.PreferencesHelper;
 
@@ -18,8 +18,8 @@ public interface DataManager extends DBHelper, PreferencesHelper, ApiHelper {
             Long userID,
             String fullName,
             String username,
-            String password,
             String email,
+            String accessToken,
             String profilePicUrl,
             LoggedInMode loggedInMode
     );

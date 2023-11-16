@@ -29,6 +29,8 @@ public class App extends Application {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
+
+
     }
 
     public static App getInstance() {
@@ -43,4 +45,6 @@ public class App extends Application {
         }
         return dataManager;
     }
+
+
 }

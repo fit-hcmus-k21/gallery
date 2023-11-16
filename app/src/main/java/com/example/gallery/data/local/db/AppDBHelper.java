@@ -10,9 +10,17 @@ import java.util.List;
 
 public class AppDBHelper implements DBHelper {
     private final AppDatabase mAppDatabase;
+    private static AppDBHelper sInstance;
 
     public AppDBHelper(AppDatabase appDatabase) {
         this.mAppDatabase = appDatabase;
+    }
+
+    public static synchronized AppDBHelper getInstance() {
+        if (sInstance == null) {
+            sInstance = new AppDBHelper(AppDatabase.getInstance());
+        }
+        return sInstance;
     }
 
     @Override
