@@ -2,6 +2,7 @@ package com.example.gallery.ui.login;
 
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.lifecycle.MutableLiveData;
@@ -38,6 +39,8 @@ public class LoginViewModel extends BaseViewModel<LoginNavigator> {
     }
 
     public void login(String username, String password) {
+        setIsLoading(true);
+
         Toast.makeText(App.getInstance(), "handle login", Toast.LENGTH_SHORT).show();
 
         Call<LoginResponse> call = AppApiHelper.getInstance().doServerLoginApiCall(new LoginRequest.ServerLoginRequest(username, password));
@@ -59,6 +62,9 @@ public class LoginViewModel extends BaseViewModel<LoginNavigator> {
                     getNavigator().openMainActivity();
                 } else {
                     Toast.makeText(App.getInstance(), "Login failed", Toast.LENGTH_SHORT).show();
+
+                    // print error
+                    Log.e("LoginViewModel", "onResponse: " + response.errorBody());
                 }
 
             }
@@ -116,12 +122,14 @@ public class LoginViewModel extends BaseViewModel<LoginNavigator> {
 //                }));
     }
 
-    public void onServerLoginClick() {
+    public void onServerLoginClicked() {
 
-        Log.e("LoginViewModel", "onServerLoginClick");
         Toast.makeText(App.getInstance(), "onServerLoginClick", Toast.LENGTH_SHORT).show();
-
         getNavigator().login();
+    }
+
+    public void onRegisterClicked() {
+        getNavigator().openRegisterActivity();
     }
 
 }

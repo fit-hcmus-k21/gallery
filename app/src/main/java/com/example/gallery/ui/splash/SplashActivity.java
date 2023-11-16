@@ -2,6 +2,7 @@ package com.example.gallery.ui.splash;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
@@ -19,7 +20,7 @@ import com.example.gallery.ui.main.MainActivity;
 
 public class SplashActivity extends BaseActivity<Slide01SplashScreenBinding, SplashViewModel> implements SplashNavigator {
 
-
+    private Slide01SplashScreenBinding mSplashBinding;
     @Override
     public int getBindingVariable() {
         return BR.viewModel;
@@ -33,26 +34,22 @@ public class SplashActivity extends BaseActivity<Slide01SplashScreenBinding, Spl
     @Override
     protected void onCreate( Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        mSplashBinding = getViewDataBinding();
 
         // Inside SplashActivity
         mViewModel = new ViewModelProvider(this).get(SplashViewModel.class);
 
-        if (mViewModel != null) {
-            Log.e("SplashActivity", "mViewModel is not null");
-            mViewModel.setNavigator(this);
-            mViewModel.startSeeding();
-
+        if (mSplashBinding != null && mViewModel != null) {
+            Log.e("SplashActivity", "mSplashBinding and mViewModel are not null");
         } else {
-            // print to log
-            Log.e("SplashActivity", "mViewModel is null");
-
+            Log.e("SplashActivity", "mSplashBinding or mViewModel is null");
         }
 
+        mViewModel.setNavigator(this);
 
 
         // set transition for gallery icon
-        ImageView rotatingImageView = findViewById(R.id.gallery_icon);
+        ImageView rotatingImageView = mSplashBinding.galleryIcon;
 
         RotateAnimation rotateAnimation = new RotateAnimation(0, 360,
                 Animation.RELATIVE_TO_SELF, 0.5f,
@@ -63,6 +60,17 @@ public class SplashActivity extends BaseActivity<Slide01SplashScreenBinding, Spl
         rotateAnimation.setRepeatCount(Animation.INFINITE);
 
         rotatingImageView.startAnimation(rotateAnimation);
+
+        new Handler().postDelayed(() -> {
+            mSplashBinding.setViewModel(mViewModel);
+            mViewModel.startSeeding();
+        }, 500); // wait a second before starting seeding
+
+
+
+
+
+
 
     }
 

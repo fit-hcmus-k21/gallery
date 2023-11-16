@@ -16,6 +16,7 @@ import com.example.gallery.R;
 import com.example.gallery.databinding.Slide02LoginScreenBinding;
 import com.example.gallery.ui.base.BaseActivity;
 import com.example.gallery.ui.main.MainActivity;
+import com.example.gallery.ui.register.RegisterActivity;
 import com.example.gallery.ui.splash.SplashViewModel;
 
 /**
@@ -98,6 +99,8 @@ public class LoginActivity extends BaseActivity<Slide02LoginScreenBinding, Login
     @Override
     public void openRegisterActivity() {
         // open register activity
+        Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+        startActivity(intent);
     }
 
 }

@@ -12,12 +12,10 @@ public class SplashViewModel extends BaseViewModel<SplashNavigator> {
 
 
     public SplashViewModel() {
-
     }
 
     public void startSeeding() {
         // do something here such as seed db
-
         decideNextActivity();
 
     }
@@ -28,6 +26,7 @@ public class SplashViewModel extends BaseViewModel<SplashNavigator> {
          * if user login before, open main activity
          * else: open login activity
          */
+
 
         if (getDataManager().getCurrentUserLoggedInMode() == DataManager.LoggedInMode.LOGGED_IN_MODE_LOGGED_OUT.getType()) {
             getNavigator().openLoginActivity();

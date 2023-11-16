@@ -1,19 +1,18 @@
 package com.example.gallery.ui.base;
 
-import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.widget.ProgressBar;
 
 import androidx.annotation.LayoutRes;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.databinding.ViewDataBinding;
-import androidx.lifecycle.ViewModelProvider;
 
 public abstract class BaseActivity<T extends ViewDataBinding, V extends BaseViewModel>
         extends AppCompatActivity implements BaseFragment.Callback {
 
-    private ProgressDialog mProgressDialog;
+    private ProgressBar mProgressBar;
     private T mViewDataBinding;
     protected V mViewModel ;
 

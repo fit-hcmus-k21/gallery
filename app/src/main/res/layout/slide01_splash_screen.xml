@@ -4,6 +4,9 @@
         xmlns:tools="http://schemas.android.com/tools"
         tools:context="com.example.gallery.ui.splash.SplashActivity" >
     <data>
+
+        <import type = "android.view.View" />
+
         <variable
             name="viewModel"
             type="com.example.gallery.ui.splash.SplashViewModel" />
@@ -74,6 +77,14 @@
 <!--                app:layout_constraintTop_toTopOf="parent" />-->
 
 <!--        </androidx.constraintlayout.widget.ConstraintLayout>-->
+
+        <androidx.core.widget.ContentLoadingProgressBar
+            android:id="@+id/address_looking_up"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="@{viewModel.isLoading ? View.VISIBLE : View.VISIBLE}" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
