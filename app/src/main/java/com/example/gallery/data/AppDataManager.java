@@ -6,6 +6,8 @@ import com.example.gallery.data.local.db.AppDBHelper;
 import com.example.gallery.data.local.prefs.AppPreferencesHelper;
 import com.example.gallery.data.models.api.LoginRequest;
 import com.example.gallery.data.models.api.LoginResponse;
+import com.example.gallery.data.models.api.RegisterRequest;
+import com.example.gallery.data.models.api.RegisterResponse;
 import com.example.gallery.data.models.db.Album;
 import com.example.gallery.data.models.db.MediaItem;
 import com.example.gallery.data.remote.ApiHeader;
@@ -17,6 +19,8 @@ import com.example.gallery.data.remote.AppApiHelper;
 import java.util.List;
 
 import retrofit2.Call;
+import retrofit2.http.Body;
+
 public class AppDataManager implements DataManager {
     private final ApiHelper mApiHelper;
 
@@ -102,6 +106,11 @@ public class AppDataManager implements DataManager {
     }
 
     @Override
+    public ApiHeader getApiHeader() {
+        return mApiHelper.getApiHeader();
+    }
+
+    @Override
     public void updateUserInfo(Long userID, String fullName, String username, String accessToken, String email, String profilePicUrl, LoggedInMode loggedInMode) {
 
     }
@@ -123,7 +132,19 @@ public class AppDataManager implements DataManager {
     }
 
     @Override
-    public ApiHeader getApiHeader() {
-        return mApiHelper.getApiHeader();
+    public Call<RegisterResponse> doFacebookRegisterApiCall(@Body RegisterRequest.FacebookRegisterRequest request) {
+        return mApiHelper.doFacebookRegisterApiCall(request);
     }
+
+    @Override
+    public Call<RegisterResponse> doGoogleRegisterApiCall(@Body RegisterRequest.GoogleRegisterRequest request) {
+        return mApiHelper.doGoogleRegisterApiCall(request);
+    }
+
+    @Override
+    public Call<RegisterResponse> doServerRegisterApiCall(@Body RegisterRequest.ServerRegisterRequest request) {
+        return mApiHelper.doServerRegisterApiCall(request);
+    }
+
+
 }
