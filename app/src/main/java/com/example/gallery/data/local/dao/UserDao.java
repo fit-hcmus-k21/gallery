@@ -9,6 +9,8 @@ import androidx.room.Query;
 
 import com.example.gallery.data.local.entities.User;
 
+import java.util.List;
+
 /**
  * Created on 27/10/2023
  */
@@ -22,5 +24,7 @@ public interface UserDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(User user);
 
+    @Query("SELECT * FROM users")
+    List<User> getAllUsers();
 
 }

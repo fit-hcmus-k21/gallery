@@ -27,4 +27,7 @@ public interface AlbumDao {
     @Query("SELECT * FROM albums WHERE userID = :userID")
     LiveData<List<Album>> loadAllByUserID (int userID);
 
+    @Query("SELECT id, name, description, creationDate, coverPhotoPath, userID, path FROM albums")
+    List<Album> loadAllAlbums();
+
 }

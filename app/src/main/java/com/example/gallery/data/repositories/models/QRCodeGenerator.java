@@ -6,7 +6,6 @@ import android.util.Log;
 
 import com.example.gallery.api.json_holder.Imgur;
 import com.example.gallery.api.ImgurApi;
-import com.example.gallery.utils.QRCodeCallback;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
@@ -33,20 +32,16 @@ public class QRCodeGenerator {
     private int photoIdentifier;
     private MediaItem destQRCodeImg;
     private QRCodeCallback qrCodeCallback; // Hàm này dùng để cho Slide35 có thể lấy đảm bảo lấy được dữ liệu từ API
-    public String getUrl() {
-        return url;
 
-    }
-
-    // constructors
-    public QRCodeGenerator(String filePath, QRCodeCallback qrCodeCallback) {
-        this.filePath = filePath;
-        this.qrCodeCallback = qrCodeCallback;
-    }
+//    // constructors
+//    public QRCodeGenerator(String filePath, QRCodeCallback qrCodeCallback) {
+//        this.filePath = filePath;
+//        this.qrCodeCallback = qrCodeCallback;
+//    }
 
     // methods
-    public void callApi() {
-        File file = new File(filePath);
+    public void callApi(String image_path, QRCodeCallback qrCodeCallback) {
+        File file = new File(image_path);
 
         RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file);
         MultipartBody.Part multipartBody = MultipartBody.Part.createFormData("image", file.getName(), requestBody);
@@ -81,12 +76,11 @@ public class QRCodeGenerator {
 
     }
 
-    public Bitmap generatorQRCode(String url_returned){
-        String url_path = url_returned;
+    public Bitmap generatorQRCode(String url){
         MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
 
         try {
-            BitMatrix bitMatrix = multiFormatWriter.encode(url_path, BarcodeFormat.QR_CODE, 400, 400);
+            BitMatrix bitMatrix = multiFormatWriter.encode(url, BarcodeFormat.QR_CODE, 400, 400);
 
             Bitmap bitmap = new BarcodeEncoder().createBitmap(bitMatrix);
             return bitmap;
@@ -95,6 +89,9 @@ public class QRCodeGenerator {
         }
     }
 
+    public interface QRCodeCallback {
+        void onQRCodeGenerated(Bitmap bitmap);
+    }
 
     public void generateQRCode(int photoIdentifier) {
 

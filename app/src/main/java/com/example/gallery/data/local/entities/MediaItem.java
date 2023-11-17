@@ -22,7 +22,8 @@ import androidx.room.ForeignKey;
             @ForeignKey(
                         entity = Album.class,
                         parentColumns = "name",
-                        childColumns = "albumName"
+                        childColumns = "albumName",
+                        onDelete = ForeignKey.NO_ACTION // Thêm mới ở đây
                 )
         },
         primaryKeys = {
@@ -61,8 +62,8 @@ public class MediaItem {
     @ColumnInfo(name = "fileExtension")
     private String fileExtension;
 
-    @ColumnInfo(name = "creationDate")
-    private String creationDate;
+    @ColumnInfo(name = "creationDate") // covert from String to Long, that specify the number of milliseconds since January 1, 1970, 00:00:00 GMT
+    private Long creationDate;
 
     @ColumnInfo(name = "location")
     private String location;
@@ -74,8 +75,42 @@ public class MediaItem {
     @ColumnInfo(name = "url")
     private String url;
 
-    // setters and getters
+    @ColumnInfo(name = "favorite")
+    private boolean favorite; // 0 is not favorite, 1 is favorite
 
+    @ColumnInfo(name = "parentPath")
+    private String parentPath;
+
+    @ColumnInfo(name = "lastModified") // covert from String to Long, that specify the number of milliseconds since January 1, 1970, 00:00:00 GMT
+    private Long lastModified;
+
+    @ColumnInfo(name = "deletedTs") // Deleted timestamp
+    private long deletedTs;
+
+    // Constructor
+
+
+    public MediaItem(int id, int userID, String name, String tag, String description, String path, int width,
+                     int height, long fileSize, String fileExtension, Long creationDate, String location, String albumName,
+                     String url, boolean favorite, String parentPath, Long lastModified) {
+        this.id = id;
+        this.userID = userID;
+        this.name = name;
+        this.tag = tag;
+        this.description = description;
+        this.path = path;
+        this.width = width;
+        this.height = height;
+        this.fileSize = fileSize;
+        this.fileExtension = fileExtension;
+        this.creationDate = creationDate;
+        this.location = location;
+        this.albumName = albumName;
+        this.url = url;
+        this.favorite = favorite;
+        this.parentPath = parentPath;
+        this.lastModified = lastModified;
+    }
 
     public int getId() {
         return id;
@@ -157,11 +192,11 @@ public class MediaItem {
         this.fileExtension = fileExtension;
     }
 
-    public String getCreationDate() {
+    public Long getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(String creationDate) {
+    public void setCreationDate(Long creationDate) {
         this.creationDate = creationDate;
     }
 
@@ -187,6 +222,38 @@ public class MediaItem {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public boolean isFavorite() {
+        return favorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        this.favorite = favorite;
+    }
+
+    public String getParentPath() {
+        return parentPath;
+    }
+
+    public void setParentPath(String parentPath) {
+        this.parentPath = parentPath;
+    }
+
+    public Long getLastModified() {
+        return lastModified;
+    }
+
+    public void setLastModified(Long lastModified) {
+        this.lastModified = lastModified;
+    }
+
+    public long getDeletedTs() {
+        return deletedTs;
+    }
+
+    public void setDeletedTs(long deletedTs) {
+        this.deletedTs = deletedTs;
     }
 }
 

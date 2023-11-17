@@ -1,0 +1,124 @@
+package com.example.gallery.data.repositories.models;
+
+import android.app.Application;
+import android.database.Cursor;
+import android.location.Address;
+import android.location.Geocoder;
+import android.media.ExifInterface;
+import android.net.Uri;
+import android.provider.MediaStore;
+import android.util.Log;
+
+import com.example.gallery.data.local.entities.MediaItem;
+
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
+
+public class MediaItemFromExternalStorage {
+    public static ArrayList<MediaItem> listMediaItems(Application application) {
+        ArrayList<MediaItem> listMediaItems = new ArrayList<>();
+       /*Data is
+        private int id;
+    private int userID;
+        private String name;
+    private String tag;
+        private String description; => ""
+        private String path; => MediaStore.Images.Media.DATA
+        private int width;
+        private int height;
+        private long fileSize;
+        private String fileExtension; => MediaStore.Images.Media.MIME_TYPE
+        private String creationDate;
+        private String location; => MediaStore.Images.Media.RELATIVE_PATH
+        private String albumName; => MediaStore.Images.Media.BUCKET_DISPLAY_NAME
+    private String url;??
+
+        */
+        Uri uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+        String[] projections = new String[]{
+                MediaStore.Images.Media._ID,
+                // USER ID IS NOT HERE, MAYBE WE CAN ASSIGN IT TO 0
+                MediaStore.Images.Media.DISPLAY_NAME,
+                // TAG IS NOT HERE, MAYBE WE CAN ASSIGN IT TO ""
+                MediaStore.Images.Media.DESCRIPTION, // DESCRIPTION MAY BE NULL, SO WE INITIALIZE IT TO ""
+                MediaStore.Images.Media.DATA, // THIS IS PATH
+                MediaStore.Images.Media.WIDTH, // THIS IS WIDTH
+                MediaStore.Images.Media.HEIGHT, // THIS IS HEIGHT
+                MediaStore.Images.Media.SIZE, // THIS IS FILE SIZE
+                MediaStore.Images.Media.MIME_TYPE, // THIS IS FILE EXTENSION
+                MediaStore.Images.Media.DATE_ADDED, // THIS IS CREATION DATE
+                MediaStore.Images.Media.RELATIVE_PATH, // THIS IS LOCATION
+                MediaStore.Images.Media.BUCKET_DISPLAY_NAME, // THIS IS ALBUM NAME
+                MediaStore.Images.Media.DATE_MODIFIED,
+                MediaStore.Images.Media.IS_FAVORITE
+                // URL IS NOT HERE, MAYBE WE CAN ASSIGN IT TO ""
+
+        };
+        Cursor cursor = application.getContentResolver().query(
+                uri,
+                projections,
+                null,
+                null,
+                null
+        );
+        if (cursor != null) {
+            cursor.moveToFirst();
+            do {
+//                Log.e("====================================", "====================================");
+//                Log.e("ID", "XKLD: " + cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID)));
+//                Log.e("DISPLAY NAME", "" + cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME)));
+//                Log.e("DESCRIPTION", "" + cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DESCRIPTION)));
+//                Log.e("PATH", "" + cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)));
+//                Log.e("WIDTH", "" + cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.WIDTH)));
+//                Log.e("HEIGHT", "" + cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.HEIGHT)));
+//                Log.e("SIZE", "" + cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.SIZE)));
+//                Log.e("MIME TYPE", "" + cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.MIME_TYPE)));
+//                Log.e("DATE ADDED", "" + "" + cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_ADDED)));
+//                Log.e("RELATIVE PATH", "" + cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.RELATIVE_PATH)));
+//                Log.e("BUCKET DISPLAY NAME", "" + cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_DISPLAY_NAME)));
+//                Log.e("DATE MODIFIED", "" + cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_MODIFIED)));
+//                Log.e("IS FAVORITE", "" + cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.IS_FAVORITE)));
+//
+//                Log.e("====================================", "====================================");
+
+                int ID = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID));
+                int userID = 1;
+                String name = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME));
+                String tag = "";
+
+                String discription = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DESCRIPTION));
+                if (discription == null) {
+                    discription = "";
+                }
+
+                String path = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA));
+                int width = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.WIDTH));
+                int height = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.HEIGHT));
+                long fileSize = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.SIZE));
+                String fileExtension = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.MIME_TYPE));
+
+                // CreationDate is milisecond format
+                long creationDate = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_ADDED)) * 1000L; // convert to millisecond. Must multiply by 1000L
+
+                String location = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.RELATIVE_PATH));
+                String albumName = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_DISPLAY_NAME));
+                String url = "";
+
+                // Get ? favorite
+                boolean favorite = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.IS_FAVORITE)) == 1;
+
+                // lastModifed is milisecond format
+                long lastModified = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_MODIFIED)) * 1000L; // convert to millisecond. Must multiply by 1000L
+
+                // Get parentPath
+                String parentPath = path.substring(0, path.lastIndexOf("/"));
+
+                listMediaItems.add(new MediaItem(ID, userID, name, tag, discription,
+                        path, width, height, fileSize, fileExtension, creationDate, location, albumName, url, favorite, parentPath, lastModified));
+            } while (cursor.moveToNext());
+        }
+        return listMediaItems;
+    }
+}

@@ -33,7 +33,7 @@ public class Album {
         private String description;
 
         @ColumnInfo(name = "creationDate")
-        private String creationDate;
+        private Long creationDate; // Milisecond
 
         @ColumnInfo(name = "coverPhotoPath")
         private String coverPhotoPath;
@@ -46,6 +46,15 @@ public class Album {
 
         // constructor
 
+
+        public Album(String name, String description, Long creationDate, String coverPhotoPath, int userID, String path) {
+                this.name = name;
+                this.description = description;
+                this.creationDate = creationDate;
+                this.coverPhotoPath = coverPhotoPath;
+                this.userID = userID;
+                this.path = path;
+        }
 
         // setters and getters
         public int getId() {
@@ -72,11 +81,11 @@ public class Album {
                 this.description = description;
         }
 
-        public String getCreationDate() {
+        public Long getCreationDate() {
                 return creationDate;
         }
 
-        public void setCreationDate(String creationDate) {
+        public void setCreationDate(Long creationDate) {
                 this.creationDate = creationDate;
         }
 
