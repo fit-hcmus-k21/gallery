@@ -63,10 +63,15 @@ public class MediaItemRepository {
                             for(MediaItem mediaItemDb : mediaItems){
 
                                 if(mediaItemExternal.getId() == mediaItemDb.getId()){
-                                    if(mediaItemDb.getDeletedTs() != 0 || mediaItemDb.getDescription() != ""){
-                                        Log.d("Mytask", "Checking mediaItemDb: " + mediaItemDb.getName());
+                                    if(mediaItemDb.getDeletedTs() != 0){
                                         mediaItemExternal.setDeletedTs(mediaItemDb.getDeletedTs());
+                                    }
+                                    if(mediaItemDb.getDescription() != ""){
                                         mediaItemExternal.setDescription(mediaItemDb.getDescription());
+
+                                    }
+                                    if(mediaItemDb.getTag() != ""){
+                                        mediaItemExternal.setTag(mediaItemDb.getTag());
                                     }
                                 }
                             }

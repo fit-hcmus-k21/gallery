@@ -40,6 +40,7 @@ public class AlbumRepository {
         allAlbums.observeForever(new Observer<List<Album>>() {
             @Override
             public void onChanged(List<Album> albumsDatabase) {
+                allAlbums.removeObserver(this); // Cái dòng này quan trong vãi cả nồi @@ không có nó thì hiệu suất giảm đáng kể
                 ExecutorService executorService = Executors.newSingleThreadExecutor();
                 Future<List<Album>> futureExternal = executorService.submit(new Callable<List<Album>>() {
                     @Override

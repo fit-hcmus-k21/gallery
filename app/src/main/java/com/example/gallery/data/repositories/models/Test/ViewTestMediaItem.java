@@ -19,8 +19,13 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.gallery.R;
+import com.example.gallery.data.local.entities.Album;
 import com.example.gallery.data.local.entities.MediaItem;
+import com.example.gallery.data.local.entities.User;
+import com.example.gallery.data.repositories.models.HelperFunction.RequestPermissionHelper;
+import com.example.gallery.data.repositories.models.ViewModel.AlbumViewModel;
 import com.example.gallery.data.repositories.models.ViewModel.MediaItemViewModel;
+import com.example.gallery.data.repositories.models.ViewModel.UserViewModel;
 
 import java.util.List;
 
@@ -29,6 +34,8 @@ public class ViewTestMediaItem extends AppCompatActivity {
     TextView textView;
 
     MediaItemViewModel mediaItemViewModel;
+    UserViewModel userViewModel;
+    AlbumViewModel albumViewModel;
     RecyclerView recyclerView;
     MediaItemAdapter_Test mediaItemAdapterTest;
 
@@ -39,31 +46,47 @@ public class ViewTestMediaItem extends AppCompatActivity {
 
         textView = (TextView) findViewById(R.id.textTestView);
         recyclerView = (RecyclerView) findViewById(R.id.recyclerViewTest);
+        userViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
+        albumViewModel = ViewModelProviders.of(this).get(AlbumViewModel.class);
         mediaItemViewModel = ViewModelProviders.of(this).get(MediaItemViewModel.class);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this,
-                        new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE,
-                                android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                                Manifest.permission.READ_MEDIA_IMAGES
-                                , android.Manifest.permission.READ_MEDIA_IMAGES},
-                        REQUEST_PERMISSION_CODE);
-            } else {
-                Log.e("Tag onCreate", "Permission is granted");
-                LoadDataAndUpdateUI();
-            }
+        if(RequestPermissionHelper.checkAndRequestPermission(this, REQUEST_PERMISSION_CODE)){
+            LoadDataAndUpdateUI();
+        }
+        else{
+            Toast.makeText(this, "Permission is not granted", Toast.LENGTH_SHORT).show();
         }
 
     }
 
     private void LoadDataAndUpdateUI() {
+
+        userViewModel.insertUser(new User(1, "User1", "", "user1", "123",
+                "user1@example.com", "", "", "", ""));
+        userViewModel.insertUser(new User(10, "User2", "", "user2", "123",
+                "user2@example.com", "", "", "", ""));
+        userViewModel.getAllUsers().observe(this, new Observer<List<User>>() {
+            @Override
+            public void onChanged(List<User> users) {
+                if(users != null && !users.isEmpty()){
+                    albumViewModel.fetchData();
+                }
+            }
+        });
+        albumViewModel.getAllAlbums().observe(this, new Observer<List<Album>>() {
+            @Override
+            public void onChanged(List<Album> albums) {
+                if(albums != null && !albums.isEmpty()){
+                    mediaItemViewModel.fetchData();
+                }
+            }
+        });
+
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 3);
         recyclerView.setLayoutManager(gridLayoutManager);
         mediaItemAdapterTest = new MediaItemAdapter_Test();
         recyclerView.setAdapter(mediaItemAdapterTest);
 
-        mediaItemViewModel.fetchData();
         mediaItemViewModel.getAllMediaItems().observe(this, new Observer<List<MediaItem>>() {
             @Override
             public void onChanged(List<MediaItem> mediaItems) {
