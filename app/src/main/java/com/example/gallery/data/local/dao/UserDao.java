@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Created on 27/10/2023
  */
-
+import androidx.lifecycle.LiveData;
 @Dao
 public interface UserDao {
 
@@ -24,7 +24,8 @@ public interface UserDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(User user);
 
-    @Query("SELECT * FROM users")
-    List<User> getAllUsers();
+    @Query("SELECT id, fullName, avatarURL, username, password, email, accessToken, googleToken, facebookToken, fingerprintData FROM users")
+    LiveData<List<User>> getAllUsers();
+
 
 }

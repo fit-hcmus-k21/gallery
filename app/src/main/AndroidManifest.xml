@@ -24,7 +24,7 @@
         android:theme="@style/Theme.Gallery"
         tools:targetApi="31" >
 
-        <activity android:name=".ui.main.ViewTestAlbum"
+        <activity android:name=".data.repositories.models.Test.ViewTestAlbum"
                   android:exported="true"
             >
             <intent-filter>

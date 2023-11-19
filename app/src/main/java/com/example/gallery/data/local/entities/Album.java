@@ -44,19 +44,26 @@ public class Album {
         @ColumnInfo(name = "path")
         private String path;
 
+        // Add more attributes: Bin attributes, Secure attributes
+
+        @ColumnInfo(name = "deletedTs")
+        private long deletedTs;
+
         // constructor
 
 
-        public Album(String name, String description, Long creationDate, String coverPhotoPath, int userID, String path) {
+        public Album( String name, String description, Long creationDate, String coverPhotoPath, int userID, String path, long deletedTs) {
                 this.name = name;
                 this.description = description;
                 this.creationDate = creationDate;
                 this.coverPhotoPath = coverPhotoPath;
                 this.userID = userID;
                 this.path = path;
+                this.deletedTs = deletedTs;
         }
 
         // setters and getters
+
         public int getId() {
                 return id;
         }
@@ -111,5 +118,13 @@ public class Album {
 
         public void setPath(String path) {
                 this.path = path;
+        }
+
+        public long getDeletedTs() {
+                return deletedTs;
+        }
+
+        public void setDeletedTs(long deletedTs) {
+                this.deletedTs = deletedTs;
         }
 }

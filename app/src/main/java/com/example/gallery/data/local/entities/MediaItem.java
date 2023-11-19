@@ -90,9 +90,9 @@ public class MediaItem {
     // Constructor
 
 
-    public MediaItem(int id, int userID, String name, String tag, String description, String path, int width,
-                     int height, long fileSize, String fileExtension, Long creationDate, String location, String albumName,
-                     String url, boolean favorite, String parentPath, Long lastModified) {
+    public MediaItem(int id, int userID, String name, String tag, String description, String path,
+                     int width, int height, long fileSize, String fileExtension, Long creationDate, String location,
+                     String albumName, String url, boolean favorite, String parentPath, Long lastModified, long deletedTs) {
         this.id = id;
         this.userID = userID;
         this.name = name;
@@ -110,6 +110,7 @@ public class MediaItem {
         this.favorite = favorite;
         this.parentPath = parentPath;
         this.lastModified = lastModified;
+        this.deletedTs = deletedTs;
     }
 
     public int getId() {

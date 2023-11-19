@@ -1,4 +1,4 @@
-package com.example.gallery.utils;
+package com.example.gallery.data.repositories.models.HelperFunction;
 
 import android.Manifest;
 import android.app.Activity;

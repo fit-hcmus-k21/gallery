@@ -1,10 +1,11 @@
-package com.example.gallery.ui.main;
+package com.example.gallery.data.repositories.models.Test;
 
 import android.Manifest;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -13,23 +14,23 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.gallery.R;
 import com.example.gallery.data.local.entities.MediaItem;
-import com.example.gallery.data.repositories.models.MediaItemViewModel;
-import com.example.gallery.data.repositories.models.TestAdapter;
+import com.example.gallery.data.repositories.models.ViewModel.MediaItemViewModel;
 
 import java.util.List;
 
-public class ViewTestDatabase extends AppCompatActivity {
+public class ViewTestMediaItem extends AppCompatActivity {
     private static final int REQUEST_PERMISSION_CODE = 101;
     TextView textView;
 
     MediaItemViewModel mediaItemViewModel;
     RecyclerView recyclerView;
-    TestAdapter testAdapter;
+    MediaItemAdapter_Test mediaItemAdapterTest;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -38,13 +39,7 @@ public class ViewTestDatabase extends AppCompatActivity {
 
         textView = (TextView) findViewById(R.id.textTestView);
         recyclerView = (RecyclerView) findViewById(R.id.recyclerViewTest);
-
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 3);
-        recyclerView.setLayoutManager(gridLayoutManager);
-
-        testAdapter = new TestAdapter();
-        recyclerView.setAdapter(testAdapter);
-
+        mediaItemViewModel = ViewModelProviders.of(this).get(MediaItemViewModel.class);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
@@ -63,16 +58,26 @@ public class ViewTestDatabase extends AppCompatActivity {
     }
 
     private void LoadDataAndUpdateUI() {
-        mediaItemViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(MediaItemViewModel.class);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 3);
+        recyclerView.setLayoutManager(gridLayoutManager);
+        mediaItemAdapterTest = new MediaItemAdapter_Test();
+        recyclerView.setAdapter(mediaItemAdapterTest);
 
-        mediaItemViewModel.fetchDataFromExternalStorageAndSaveToDataBase();
-
+        mediaItemViewModel.fetchData();
         mediaItemViewModel.getAllMediaItems().observe(this, new Observer<List<MediaItem>>() {
             @Override
             public void onChanged(List<MediaItem> mediaItems) {
-                testAdapter.setData(mediaItems);
+                mediaItemAdapterTest.setData(mediaItems);
             }
         });
+        mediaItemAdapterTest.setOnItemClickListener(new MediaItemAdapter_Test.onItemClickListener() {
+            @Override
+            public void onItemClick(MediaItem mediaItem) {
+                Toast.makeText(ViewTestMediaItem.this, mediaItem.getPath(), Toast.LENGTH_SHORT).show();
+                mediaItemViewModel.updateDeletedTs(mediaItem.getId(), System.currentTimeMillis());
+            }
+        });
+
 
     }
 

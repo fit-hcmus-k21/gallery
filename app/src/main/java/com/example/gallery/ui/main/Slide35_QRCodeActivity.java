@@ -17,7 +17,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.gallery.R;
-import com.example.gallery.data.repositories.models.QRCodeViewModel;
+import com.example.gallery.data.repositories.models.ViewModel.QRCodeViewModel;
 
 public class Slide35_QRCodeActivity extends AppCompatActivity {
     public static final String MEDIA_ITEM_FILE_PATH = "MEDIA_ITEM_FILE_PATH";

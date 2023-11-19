@@ -1,4 +1,4 @@
-package com.example.gallery.utils;
+package com.example.gallery.data.repositories.models.HelperFunction;
 
 import android.content.ContentValues;
 import android.content.Context;

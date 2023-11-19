@@ -1,4 +1,4 @@
-package com.example.gallery.data.repositories.models;
+package com.example.gallery.data.repositories.models.ViewModel;
 
 import android.app.Application;
 
@@ -8,6 +8,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.gallery.data.local.entities.User;
+import com.example.gallery.data.repositories.models.Repository.UserRepository;
 
 
 import java.util.List;
@@ -18,10 +19,6 @@ public class UserViewModel extends AndroidViewModel {
     public UserViewModel(@NonNull Application application) {
         super(application);
         userRepository = new UserRepository(application);
-        allUsers = new MutableLiveData<>();
-    }
-    public void fetchUsersFromDatabase(){
-        userRepository.fetchUsersFromDatabase();
         allUsers = userRepository.getUsers();
     }
     public LiveData<List<User>> getAllUsers() {

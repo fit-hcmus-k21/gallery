@@ -1,4 +1,4 @@
-package com.example.gallery.data.repositories.models;
+package com.example.gallery.data.repositories.models.HelperFunction;
 
 import  com.example.gallery.data.local.entities.Album;
 
@@ -55,11 +55,41 @@ public class AlbumFromExternalStorage {
 
                     long creationDate = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_ADDED)) * 1000L; // convert to millisecond. Must multiply by 1000L
 
-                    albums.add(new Album(folderName, "", creationDate, coverPhotoPath, 1, folderPath));
+                    albums.add(new Album(folderName, "", creationDate, coverPhotoPath, 1, folderPath, 0));
                 }
             }while(cursor.moveToNext());
         }
 
+        uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+        String projectionsVideo[] = new String[]{
+                MediaStore.Video.Media.DATA,
+                MediaStore.Video.Media.BUCKET_DISPLAY_NAME,
+                MediaStore.Video.Media.DATE_ADDED
+        };
+        sortOrder = MediaStore.Video.Media.DATE_ADDED + " DESC";
+        cursor = application.getContentResolver().query(
+                uri,
+                projections,
+                null,
+                null,
+                sortOrder
+        );
+        if(cursor != null){
+            cursor.moveToFirst();
+            do{
+                String folderName = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.BUCKET_DISPLAY_NAME));
+                if(folderName != null && !folderNames.contains(folderName)){
+                    folderNames.add(folderName);
+
+                    String coverPhotoPath = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA));
+                    String folderPath = coverPhotoPath.substring(0, coverPhotoPath.lastIndexOf(File.separator));
+
+                    long creationDate = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATE_ADDED)) * 1000L; // convert to millisecond. Must multiply by 1000L
+
+                    albums.add(new Album(folderName, "", creationDate, coverPhotoPath, 1, folderPath, 0));
+                }
+            }while(cursor.moveToNext());
+        }
         return albums;
     }
 
