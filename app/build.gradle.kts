@@ -110,5 +110,10 @@ dependencies {
     // R2xAndroidNetworking for Rest API calling and fetching data from remote
     implementation("com.amitshekhar.android:rx2-android-networking:1.0.1")
 
+    // facebook apis
+    implementation("com.facebook.android:facebook-login:15.2.0")
+    implementation("com.facebook.android:facebook-messenger:15.2.0")
+    implementation("com.facebook.android:facebook-share:15.2.0")
+
 
 }

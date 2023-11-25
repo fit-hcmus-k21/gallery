@@ -1,5 +1,7 @@
 package com.example.gallery.ui.base;
 
+import android.widget.Toast;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -24,7 +26,14 @@ public abstract class BaseViewModel<N> extends ViewModel {
     }
 
     public void setIsLoading(boolean isLoading) {
-        mIsLoading.setValue(isLoading);
+//        Toast.makeText(App.getInstance(), "setIsLoading: " + isLoading, Toast.LENGTH_SHORT).show();
+
+        if (isLoading) {
+            mIsLoading.postValue(true);
+        } else {
+            mIsLoading.postValue(false);
+        }
+
     }
 
     public DataManager getDataManager() {

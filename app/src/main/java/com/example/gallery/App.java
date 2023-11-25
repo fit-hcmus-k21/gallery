@@ -5,6 +5,8 @@ import android.app.Application;
 
 import com.example.gallery.data.AppDataManager;
 import com.example.gallery.data.DataManager;
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -29,7 +31,8 @@ public class App extends Application {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-
+        FacebookSdk.setClientToken("4c91713335cb507f5cf44bd15057bd6e");
+        AppEventsLogger.activateApp(this);
 
     }
 

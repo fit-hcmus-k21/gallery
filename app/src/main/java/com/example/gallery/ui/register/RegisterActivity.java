@@ -3,6 +3,7 @@ package com.example.gallery.ui.register;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.lifecycle.ViewModelProvider;
@@ -13,6 +14,7 @@ import com.example.gallery.databinding.Slide03RegisterScreenBinding;
 import com.example.gallery.ui.base.BaseActivity;
 import com.example.gallery.ui.login.LoginActivity;
 import com.example.gallery.ui.main.MainActivity;
+import com.example.gallery.utils.ValidateText;
 
 /**
  * Created on 16/11/2023
@@ -40,22 +42,31 @@ public class RegisterActivity extends BaseActivity<Slide03RegisterScreenBinding,
 
     @Override
     public void register() {
+//        set is loading
+        mRegisterBinding.progressBar.setVisibility(android.view.View.VISIBLE);
+
         String email = mRegisterBinding.textEmail.getText().toString();
         String password = mRegisterBinding.textPassword.getText().toString();
+        String confirmPassword = mRegisterBinding.textConfirmPassword.getText().toString();
+        String fullname = mRegisterBinding.textFullname.getText().toString();
 
-        // toast to show email and password
-        Toast.makeText(this, "Username: " + email + "\nPassword: " + password, Toast.LENGTH_SHORT).show();
+        // check if password and confirm password are the same
+        if (!password.equals(confirmPassword)) {
+            Toast.makeText(this, "Password and confirm password are not the same", Toast.LENGTH_SHORT).show();
+            mRegisterBinding.progressBar.setVisibility(View.GONE);
+            return;
+        }
 
+        // validate email and password
+        if (ValidateText.isEmailAndPasswordValid(email, password)) {
 
-        if (mViewModel.isUsernameAndPasswordValid(email, password)) {
-//            View view = this.getCurrentFocus();
-//            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-//            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-
-            mViewModel.register(email, password);
+            mViewModel.register(email, password, fullname);
         } else {
             Toast.makeText(this, "Invalid email/ password !" , Toast.LENGTH_SHORT).show();
         }
+        mRegisterBinding.progressBar.setVisibility(View.GONE);
+
+
     }
 
     @Override
@@ -67,7 +78,7 @@ public class RegisterActivity extends BaseActivity<Slide03RegisterScreenBinding,
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Toast.makeText(this, "RegisterActivity", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "RegisterActivity", Toast.LENGTH_SHORT).show();
 
         super.onCreate(savedInstanceState);
         mRegisterBinding = getViewDataBinding();
@@ -87,6 +98,16 @@ public class RegisterActivity extends BaseActivity<Slide03RegisterScreenBinding,
         }
 
         mRegisterBinding.setViewModel(mViewModel);
+
+        mViewModel.getIsLoading().observe(this, isLoading -> {
+            if (isLoading) {
+                // Show the loading indicator
+                mRegisterBinding.progressBar.setVisibility(android.view.View.VISIBLE);
+            } else {
+                // Hide the loading indicator
+                mRegisterBinding.progressBar.setVisibility(View.GONE);
+            }
+        });
 
 
     }

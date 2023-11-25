@@ -11,6 +11,10 @@ import com.example.gallery.data.models.api.RegisterRequest;
 import com.example.gallery.data.models.api.RegisterResponse;
 import com.example.gallery.data.remote.AppApiHelper;
 import com.example.gallery.ui.base.BaseViewModel;
+import com.example.gallery.utils.ValidateText;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 
 import retrofit2.Call;
 
@@ -22,112 +26,60 @@ import retrofit2.Call;
 public class RegisterViewModel extends BaseViewModel<RegisterNavigator> {
 
 
-    public boolean isUsernameAndPasswordValid(String email, String password) {
-        // validate email and password
-        if (TextUtils.isEmpty(email)) {
-            return false;
-        }
+    public void register(String email, String password, String fullname) {
+        setIsLoading(true);
 
-        if (TextUtils.isEmpty(password)) {
-            return false;
-        }
-        return true;
-    }
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
+            setIsLoading(false); // Set loading indicator to false regardless of success or failure
 
-    public void register(String email, String password) {
+            if (task.isSuccessful()) {
+                Toast.makeText(App.getInstance(), "Registration successful", Toast.LENGTH_SHORT).show();
 
-        Toast.makeText(App.getInstance(), "handle register", Toast.LENGTH_SHORT).show();
-
-        Call<RegisterResponse> call = AppApiHelper.getInstance().doServerRegisterApiCall(new RegisterRequest.ServerRegisterRequest(email, password));
-        call.enqueue(new retrofit2.Callback<RegisterResponse>() {
-            @Override
-            public void onResponse(Call<RegisterResponse> call, retrofit2.Response<RegisterResponse> response) {
-                if (response.isSuccessful()) {
-                    Toast.makeText(App.getInstance(), "Register success", Toast.LENGTH_SHORT).show();
-                    RegisterResponse loginResponse = response.body();
-                    getDataManager().updateUserInfo(
-                            loginResponse.getUserId(),
-                            loginResponse.getFullName(),
-                            loginResponse.getAccessToken(),
-                            loginResponse.getUserName(),
-                            loginResponse.getUserEmail(),
-                            loginResponse.getGoogleProfilePicUrl(),
-                            DataManager.LoggedInMode.LOGGED_IN_MODE_SERVER);
-
-                    getNavigator().openMainActivity();
-                } else {
-                    Toast.makeText(App.getInstance(), "Register failed", Toast.LENGTH_SHORT).show();
-
-                    // print error
-                    Log.e("RegisterViewModel", "onResponse: " + response.errorBody());
+                FirebaseUser currentUser = mAuth.getCurrentUser();
+                if (currentUser != null) {
+                    // Update user profile
+                    currentUser.updateProfile(new UserProfileChangeRequest.Builder()
+                            .setDisplayName(fullname)
+                            .build()
+                    );
                 }
 
-            }
-
-            @Override
-            public void onFailure(Call<RegisterResponse> call, Throwable t) {
-                getNavigator().handleError(t);
+                setIsLoading(true);
+                getNavigator().openMainActivity();
+            } else {
+                String errorMessage = task.getException() != null ? task.getException().getMessage() : "Registration failed";
+                Toast.makeText(App.getInstance(), errorMessage, Toast.LENGTH_SHORT).show();
             }
         });
     }
 
+
     public void onFbRegisterClick() {
 //        setIsLoading(true);
-//        getCompositeDisposable().add(getDataManager()
-//                .doFacebookRegisterApiCall(new RegisterRequest.FacebookRegisterRequest("test3", "test4"))
-//                .doOnSuccess(response -> getDataManager()
-//                        .updateUserInfo(
-//                                response.getAccessToken(),
-//                                response.getUserId(),
-//                                DataManager.LoggedInMode.LOGGED_IN_MODE_FB,
-//                                response.getUserName(),
-//                                response.getUserEmail(),
-//                                response.getGoogleProfilePicUrl()))
-//                .subscribeOn(getSchedulerProvider().io())
-//                .observeOn(getSchedulerProvider().ui())
-//                .subscribe(response -> {
-//                    setIsLoading(false);
-//                    getNavigator().openMainActivity();
-//                }, throwable -> {
-//                    setIsLoading(false);
-//                    getNavigator().handleError(throwable);
-//                }));
+
     }
 
     public void onGoogleRegisterClick() {
 //        setIsLoading(true);
-//        getCompositeDisposable().add(getDataManager()
-//                .doGoogleRegisterApiCall(new RegisterRequest.GoogleRegisterRequest("test1", "test1"))
-//                .doOnSuccess(response -> getDataManager()
-//                        .updateUserInfo(
-//                                response.getAccessToken(),
-//                                response.getUserId(),
-//                                DataManager.LoggedInMode.LOGGED_IN_MODE_GOOGLE,
-//                                response.getUserName(),
-//                                response.getUserEmail(),
-//                                response.getGoogleProfilePicUrl()))
-//                .subscribeOn(getSchedulerProvider().io())
-//                .observeOn(getSchedulerProvider().ui())
-//                .subscribe(response -> {
-//                    setIsLoading(false);
-//                    getNavigator().openMainActivity();
-//                }, throwable -> {
-//                    setIsLoading(false);
-//                    getNavigator().handleError(throwable);
-//                }));
+
     }
 
     public void onServerRegisterClicked() {
 
-        Toast.makeText(App.getInstance(), "onServerRegisterClick", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(App.getInstance(), "onServerRegisterClick", Toast.LENGTH_SHORT).show();
         getNavigator().register();
     }
 
     public void onLoginClicked() {
+
+        setIsLoading(true);
         getNavigator().openLoginActivity();
     }
 
     public void onBackClicked() {
+
+        setIsLoading(true);
         getNavigator().openLoginActivity();
     }
 
