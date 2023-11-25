@@ -30,6 +30,7 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.Executor;
 
@@ -67,77 +68,43 @@ public class LoginViewModel extends BaseViewModel<LoginNavigator> {
 
 
 //        ---------------------
-        LoginManager.getInstance().logInWithReadPermissions(getNavigator().getActivity(),
-                Arrays.asList("email", "public_profile"));
-        Toast.makeText(App.getInstance(), "logged with facebook ...", Toast.LENGTH_SHORT).show();
-
+// Create a callback manager to handle login responses
         CallbackManager callbackManager = CallbackManager.Factory.create();
 
+        // Set up Facebook Login
+        LoginManager.getInstance().logInWithReadPermissions(getNavigator().getActivity(),
+                Arrays.asList("public_profile", "email"));
+
+        // Register a callback for login result
         LoginManager.getInstance().registerCallback(callbackManager,
                 new FacebookCallback<LoginResult>() {
                     @Override
                     public void onSuccess(LoginResult loginResult) {
-                        Toast.makeText(App.getInstance(), "Login Success", Toast.LENGTH_SHORT).show();
-
-                        Object request = GraphRequest.newMeRequest(
-                                loginResult.getAccessToken(),
-                                (object, response) -> {
-                                    Toast.makeText(App.getInstance(), "Login Success and get accessToken", Toast.LENGTH_SHORT).show();
-
-                                    String id = object.optString("id");
-                                    String name = object.optString("name");
-                                    String email = object.optString("email");
-                                    String profilePicUrl = object.optJSONObject("picture").optJSONObject("data").optString("url");
-
-                                    Toast.makeText(App.getInstance(), "id: " + id + "\nname: " + name + "\nemail: " + email + "\nprofilePicUrl: " + profilePicUrl, Toast.LENGTH_SHORT).show();
-
-                                    getNavigator().openMainActivity();
-                                }).executeAsync();
-
-
+                        // Handle successful login
+                        handleFacebookAccessToken(loginResult.getAccessToken());
                     }
 
                     @Override
                     public void onCancel() {
-                        Toast.makeText(App.getInstance(), "Login Cancelled", Toast.LENGTH_SHORT).show();
-
+                        // Handle canceled login
                     }
 
                     @Override
-                    public void onError(@NonNull FacebookException e) {
-                        Toast.makeText(App.getInstance(), "Login Error", Toast.LENGTH_SHORT).show();
-
-                    }
-                }
-        );
-
-            getNavigator().openMainActivity();
-//        Toast.makeText(App.getInstance(), "come here ...", Toast.LENGTH_SHORT).show();
-//        handleFacebookAccessToken(AccessToken.getCurrentAccessToken());
-
-    }
-
-    public void handleFacebookAccessToken(AccessToken token) {
-        Log.d("LoginViewModel", "handleFacebookAccessToken:" + token);
-
-        AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
-        FirebaseAuth.getInstance().signInWithCredential(credential)
-                .addOnCompleteListener((Executor) this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull com.google.android.gms.tasks.Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-
-                            Toast.makeText(App.getInstance(), "signInWithCredential:success", Toast.LENGTH_SHORT).show();
-                            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                        } else {
-                            // If sign in fails, display a message to the user.
-
-                            Toast.makeText(App.getInstance(), "signInWithCredential:failure", Toast.LENGTH_SHORT).show();
-                        }
+                    public void onError(FacebookException error) {
+                        // Handle error during login
                     }
                 });
+
     }
+
+    // Handle the Facebook access token to authenticate with your server or perform other actions
+    private void handleFacebookAccessToken(AccessToken accessToken) {
+        // You can use the access token to authenticate with your server or perform other actions
+        // onFacebookLoginSuccess();
+//        AuthCredential credential = FacebookAuthProvider.getCredential(accessToken.getToken());
+
+    }
+
     public void onGoogleLoginClicked() {
 
     }

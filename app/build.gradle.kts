@@ -115,5 +115,8 @@ dependencies {
     implementation("com.facebook.android:facebook-messenger:15.2.0")
     implementation("com.facebook.android:facebook-share:15.2.0")
 
+    // google play services
+    implementation("com.google.android.gms:play-services-auth:20.7.0")
+
 
 }
