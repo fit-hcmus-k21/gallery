@@ -43,6 +43,22 @@ public class User  {
     @ColumnInfo(name = "fingerprintData")
     private String fingerprintData;
 
+    // Constructor
+
+    public User(int id, String fullName, String avatarURL, String username, String password, String email, String accessToken, String googleToken, String facebookToken, String fingerprintData) {
+        this.id = id;
+        this.fullName = fullName;
+        this.avatarURL = avatarURL;
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.accessToken = accessToken;
+        this.googleToken = googleToken;
+        this.facebookToken = facebookToken;
+        this.fingerprintData = fingerprintData;
+    }
+
+
     // setters and getters
 
 
