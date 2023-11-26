@@ -118,5 +118,12 @@ dependencies {
     // google play services
     implementation("com.google.android.gms:play-services-auth:20.7.0")
 
+    // Librabry for QR code generation
+    implementation ("com.journeyapps:zxing-android-embedded:4.3.0")
+    coreLibraryDesugaring ("com.android.tools:desugar_jdk_libs:2.0.2")
+    implementation ("androidx.multidex:multidex:2.0.1")
+
+    // Add Gson
+    implementation ("com.google.code.gson:gson:2.10.1")
 
 }

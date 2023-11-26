@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/nav_qr_edit"
+        android:icon="@drawable/baseline_edit_icon"
+        android:title="Edit"
+        android:enabled="true"/>
+
+    <item
+        android:id="@+id/nav_qr_share"
+        android:icon="@drawable/baseline_search_24"
+        android:title="Share"
+        android:enabled="true"/>
+
+    <item
+        android:id="@+id/nav_qr_more"
+        android:icon="@drawable/baseline_more_vertical_svgrepo_com"
+        android:title="More"
+        android:enabled="true"/>
+</menu>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/top_bar_favorite"
+        android:title="Favorite"
+        android:icon="@drawable/baseline_heart_svgrepo_com"
+        app:showAsAction="always"/>
+    <item
+        android:id="@+id/top_bar_note"
+        android:title="Favorite"
+        android:icon="@drawable/baseline_notes_notepad_svgrepo_com"
+        app:showAsAction="always"/>
+    <item
+        android:id="@+id/top_bar_recycle_bin"
+        android:title="Favorite"
+        android:icon="@drawable/baseline_trash_can_svgrepo_com"
+        app:showAsAction="always"/>
+    <item
+        android:id="@+id/top_bar_information"
+        android:title="Favorite"
+        android:icon="@drawable/baseline_info_24"
+        app:showAsAction="always"/>
+
+</menu>

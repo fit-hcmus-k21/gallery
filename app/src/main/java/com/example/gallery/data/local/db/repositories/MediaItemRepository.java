@@ -44,7 +44,7 @@ public class MediaItemRepository {
             @Override
             public void run() {
                 // background work here
-                mediaItemDao.update(item);
+//                mediaItemDao.update(item);
 
                 new Handler(Looper.getMainLooper()).post(new Runnable() {
                     @Override
@@ -61,7 +61,7 @@ public class MediaItemRepository {
             @Override
             public void run() {
                 // background work here
-                mediaItemDao.delete(item);
+//                mediaItemDao.delete(item);
 
                 new Handler(Looper.getMainLooper()).post(new Runnable() {
                     @Override
@@ -78,7 +78,7 @@ public class MediaItemRepository {
             @Override
             public void run() {
                 // background work here
-                mediaItemDao.deleteAll();
+//                mediaItemDao.deleteAll();
 
                 new Handler(Looper.getMainLooper()).post(new Runnable() {
                     @Override

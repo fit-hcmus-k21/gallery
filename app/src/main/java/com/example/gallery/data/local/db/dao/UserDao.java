@@ -10,10 +10,12 @@ import androidx.room.Update;
 
 import com.example.gallery.data.models.db.User;
 
+import java.util.List;
+
 /**
  * Created on 27/10/2023
  */
-
+import androidx.lifecycle.LiveData;
 @Dao
 public interface UserDao {
 
@@ -25,6 +27,8 @@ public interface UserDao {
 
     @Update
     void update(User user);
+    @Query("SELECT id, fullName, avatarURL, username, password, email, accessToken, googleToken, facebookToken, fingerprintData FROM users")
+    LiveData<List<User>> getAllUsers();
 
 
 }
