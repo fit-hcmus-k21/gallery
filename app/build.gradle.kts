@@ -19,6 +19,10 @@ android {
     }
 
     buildTypes {
+        debug {
+            buildConfigField("String", "BASE_URL", "\"http://hihi\"")
+            buildConfigField(("String"), "API_KEY", "\"123\"" )
+        }
         release {
             isMinifyEnabled = false
             proguardFiles(
@@ -35,6 +39,7 @@ android {
 
 //    -----------------------------------------------------------------
     buildFeatures {
+        buildConfig = true
         viewBinding = true
         dataBinding = true
     }
@@ -99,6 +104,19 @@ dependencies {
     // Add the dependency for the Realtime Database library
     implementation("com.google.firebase:firebase-database")
 
+    // reactive for using async task
+    implementation("io.reactivex.rxjava2:rxjava:2.1.9")
+
+    // R2xAndroidNetworking for Rest API calling and fetching data from remote
+    implementation("com.amitshekhar.android:rx2-android-networking:1.0.1")
+
+    // facebook apis
+    implementation("com.facebook.android:facebook-login:15.2.0")
+    implementation("com.facebook.android:facebook-messenger:15.2.0")
+    implementation("com.facebook.android:facebook-share:15.2.0")
+
+    // google play services
+    implementation("com.google.android.gms:play-services-auth:20.7.0")
 
     // Librabry for QR code generation
     implementation ("com.journeyapps:zxing-android-embedded:4.3.0")

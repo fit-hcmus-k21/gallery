@@ -1,4 +1,4 @@
-package com.example.gallery.data.local.entities;
+package com.example.gallery.data.models.db;
 
 
 import androidx.room.ColumnInfo;
@@ -43,6 +43,7 @@ public class User  {
     @ColumnInfo(name = "fingerprintData")
     private String fingerprintData;
 
+
     // Constructor
 
     public User(int id, String fullName, String avatarURL, String username, String password, String email, String accessToken, String googleToken, String facebookToken, String fingerprintData) {
@@ -60,8 +61,6 @@ public class User  {
 
 
     // setters and getters
-
-
     public int getId() {
         return id;
     }

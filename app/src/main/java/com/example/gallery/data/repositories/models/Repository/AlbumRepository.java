@@ -9,8 +9,8 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
-import com.example.gallery.data.local.entities.Album;
-import com.example.gallery.data.local.dao.AlbumDao;
+import com.example.gallery.data.models.db.Album;
+import com.example.gallery.data.local.db.dao.AlbumDao;
 import com.example.gallery.data.local.db.GalleryDatabase;
 import com.example.gallery.data.repositories.models.HelperFunction.AlbumFromExternalStorage;
 

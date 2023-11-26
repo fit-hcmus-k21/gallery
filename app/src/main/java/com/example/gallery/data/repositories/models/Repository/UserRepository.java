@@ -7,9 +7,9 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.gallery.App;
-import com.example.gallery.data.local.dao.UserDao;
+import com.example.gallery.data.local.db.dao.UserDao;
 import com.example.gallery.data.local.db.GalleryDatabase;
-import com.example.gallery.data.local.entities.User;
+import com.example.gallery.data.models.db.User;
 
 import java.util.List;
 import java.util.concurrent.ExecutorService;

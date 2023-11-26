@@ -1,7 +1,10 @@
 <resources>
     <string name="app_name">Gallery</string>
 
-<!--    addition     -->
+    <!--    addition     -->
+    <string name="facebook_app_id">3492470124328721</string>
+    <string name="fb_login_protocol_scheme">fb3492470124328721</string>
+    <string name="facebook_client_token">4c91713335cb507f5cf44bd15057bd6e</string>
 
 
     <string name="find_hint">Enter your key</string>

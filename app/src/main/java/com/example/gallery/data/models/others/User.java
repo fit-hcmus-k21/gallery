@@ -1,6 +1,8 @@
 package com.example.gallery.data.repositories.models;
 
 
+import com.example.gallery.data.DataManager;
+
 /**
  * Created on 28/10/2023
  */
@@ -77,7 +79,7 @@ public class User {
         return hasFingerprint;
     }
 
-    public MediaManager getDataManager() {
+    public MediaManager getMediaManager() {
         return dataManager;
     }
 

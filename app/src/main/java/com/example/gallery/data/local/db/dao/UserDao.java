@@ -1,4 +1,4 @@
-package com.example.gallery.data.local.dao;
+package com.example.gallery.data.local.db.dao;
 
 
 import androidx.room.Dao;
@@ -6,8 +6,9 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
+import androidx.room.Update;
 
-import com.example.gallery.data.local.entities.User;
+import com.example.gallery.data.models.db.User;
 
 import java.util.List;
 
@@ -24,6 +25,8 @@ public interface UserDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(User user);
 
+    @Update
+    void update(User user);
     @Query("SELECT id, fullName, avatarURL, username, password, email, accessToken, googleToken, facebookToken, fingerprintData FROM users")
     LiveData<List<User>> getAllUsers();
 

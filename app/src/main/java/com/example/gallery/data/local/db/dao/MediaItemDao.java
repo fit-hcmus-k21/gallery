@@ -1,4 +1,4 @@
-package com.example.gallery.data.local.dao;
+package com.example.gallery.data.local.db.dao;
 
 
 import android.provider.MediaStore;
@@ -11,7 +11,7 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
-import com.example.gallery.data.local.entities.MediaItem;
+import com.example.gallery.data.models.db.MediaItem;
 
 import java.util.List;
 
@@ -81,8 +81,14 @@ public interface MediaItemDao {
     @Query("UPDATE media_items SET tag = :tag WHERE id = :id")
     void updateMediaItemTag(int id, String tag);
 
-     @Query("UPDATE media_items SET description = :description WHERE id = :id")
+    @Query("UPDATE media_items SET description = :description WHERE id = :id")
     void updateMediaItemDescription(int id, String description);
-     @Query("UPDATE media_items SET deletedTs = :deletedTs WHERE parentPath = :parentPath")
+    @Query("UPDATE media_items SET deletedTs = :deletedTs WHERE parentPath = :parentPath")
     void updateMediaItemDeletedTsWithParentPath(String parentPath, long deletedTs);
+
+    @Query("SELECT * FROM media_items WHERE deletedTs = 0")
+    LiveData<List<MediaItem>> loadAll();
+
+
 }
+
