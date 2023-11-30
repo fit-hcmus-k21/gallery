@@ -64,4 +64,5 @@ public class MediaItemViewModel extends AndroidViewModel {
     public void updateMediaItemTag(int id, String tag) {
         mediaItemRepository.updateMediaItemTag(id, tag);
     }
+
 }

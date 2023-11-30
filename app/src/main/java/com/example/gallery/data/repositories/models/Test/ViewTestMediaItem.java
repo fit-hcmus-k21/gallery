@@ -3,6 +3,7 @@ package com.example.gallery.data.repositories.models.Test;
 import android.Manifest;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -86,6 +87,7 @@ public class ViewTestMediaItem extends AppCompatActivity {
         recyclerView.setLayoutManager(gridLayoutManager);
         mediaItemAdapterTest = new MediaItemAdapter_Test();
         recyclerView.setAdapter(mediaItemAdapterTest);
+
 
         mediaItemViewModel.getAllMediaItems().observe(this, new Observer<List<MediaItem>>() {
             @Override

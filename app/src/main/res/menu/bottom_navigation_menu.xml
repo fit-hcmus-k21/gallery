@@ -1,31 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/nav_photos"
         android:enabled="true"
-        android:icon="@drawable/icon_photos"
-        android:title="photos"
-
+        android:icon="@drawable/multiple_image_svgrepo_com"
+        android:title="Media"
+        app:showAsAction="always"
         />
     <item
         android:id="@+id/nav_albums"
         android:enabled="true"
-        android:icon="@drawable/icon_albums"
-        android:title="albums" />
+        android:icon="@drawable/folder_image_svgrepo_com"
+        android:title="Album"
+        app:showAsAction="always"
+        />
 
     <item
         android:id="@+id/nav_finding"
         android:enabled="true"
-        android:icon="@drawable/icon_search"
-        android:title="search"
+        android:icon="@drawable/search_svgrepo_com"
+        android:title="Search"
+        app:showAsAction="always"
 
         />
 
     <item
         android:id="@+id/nav_memories"
         android:enabled="true"
-        android:icon="@drawable/icon_memories"
-        android:title="memories"
+        android:icon="@drawable/rewind_back_svgrepo_com"
+        android:title="Memory"
+        app:showAsAction="always"
 
         />
 </menu>

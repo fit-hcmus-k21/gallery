@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout_single_media_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        android:paddingBottom="10dp"
+        android:layout_alignParentTop="true">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar_single_media_item"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/purple_700"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/single_photo_viewpager2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_above="@+id/custom_bottom_appbar"
+        android:layout_below="@+id/appBarLayout_single_media_item"
+        />
+    <LinearLayout
+        android:id="@+id/custom_bottom_appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:background="#000B46F8"
+        >
+
+        <ImageView
+            android:id="@+id/media_favorite_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/baseline_heart_svgrepo_com"
+            android:background="?attr/selectableItemBackground"
+            />
+        <ImageView
+            android:id="@+id/media_edit_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/baseline_edit_icon"
+            android:background="?attr/selectableItemBackground"
+            />
+        <ImageView
+            android:id="@+id/media_share_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/share_social_icon"
+            android:background="?attr/selectableItemBackground"
+            />
+        <ImageView
+            android:id="@+id/media_trash_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/baseline_trash_can_svgrepo_com"
+            android:background="?attr/selectableItemBackground"
+            />
+
+
+    </LinearLayout>
+
+</RelativeLayout>

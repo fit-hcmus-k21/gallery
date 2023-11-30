@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/media_information_item"
+        android:title="Media Information"
+        android:icon="@drawable/baseline_info_24"
+        app:showAsAction="always"/>
+    <item
+        android:id="@+id/media_qr_code_item"
+        android:title="Tạo QR code"
+        android:icon="@drawable/qr_code_svgrepo_com"
+        app:showAsAction="always"
+        />
+    <item
+        android:id="@+id/media_change_name_item"
+        android:title="Đổi tên"
+        app:showAsAction="never"
+        />
+    <item
+        android:id="@+id/media_copy_to_item"
+        android:title="Sao chép vào"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/media_move_to_item"
+        android:title="Di chuyển tới"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/media_set_wallpaper_item"
+        android:title="Đặt làm"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/media_set_security_item"
+        android:title="Bảo mật ảnh"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/media_convert_text_item"
+        android:title="Nhận diện text"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/media_note_media_item"
+        android:title="Ghi chú ảnh"
+        app:showAsAction="never"/>
+
+
+</menu>

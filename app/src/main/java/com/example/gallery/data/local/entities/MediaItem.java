@@ -1,10 +1,14 @@
 package com.example.gallery.data.local.entities;
 
 
+import androidx.annotation.Nullable;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 import androidx.room.ForeignKey;
+
+import java.io.Serializable;
 
 
 /**
@@ -30,7 +34,12 @@ import androidx.room.ForeignKey;
             "id", "userID"
         }
 )
-public class MediaItem {
+public class MediaItem implements Serializable {
+    // This is used to represent for MediaItem in entites with the atribute typeDisplay which uses for recognize the type to display in recyclerview
+    public static final int TYPE_GRID = 1;
+    public static final int TYPE_LIST = 2;
+    public static final int TYPE_STAGGERED = 3;
+
 
     @ColumnInfo(name = "id")
     private int id;
@@ -86,6 +95,20 @@ public class MediaItem {
 
     @ColumnInfo(name = "deletedTs") // Deleted timestamp
     private long deletedTs;
+
+    // Add ignore attribute to display some work
+
+    @Ignore
+    private int typeDisplay;
+
+    public int getTypeDisplay() {
+        return typeDisplay;
+    }
+
+    public void setTypeDisplay(int typeDisplay) {
+        this.typeDisplay = typeDisplay;
+    }
+
 
     // Constructor
 
@@ -255,6 +278,18 @@ public class MediaItem {
 
     public void setDeletedTs(long deletedTs) {
         this.deletedTs = deletedTs;
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if(obj == null){
+            return false;
+        }
+        if(obj.getClass() != this.getClass()){
+            return false;
+        }
+        MediaItem mediaItem = (MediaItem) obj;
+        return mediaItem.getPath() == this.getPath();
     }
 }
 

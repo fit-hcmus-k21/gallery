@@ -1,4 +1,4 @@
-package com.example.gallery.ui.main;
+package com.example.gallery.ui.main.adapter;
 
 
 import android.view.LayoutInflater;
@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.gallery.R;
+import com.example.gallery.ui.main.ImageAdapter;
 
 import java.util.ArrayList;
 import java.util.HashMap;

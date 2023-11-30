@@ -14,6 +14,7 @@ import com.example.gallery.data.local.entities.MediaItem;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class MediaItemFromExternalStorage {
@@ -151,22 +152,22 @@ public class MediaItemFromExternalStorage {
         if (cursor != null) {
             cursor.moveToFirst();
             do {
-                Log.e("====================================", "====================================");
-                Log.e("ID", "XKLD: " + cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID)));
-                Log.e("DISPLAY NAME", "" + cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DISPLAY_NAME)));
-                Log.e("DESCRIPTION", "" + cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DESCRIPTION)));
-                Log.e("PATH", "" + cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA)));
-                Log.e("WIDTH", "" + cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.WIDTH)));
-                Log.e("HEIGHT", "" + cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.HEIGHT)));
-                Log.e("SIZE", "" + cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.SIZE)));
-                Log.e("MIME TYPE", "" + cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.MIME_TYPE)));
-                Log.e("DATE ADDED", "" + "" + cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATE_ADDED)));
-                Log.e("RELATIVE PATH", "" + cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.RELATIVE_PATH)));
-                Log.e("BUCKET DISPLAY NAME", "" + cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.BUCKET_DISPLAY_NAME)));
-                Log.e("DATE MODIFIED", "" + cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATE_MODIFIED)));
-                Log.e("IS FAVORITE", "" + cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.IS_FAVORITE)));
-
-                Log.e("====================================", "====================================");
+//                Log.e("====================================", "====================================");
+//                Log.e("ID", "XKLD: " + cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID)));
+//                Log.e("DISPLAY NAME", "" + cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DISPLAY_NAME)));
+//                Log.e("DESCRIPTION", "" + cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DESCRIPTION)));
+//                Log.e("PATH", "" + cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA)));
+//                Log.e("WIDTH", "" + cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.WIDTH)));
+//                Log.e("HEIGHT", "" + cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.HEIGHT)));
+//                Log.e("SIZE", "" + cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.SIZE)));
+//                Log.e("MIME TYPE", "" + cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.MIME_TYPE)));
+//                Log.e("DATE ADDED", "" + "" + cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATE_ADDED)));
+//                Log.e("RELATIVE PATH", "" + cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.RELATIVE_PATH)));
+//                Log.e("BUCKET DISPLAY NAME", "" + cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.BUCKET_DISPLAY_NAME)));
+//                Log.e("DATE MODIFIED", "" + cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATE_MODIFIED)));
+//                Log.e("IS FAVORITE", "" + cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.IS_FAVORITE)));
+//
+//                Log.e("====================================", "====================================");
 
                 int ID = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID));
                 int userID = 1;
@@ -177,6 +178,7 @@ public class MediaItemFromExternalStorage {
                 if (discription == null) {
                     discription = "";
                 }
+
 
                 String path = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA));
                 int width = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.WIDTH));
@@ -203,6 +205,32 @@ public class MediaItemFromExternalStorage {
                         path, width, height, fileSize, fileExtension, creationDate, location, albumName, url, favorite, parentPath, lastModified, 0));
             } while (cursor.moveToNext());
         }
+
+        // Sort listMediaItems by creationDate using lambda expression sắp xếp theo kiểu giảm dần theo creationDate
+//        listMediaItems.sort((o1, o2) -> {
+//            if (o1.getCreationDate() > o2.getCreationDate()) {
+//                return -1;
+//            } else if (o1.getCreationDate() < o2.getCreationDate()) {
+//                return 1;
+//            } else {
+//                return 0;
+//            }
+//        });
+        listMediaItems.sort(new Comparator<MediaItem>() {
+            @Override
+            public int compare(MediaItem o1, MediaItem o2) {
+                if(o1.getCreationDate() > o2.getCreationDate()){
+                    return -1;
+                }
+                else if(o1.getCreationDate() < o2.getCreationDate()){
+                    return 1;
+                }
+                else{
+                    return 0;
+                }
+            }
+        });
+
         return listMediaItems;
     }
 }

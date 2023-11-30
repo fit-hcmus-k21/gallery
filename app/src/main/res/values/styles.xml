@@ -7,6 +7,9 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <!-- add more here -->
+
+
     </style>
     <style name="Widget.App.Button.NoneOutlinedButton.IconOnly" parent="Widget.MaterialComponents.Button.TextButton">
         <item name="iconPadding">0dp</item>
@@ -17,5 +20,9 @@
         <item name="android:minWidth">48dp</item>
         <item name="android:minHeight">48dp</item>
     </style>
+    <!--Đây là điều chỉnh màu cho popup menu dựa vào theme sáng-->
+     <style name="PopupMenu" parent="Widget.AppCompat.PopupMenu">
+         <item name="popupMenuBackground">@color/light_white</item>
+     </style>
 
-</resources>
+ </resources>

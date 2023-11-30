@@ -1,4 +1,4 @@
-package com.example.gallery.ui.main;
+package com.example.gallery.ui.main.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -9,12 +9,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.gallery.R;
+import com.example.gallery.ui.main.Slide24_PhotoDetailViewScreenActivity;
 
-public class Slide08_ListAdapter extends BaseAdapter{
+public class Slide24_ListAdapter extends BaseAdapter{
     public Integer[] mainPic;
     public Context context;
     public String[] infoPic;
-    public Slide08_ListAdapter(Context main, int layout, String[] info,Integer[] pic){
+    public Slide24_ListAdapter(Context main, int layout, String[] info,Integer[] pic){
         context = main;
         mainPic = pic;
         infoPic = info;
@@ -38,7 +39,7 @@ public class Slide08_ListAdapter extends BaseAdapter{
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        LayoutInflater inflater = ((Slide08_FindScreenActivity)context).getLayoutInflater();
+        LayoutInflater inflater = ((Slide24_PhotoDetailViewScreenActivity)context).getLayoutInflater();
         View view = inflater.inflate(R.layout.slide08_image_list,null);
         ImageView mainPicture =(view).findViewById(R.id.mainPicture);
         TextView information = (view).findViewById(R.id.infoPicture);

@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.gallery.R;
+import com.example.gallery.ui.main.adapter.ImageGroupAdapter;
 
 import java.util.ArrayList;
 import java.util.HashMap;

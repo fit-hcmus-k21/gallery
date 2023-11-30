@@ -7,10 +7,15 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="grey">#B3C6C5C5</color>
+    <color name="testcolor">#9C27B0</color> // This is test color
+    <color name="light_white">#C7EEFF</color> // This is test color
 
 <!--    addition-->
     <color name="colorPrimary">#0f9d58</color>
     <color name="colorPrimaryDark">#006d2d</color>
     <color name="colorAccent">#55cf86</color>
+
+
 
 </resources>
