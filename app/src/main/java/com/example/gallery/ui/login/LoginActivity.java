@@ -14,7 +14,7 @@ import com.example.gallery.BR;
 import com.example.gallery.R;
 import com.example.gallery.databinding.Slide02LoginScreenBinding;
 import com.example.gallery.ui.base.BaseActivity;
-import com.example.gallery.ui.main.MainActivity;
+import com.example.gallery.ui.main.doing.MainActivity;
 import com.example.gallery.ui.main.Slide07_PhotosGridviewScreenActivity;
 import com.example.gallery.ui.register.RegisterActivity;
 import com.example.gallery.ui.resetPassword.ResetPasswordActivity;

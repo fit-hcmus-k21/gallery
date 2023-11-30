@@ -35,6 +35,7 @@
             android:value="@string/facebook_client_token" />
 
 <!--                     activities                    -->
+        <activity android:name=".ui.main.doing.MainActivity" />
 
         <activity android:name=".ui.splash.SplashActivity"
                   android:exported="true" >
@@ -46,7 +47,6 @@
         </activity>
 
         <activity android:name=".data.repositories.models.Test.ViewTestMediaItem"
-                  android:exported="true"
             >
 
         </activity>
@@ -82,6 +82,8 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
+        <activity android:name=".ui.main.doing.SingleMediaActivity"/>
+        <activity android:name=".ui.main.doing.InnerAlbumScreen"/>
 
     </application>
 

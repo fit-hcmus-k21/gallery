@@ -3,12 +3,12 @@ package com.example.gallery.ui.main;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.gallery.R;
+import com.example.gallery.ui.main.adapter.Slide24_ListAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class Slide24_PhotoDetailViewScreenActivity extends AppCompatActivity{

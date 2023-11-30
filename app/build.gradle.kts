@@ -126,4 +126,11 @@ dependencies {
     // Add Gson
     implementation ("com.google.code.gson:gson:2.10.1")
 
+    // PhotoView
+    implementation ("com.github.chrisbanes:PhotoView:2.3.0")
+
+    // Video player exo player
+    implementation ("androidx.media3:media3-exoplayer:1.2.0")
+    implementation ("androidx.media3:media3-exoplayer-dash:1.2.0")
+    implementation ("androidx.media3:media3-ui:1.2.0")
 }

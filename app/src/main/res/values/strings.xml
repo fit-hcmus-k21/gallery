@@ -9,4 +9,6 @@
 
     <string name="find_hint">Enter your key</string>
     <string name="add_photo">Enter name photo</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

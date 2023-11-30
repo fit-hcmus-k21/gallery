@@ -5,6 +5,9 @@ plugins {
 }
 
 buildscript {
+    repositories {
+        maven("https://www.jitpack.io")
+    }
     dependencies {
         classpath("com.google.gms:google-services:4.3.2")
     }

@@ -3,19 +3,12 @@ package com.example.gallery.ui.main;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.gallery.R;
-import com.google.api.services.drive.Drive;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import com.example.gallery.ui.main.adapter.Slide08_ListAdapter;
 
 public class Slide08_FindScreenActivity extends AppCompatActivity{
     String[] info = {"This is information picture 1","This is information picture 2","This is information picture 3","This is information picture 4","This is information picture 5","This is information picture 6","This is information picture 7"};

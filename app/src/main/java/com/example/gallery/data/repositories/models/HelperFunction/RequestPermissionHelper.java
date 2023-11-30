@@ -47,7 +47,6 @@ public class RequestPermissionHelper {
             listPermissionNeeded.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
         }
 
-
         if (!listPermissionNeeded.isEmpty()) {
             ActivityCompat.requestPermissions(activity, listPermissionNeeded.toArray(new String[listPermissionNeeded.size()]), REQUEST_PERMISSION_CODE);
             return false;

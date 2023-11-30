@@ -26,11 +26,14 @@ public class AlbumFromExternalStorage {
     public static ArrayList<Album> listAlbums(Application application) {
         ArrayList<Album> albums = new ArrayList<>();
 
+        boolean isFavoriteAlbumExist = false;
+
         Uri uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
         String[] projections = new String[]{
                 MediaStore.Images.Media.DATA,
                 MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
-                MediaStore.Images.Media.DATE_ADDED
+                MediaStore.Images.Media.DATE_ADDED,
+                MediaStore.Images.Media.IS_FAVORITE
         };
 
         String sortOrder = MediaStore.Images.Media.DATE_ADDED + " DESC";
@@ -42,15 +45,38 @@ public class AlbumFromExternalStorage {
                 null,
                 sortOrder
         );
+
+
         List<String> folderNames = new ArrayList<>();
+
         if(cursor != null){
             cursor.moveToFirst();
             do{
                 String folderName = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_DISPLAY_NAME));
+//                Log.e("Mytag", "Folder name: " + folderName);
+                if(isFavoriteAlbumExist == false){
+                    if(folderName != null && cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.IS_FAVORITE)) == 1){
+
+                        long creationDateFav = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_ADDED)) * 1000L; // convert to millisecond. Must multiply by 1000L
+                        String coverPhotoPathFav = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA));
+//                        Log.e("Mytag", "Favorite: " + coverPhotoPathFav);
+                        String folderPathFav = coverPhotoPathFav.substring(0, coverPhotoPathFav.lastIndexOf(File.separator));
+
+                        //TODO xem xét để hình ảnh là hình trái tym
+                        albums.add(new Album("Favorite", "",creationDateFav , coverPhotoPathFav, 1, "favoritePath", 0));
+
+                        isFavoriteAlbumExist = true;
+                    }
+
+                }
+
+
                 if(folderName != null && !folderNames.contains(folderName)){
+
                     folderNames.add(folderName);
 
                     String coverPhotoPath = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA));
+
                     String folderPath = coverPhotoPath.substring(0, coverPhotoPath.lastIndexOf(File.separator));
 
                     long creationDate = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_ADDED)) * 1000L; // convert to millisecond. Must multiply by 1000L
@@ -66,7 +92,9 @@ public class AlbumFromExternalStorage {
                 MediaStore.Video.Media.BUCKET_DISPLAY_NAME,
                 MediaStore.Video.Media.DATE_ADDED
         };
+
         sortOrder = MediaStore.Video.Media.DATE_ADDED + " DESC";
+
         cursor = application.getContentResolver().query(
                 uri,
                 projections,
@@ -74,6 +102,7 @@ public class AlbumFromExternalStorage {
                 null,
                 sortOrder
         );
+
         if(cursor != null){
             cursor.moveToFirst();
             do{
@@ -90,6 +119,7 @@ public class AlbumFromExternalStorage {
                 }
             }while(cursor.moveToNext());
         }
+
         return albums;
     }
 

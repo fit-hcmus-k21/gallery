@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/camera_item"
+        android:title="Camera"
+        android:icon="@drawable/baseline_linked_camera_24"
+        android:iconTint="@color/black"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/modeDisplayView"
+        android:title="Grid list view"
+        android:icon="@drawable/baseline_grid_view_24"
+        android:iconTint="@color/black"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/backup"
+        android:title="Đồng bộ sao lưu"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/app_information"
+        android:title="Thông tin ứng dụng"
+        app:showAsAction="never"/>
+
+
+</menu>
