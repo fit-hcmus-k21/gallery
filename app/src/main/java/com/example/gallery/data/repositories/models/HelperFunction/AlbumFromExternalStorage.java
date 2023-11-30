@@ -1,6 +1,6 @@
 package com.example.gallery.data.repositories.models.HelperFunction;
 
-import  com.example.gallery.data.local.entities.Album;
+import  com.example.gallery.data.models.db.Album;
 
 import android.app.Application;
 import android.database.Cursor;

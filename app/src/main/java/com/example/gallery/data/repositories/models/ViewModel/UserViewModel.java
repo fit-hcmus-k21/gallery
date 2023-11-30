@@ -7,7 +7,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.gallery.data.local.entities.User;
+import com.example.gallery.data.models.db.User;
 import com.example.gallery.data.repositories.models.Repository.UserRepository;
 
 

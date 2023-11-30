@@ -1,4 +1,4 @@
-package com.example.gallery.data.local.entities;
+package com.example.gallery.data.models.db;
 
 
 import androidx.room.ColumnInfo;
@@ -38,7 +38,7 @@ public class Album {
         @ColumnInfo(name = "coverPhotoPath")
         private String coverPhotoPath;
 
-        @ColumnInfo(name = "userID")
+        @ColumnInfo(name = "userID", index = true)
         private int userID;
 
         @ColumnInfo(name = "path")

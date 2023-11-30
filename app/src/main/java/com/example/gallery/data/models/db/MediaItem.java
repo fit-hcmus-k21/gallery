@@ -1,4 +1,4 @@
-package com.example.gallery.data.local.entities;
+package com.example.gallery.data.models.db;
 
 
 import androidx.annotation.Nullable;
@@ -44,7 +44,7 @@ public class MediaItem implements Serializable {
     @ColumnInfo(name = "id")
     private int id;
 
-    @ColumnInfo(name = "userID")
+    @ColumnInfo(name = "userID", index = true)
     private int userID;
 
     @ColumnInfo(name = "name")
@@ -78,7 +78,7 @@ public class MediaItem implements Serializable {
     private String location;
 
 
-    @ColumnInfo(name = "albumName")
+    @ColumnInfo(name = "albumName", index = true)
     private String albumName;
 
     @ColumnInfo(name = "url")

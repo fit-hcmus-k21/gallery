@@ -12,8 +12,8 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.gallery.R;
-import com.example.gallery.data.local.entities.Album;
-import com.example.gallery.data.local.entities.User;
+import com.example.gallery.data.models.db.Album;
+import com.example.gallery.data.models.db.User;
 import com.example.gallery.data.repositories.models.ViewModel.AlbumViewModel;
 import com.example.gallery.data.repositories.models.ViewModel.UserViewModel;
 import com.example.gallery.data.repositories.models.HelperFunction.RequestPermissionHelper;

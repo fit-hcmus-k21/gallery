@@ -28,7 +28,7 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.gallery.R;
-import com.example.gallery.data.local.entities.MediaItem;
+import com.example.gallery.data.models.db.MediaItem;
 import com.example.gallery.data.repositories.models.ViewModel.MediaItemViewModel;
 import com.example.gallery.ui.main.adapter.ViewPagerSingleMediaAdapter;
 import com.example.gallery.utils.GetInDexOfHelper;

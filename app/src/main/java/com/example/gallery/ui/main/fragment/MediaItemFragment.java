@@ -31,8 +31,8 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.gallery.R;
-import com.example.gallery.data.local.entities.MediaItem;
-import com.example.gallery.data.local.entities.User;
+import com.example.gallery.data.models.db.MediaItem;
+import com.example.gallery.data.models.db.User;
 import com.example.gallery.data.repositories.models.ViewModel.MediaItemViewModel;
 import com.example.gallery.ui.main.adapter.MainMediaItemAdapter;
 import com.example.gallery.ui.main.adapter.MediaItemAdapter;

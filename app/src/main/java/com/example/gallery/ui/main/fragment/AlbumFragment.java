@@ -23,7 +23,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.example.gallery.R;
-import com.example.gallery.data.local.entities.Album;
+import com.example.gallery.data.models.db.Album;
 import com.example.gallery.data.repositories.models.ViewModel.AlbumViewModel;
 import com.example.gallery.ui.main.adapter.AlbumAdapter;
 

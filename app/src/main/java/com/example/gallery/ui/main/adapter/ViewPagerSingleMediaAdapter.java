@@ -20,7 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.gallery.R;
-import com.example.gallery.data.local.entities.MediaItem;
+import com.example.gallery.data.models.db.MediaItem;
 
 import java.util.ArrayList;
 import java.util.List;

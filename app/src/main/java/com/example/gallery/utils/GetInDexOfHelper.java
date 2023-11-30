@@ -1,6 +1,6 @@
 package com.example.gallery.utils;
 
-import com.example.gallery.data.local.entities.MediaItem;
+import com.example.gallery.data.models.db.MediaItem;
 
 import java.util.List;
 

@@ -8,12 +8,12 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
 import com.example.gallery.App;
-import com.example.gallery.data.local.dao.AlbumDao;
-import com.example.gallery.data.local.dao.MediaItemDao;
-import com.example.gallery.data.local.dao.UserDao;
-import com.example.gallery.data.local.entities.Album;
-import com.example.gallery.data.local.entities.MediaItem;
-import com.example.gallery.data.local.entities.User;
+import com.example.gallery.data.local.db.dao.AlbumDao;
+import com.example.gallery.data.local.db.dao.MediaItemDao;
+import com.example.gallery.data.local.db.dao.UserDao;
+import com.example.gallery.data.models.db.Album;
+import com.example.gallery.data.models.db.MediaItem;
+import com.example.gallery.data.models.db.User;
 
 /**
  * Created on 27/10/2023

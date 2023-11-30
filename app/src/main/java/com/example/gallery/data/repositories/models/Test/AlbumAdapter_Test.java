@@ -10,7 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.example.gallery.data.local.entities.Album;
+import com.example.gallery.data.models.db.Album;
 
 import com.example.gallery.R;
 

@@ -9,7 +9,7 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Log;
 
-import com.example.gallery.data.local.entities.MediaItem;
+import com.example.gallery.data.models.db.MediaItem;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;

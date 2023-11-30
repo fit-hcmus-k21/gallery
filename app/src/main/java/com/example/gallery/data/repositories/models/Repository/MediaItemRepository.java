@@ -9,9 +9,9 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
-import com.example.gallery.data.local.dao.MediaItemDao;
+import com.example.gallery.data.local.db.dao.MediaItemDao;
 import com.example.gallery.data.local.db.GalleryDatabase;
-import com.example.gallery.data.local.entities.MediaItem;
+import com.example.gallery.data.models.db.MediaItem;
 import com.example.gallery.data.repositories.models.HelperFunction.MediaItemFromExternalStorage;
 
 import java.util.ArrayList;

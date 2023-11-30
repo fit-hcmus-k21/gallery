@@ -20,9 +20,9 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.gallery.R;
-import com.example.gallery.data.local.entities.Album;
-import com.example.gallery.data.local.entities.MediaItem;
-import com.example.gallery.data.local.entities.User;
+import com.example.gallery.data.models.db.Album;
+import com.example.gallery.data.models.db.MediaItem;
+import com.example.gallery.data.models.db.User;
 import com.example.gallery.data.repositories.models.HelperFunction.RequestPermissionHelper;
 import com.example.gallery.data.repositories.models.ViewModel.AlbumViewModel;
 import com.example.gallery.data.repositories.models.ViewModel.MediaItemViewModel;
