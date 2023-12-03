@@ -33,7 +33,7 @@ public class AlbumFromExternalStorage {
                 MediaStore.Images.Media.DATA,
                 MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
                 MediaStore.Images.Media.DATE_ADDED,
-                MediaStore.Images.Media.IS_FAVORITE
+//                MediaStore.Images.Media.IS_FAVORITE
         };
 
         String sortOrder = MediaStore.Images.Media.DATE_ADDED + " DESC";
@@ -54,22 +54,6 @@ public class AlbumFromExternalStorage {
             do{
                 String folderName = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_DISPLAY_NAME));
 //                Log.e("Mytag", "Folder name: " + folderName);
-                if(isFavoriteAlbumExist == false){
-                    if(folderName != null && cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.IS_FAVORITE)) == 1){
-
-                        long creationDateFav = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_ADDED)) * 1000L; // convert to millisecond. Must multiply by 1000L
-                        String coverPhotoPathFav = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA));
-//                        Log.e("Mytag", "Favorite: " + coverPhotoPathFav);
-                        String folderPathFav = coverPhotoPathFav.substring(0, coverPhotoPathFav.lastIndexOf(File.separator));
-
-                        //TODO xem xét để hình ảnh là hình trái tym
-                        albums.add(new Album("Favorite", "",creationDateFav , coverPhotoPathFav, 1, "favoritePath", 0));
-
-                        isFavoriteAlbumExist = true;
-                    }
-
-                }
-
 
                 if(folderName != null && !folderNames.contains(folderName)){
 

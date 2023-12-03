@@ -37,6 +37,7 @@ import com.example.gallery.data.repositories.models.ViewModel.MediaItemViewModel
 import com.example.gallery.ui.main.adapter.MainMediaItemAdapter;
 import com.example.gallery.ui.main.adapter.MediaItemAdapter;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -60,6 +61,9 @@ public class MediaItemFragment extends Fragment {
     LinearLayoutManager linearLayoutManager;
     StaggeredGridLayoutManager staggeredGridLayoutManager;
     List<String> dateListString;
+    HashMap<String, List<MediaItem>> mediaItemGroupByDate;
+    List<MediaItem> mediaItemsLíst;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -99,21 +103,7 @@ public class MediaItemFragment extends Fragment {
         // Adapter for recycler view
         mainMediaItemAdapter = new MainMediaItemAdapter();
         recyclerView.setAdapter(mainMediaItemAdapter);
-//        mainMediaItemAdapter.mediaItemAdapter.setOnItemClickListener(new MediaItemAdapter.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(MediaItem mediaItem) {
-//                Log.e("Mytag", "onItemClick: " + mediaItem.getPath());
-//
-////                Intent intent = new Intent(holder.imageView.getContext(), SingleMediaActivity.class);
-////
-////                Bundle bundle = new Bundle();
-////                bundle.putSerializable("listmediaitem", (ArrayList<MediaItem>)mediaItemList);
-////                bundle.putSerializable("mediaitem", mediaItem);
-////                intent.putExtras(bundle);
-////
-////                holder.imageView.getContext().startActivity(intent);
-//            }
-//        });
+
         // Data from viewModel
         mediaItemViewModel.getAllMediaItems().observe(getViewLifecycleOwner(), new Observer<List<MediaItem>>() {
             @Override
@@ -126,9 +116,10 @@ public class MediaItemFragment extends Fragment {
                     mediaItem.setTypeDisplay(mCurrentType);
                 }
 
-                HashMap<String, List<MediaItem>> mediaItemGroupByDate = setMediaItemGroupByDate(mediaItems);
+                mediaItemGroupByDate = setMediaItemGroupByDate(mediaItems);
+                mediaItemsLíst = mediaItems;
 
-                mainMediaItemAdapter.setData(mediaItems, mediaItemGroupByDate, dateListString); // trong adapter có hàm setData và có notifydatasetchanged
+                mainMediaItemAdapter.setData(mediaItemsLíst, mediaItemGroupByDate, dateListString); // trong adapter có hàm setData và có notifydatasetchanged
 
             }
         });
@@ -194,22 +185,6 @@ public class MediaItemFragment extends Fragment {
 
     }
 
-    // Hàm chuyển đôi type hiển thị cho các data, mà không cần phải chờ livedata, lấy trực tiếp dữ liệu từ recyclerview
-//    public void setTypeDisplayRecyclerView(int typeDisplay){
-//       mCurrentType = typeDisplay; // Cập nhật lại biến type của hiện tại
-//
-//       if(mainMediaItemAdapter != null){
-//           HashMap<String, List<MediaItem>> listHashMapMediaItem= mainMediaItemAdapter.getData(); // Dữ liệu của recyclerview
-//
-//           for(String date : listHashMapMediaItem.keySet()){
-//               List<MediaItem> mediaItemList = listHashMapMediaItem.get(date);
-//               for(MediaItem mediaItem : mediaItemList){
-//                   mediaItem.setTypeDisplay(mCurrentType);
-//               }
-//           }
-//           mainMediaItemAdapter.notifyDataSetChanged(); // Thông báo cho recyclerview là dữ liệu đã thay đổi
-//       }
-//    }
     public void onClickChangeTypeDisplay(){ // Bao gồm việc thây đổi type hiển thị cho item, và đổi icon của menu, đổi thêm layoutmanager
         if(mCurrentType == MediaItem.TYPE_GRID){
 //            setTypeDisplayRecyclerView(MediaItem.TYPE_LIST);
@@ -253,4 +228,6 @@ public class MediaItemFragment extends Fragment {
 //            // Lưu ảnh vào MediaStore.Images.Media
 //
 //    }
+
+
 }

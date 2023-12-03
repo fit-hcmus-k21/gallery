@@ -35,9 +35,9 @@
             android:value="@string/facebook_client_token" />
 
 <!--                     activities                    -->
-        <activity android:name=".ui.main.doing.MainActivity" />
+        <activity android:name=".ui.splash.SplashActivity" />
 
-        <activity android:name=".ui.splash.SplashActivity"
+        <activity android:name=".ui.main.doing.MainActivity"
                   android:exported="true" >
         <intent-filter>
             <action android:name="android.intent.action.MAIN" />
@@ -84,6 +84,8 @@
         </activity>
         <activity android:name=".ui.main.doing.SingleMediaActivity"/>
         <activity android:name=".ui.main.doing.InnerAlbumScreen"/>
+
+        <activity android:name=".ui.main.Slide35_QRCodeActivity"/>
 
     </application>
 

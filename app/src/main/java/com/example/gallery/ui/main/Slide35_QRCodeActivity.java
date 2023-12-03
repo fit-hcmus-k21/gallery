@@ -1,11 +1,13 @@
 package com.example.gallery.ui.main;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -26,8 +28,6 @@ public class Slide35_QRCodeActivity extends AppCompatActivity {
     ImageView imageView_qr_code;
     ProgressDialog progressDialog;
 
-//    Intent intent = getIntent();
-//    String filePath = intent.getStringExtra(MEDIA_ITEM_FILE_PATH);
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -35,20 +35,22 @@ public class Slide35_QRCodeActivity extends AppCompatActivity {
         setContentView(R.layout.slide_35_qr_code);
 
         /*RequestPermission*/
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this,
-                        new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE,
-                                android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.READ_MEDIA_IMAGES},
-                        REQUEST_PERMISSION_CODE);
-            } else {
-                checkAndGenerateQRCode("file path from the intent");
-                Log.e("QRCodeActivity", "Permission is granted");
-            }
-        }
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+//                ActivityCompat.requestPermissions(this,
+//                        new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE,
+//                                android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.READ_MEDIA_IMAGES},
+//                        REQUEST_PERMISSION_CODE);
+//            } else {
+//                checkAndGenerateQRCode("file path from the intent");
+//                Log.e("QRCodeActivity", "Permission is granted");
+//            }
+//        }
         imageView_qr_code = (ImageView) findViewById(R.id.imageView_qr_code);
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Loading...");
+
+
 
         // Lỗi ở đây là không thể cast được this thành ViewModelStoreOwner
         // Cách Sửa lại Slide35_QRCodeActivity extends Activity thành Slide35_QRCodeActivity extends AppCompatActivity
@@ -60,24 +62,31 @@ public class Slide35_QRCodeActivity extends AppCompatActivity {
                 imageView_qr_code.setImageBitmap(bitmap);
             }
         });
+        // Get data from Intent
+        Intent intent = getIntent();
+        String filePath = intent.getStringExtra("mediaItem");
+
+        // Phải chuyễn việc gọi checkAndGenerateQRCode ở đây nếu gọi ở trên thì viewModel sẽ không được khởi tạo
+        if(filePath != null){
+            checkAndGenerateQRCode(filePath);
+        }
+
     }
 
     private void checkAndGenerateQRCode(String file_path) {
         progressDialog.show();
-
-        String filePath_forTest = "/storage/emulated/0/DCIM/Camera/20231110_071650.jpg";
-        qrCodeViewModel.generateQRCode(filePath_forTest);
+        qrCodeViewModel.generateQRCode(file_path);
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQUEST_PERMISSION_CODE) {
-            if (grantResults.length > 0) {
-                checkAndGenerateQRCode("the file path from the intent");
-            }
-        }
-    }
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//        if (requestCode == REQUEST_PERMISSION_CODE) {
+//            if (grantResults.length > 0) {
+//                checkAndGenerateQRCode("the file path from the intent");
+//            }
+//        }
+//    }
 
 
 }

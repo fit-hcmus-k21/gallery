@@ -26,8 +26,12 @@
         android:title="Di chuyển tới"
         app:showAsAction="never"/>
     <item
+        android:id="@+id/media_set_lockpaper_item"
+        android:title="Đặt làm màn hình khóa"
+        app:showAsAction="never"/>
+    <item
         android:id="@+id/media_set_wallpaper_item"
-        android:title="Đặt làm"
+        android:title="Đặt làm hình nền"
         app:showAsAction="never"/>
     <item
         android:id="@+id/media_set_security_item"

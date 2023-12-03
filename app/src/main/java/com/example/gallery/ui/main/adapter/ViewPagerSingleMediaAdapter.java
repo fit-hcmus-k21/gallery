@@ -25,13 +25,16 @@ import com.example.gallery.data.models.db.MediaItem;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ViewPagerSingleMediaAdapter extends RecyclerView.Adapter<ViewPagerSingleMediaAdapter.ViewPagerSingleMediaViewHolder> {
+public class ViewPagerSingleMediaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public static final int TYPE_PHOTO = 1;
     public static final int TYPE_VIDEO = 2;
     List<MediaItem> mediaItemList = new ArrayList<>();
 
     Context context;
 
+    ExoPlayer exoPlayer;
+
+    private OnVideoPreparedListener listener;
 
     public void setData(List<MediaItem> mediaItemList){
         this.mediaItemList = mediaItemList;
@@ -56,45 +59,108 @@ public class ViewPagerSingleMediaAdapter extends RecyclerView.Adapter<ViewPagerS
 
     @NonNull
     @Override
-    public ViewPagerSingleMediaViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = null;
-
-        if(viewType == TYPE_PHOTO){
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_single_media, parent, false);
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        switch (viewType){
+            case TYPE_PHOTO:
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_single_media, parent, false);
+                return new ImageViewHolder(view);
+            case TYPE_VIDEO:
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_single_video, parent, false);
+                return new VideoViewHolder(view);
+            default:
+                throw new IllegalArgumentException("Invalid view type");
         }
-        else if(viewType == TYPE_VIDEO){
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_single_video, parent, false);
-        }
-        assert view != null;
-        return new ViewPagerSingleMediaViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewPagerSingleMediaViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         MediaItem mediaItem = mediaItemList.get(position);
 
-        int viewType = getItemViewType(position);
+        if(holder instanceof ImageViewHolder){
+            ((ImageViewHolder) holder).bindImage(mediaItem);
+        }
+        else if( holder instanceof VideoViewHolder){
+            ((VideoViewHolder) holder).bindVideo(mediaItem);
+        }
+    }
 
-        if(viewType == TYPE_PHOTO){
-            Glide.with(holder.itemView.getContext()).load(mediaItem.getPath()).into(holder.imageView);
+    @Override
+    public int getItemCount() {
+        if(mediaItemList != null)
+            return mediaItemList.size();
+        return 0;
+    }
+
+    public class ImageViewHolder extends RecyclerView.ViewHolder {
+        ImageView imageView;
+        public ImageViewHolder(@NonNull View itemView) {
+            super(itemView);
+
+            imageView = itemView.findViewById(R.id.single_media_view);
 
         }
-        else{
-            //TODO vòng đời của exoplayer chưa được quan lý tốt, khi thoát khỏi video thì video đó chưa được tắt hãy cố gắng tắt nó
-            ExoPlayer exoPlayer = new ExoPlayer.Builder(holder.itemView.getContext()).build();
-            holder.playerView.setPlayer(exoPlayer);
+        public void bindImage(MediaItem mediaItem){
+            Glide.with(itemView.getContext()).load(mediaItem.getPath()).into(imageView);
+        }
+    }
+
+    public class VideoViewHolder extends RecyclerView.ViewHolder{
+        ExoPlayer exoPlayer;
+        PlayerView playerView;
+        boolean isViewHolderVisible = false;
+
+        public VideoViewHolder(@NonNull View itemView) {
+            super(itemView);
+            playerView = itemView.findViewById(R.id.player_view);
+
+            itemView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+                @Override
+                public void onViewAttachedToWindow(@NonNull View v) {
+                    isViewHolderVisible = true;
+                    prepareExoPlayerIfVisible();
+                }
+
+                @Override
+                public void onViewDetachedFromWindow(@NonNull View v) {
+                    isViewHolderVisible = false;
+                    exoPlayer.pause();
+                }
+            });
+        }
+
+        public void bindVideo(MediaItem mediaItem){
+            realeasePlayer();
+
+            exoPlayer = new ExoPlayer.Builder(itemView.getContext()).build();
+            playerView.setPlayer(exoPlayer);
 
             androidx.media3.common.MediaItem mediaItemx = androidx.media3.common.MediaItem.fromUri(mediaItem.getPath());
             exoPlayer.setMediaItem(mediaItemx);
 
-            exoPlayer.prepare();
-            exoPlayer.setPlayWhenReady(true);
+            prepareExoPlayerIfVisible();
 
-
+            listener.onVideoPrepared(exoPlayer);
         }
 
+        private void prepareExoPlayerIfVisible() {
+            if (isViewHolderVisible && exoPlayer != null) {
+                // Chuẩn bị ExoPlayer nếu ViewHolder nhìn thấy
+                exoPlayer.prepare();
+            }
+        }
+        private void realeasePlayer() {
+            if(exoPlayer != null){
+                exoPlayer.release();
+                exoPlayer = null;
+            }
+        }
     }
-
+    public void setOnVideoPreparedListener(OnVideoPreparedListener listener){
+        this.listener = listener;
+    }
+    public interface OnVideoPreparedListener{
+        void onVideoPrepared(ExoPlayer exoPlayer);
+    }
     private void setFullScreen() {
 
         if(context instanceof AppCompatActivity){
@@ -109,22 +175,4 @@ public class ViewPagerSingleMediaAdapter extends RecyclerView.Adapter<ViewPagerS
         }
     }
 
-    @Override
-    public int getItemCount() {
-        if(mediaItemList != null)
-            return mediaItemList.size();
-        return 0;
-    }
-
-    public class ViewPagerSingleMediaViewHolder extends RecyclerView.ViewHolder {
-        ImageView imageView;
-        PlayerView playerView;
-        public ViewPagerSingleMediaViewHolder(@NonNull View itemView) {
-            super(itemView);
-            int viewType = getItemViewType();
-
-            imageView = itemView.findViewById(R.id.single_media_view);
-            playerView = itemView.findViewById(R.id.player_view);
-        }
-    }
 }
