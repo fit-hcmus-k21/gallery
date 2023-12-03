@@ -15,6 +15,16 @@ import java.util.List;
 public class AlbumViewModel extends AndroidViewModel {
     private AlbumRepository albumRepository;
     private LiveData<List<Album>> allAlbums;
+
+    private static AlbumViewModel currentAlbumViewModel;
+
+    public static AlbumViewModel getInstance(Application application){
+        if(currentAlbumViewModel == null){
+            currentAlbumViewModel = new AlbumViewModel(application);
+        }
+        return currentAlbumViewModel;
+    }
+
     public AlbumViewModel(@NonNull Application application) {
         super(application);
         albumRepository = new AlbumRepository(application);

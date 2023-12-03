@@ -9,10 +9,12 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
+import com.example.gallery.App;
 import com.example.gallery.data.models.db.Album;
 import com.example.gallery.data.local.db.dao.AlbumDao;
 import com.example.gallery.data.local.db.GalleryDatabase;
 import com.example.gallery.data.repositories.models.HelperFunction.AlbumFromExternalStorage;
+import com.example.gallery.data.repositories.models.ViewModel.UserViewModel;
 
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -24,13 +26,22 @@ import java.util.concurrent.Future;
 
 public class AlbumRepository {
     private AlbumDao albumDao;
-    private LiveData<List<Album>> allAlbums;
+    private LiveData<List<Album>> allAlbums ;
     Application application;
+
+    private static AlbumRepository currentAlbumRepository;
+
+    public static AlbumRepository getInstance(Application application){
+        if(currentAlbumRepository == null){
+            currentAlbumRepository = new AlbumRepository(application);
+        }
+        return currentAlbumRepository;
+    }
     public AlbumRepository(Application application){
         this.application = application;
         GalleryDatabase galleryDatabase = GalleryDatabase.getInstance(application);
         albumDao = galleryDatabase.albumDao();
-        allAlbums = albumDao.getAllAlbums();
+        allAlbums = albumDao.getAllAlbums(UserViewModel.getInstance(App.getInstance()).getUserId());
     }
 
     public LiveData<List<Album>> getAlbums(){
@@ -80,6 +91,8 @@ public class AlbumRepository {
 
 
     }
+
+
     public void insertAll(List<Album> album){
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         executorService.execute(new Runnable() {

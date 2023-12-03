@@ -16,13 +16,13 @@ public interface DBHelper {
     LiveData<List<MediaItem>> getAllMediaItems();
     LiveData<List<Album>> getAllAlbums();
 
-//    void insertUser(User user);
-//    void insertMediaItem(MediaItem item);
-//    void insertAlbum(Album alb);
-//
-//    void updateUser(User user);
-//    void updateMediaItem(MediaItem item);
-//    void updateAlbum(Album alb);
+    void insertUser(User user);
+    void insertMediaItem(MediaItem item);
+    void insertAlbum(Album alb);
+
+    void updateUser(User user);
+    void updateMediaItem(MediaItem item);
+    void updateAlbum(Album alb);
 
 
 

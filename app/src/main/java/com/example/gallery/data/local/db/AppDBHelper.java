@@ -33,33 +33,33 @@ public class AppDBHelper implements DBHelper {
         return mAppDatabase.albumDao().loadAll(); // handle later ****
     }
 
-//    @Override
-//    public void insertUser(User user) {
-//        mAppDatabase.userDao().insert(user);
-//    }
-//
-//    @Override
-//    public void insertMediaItem(MediaItem item) {
-//        mAppDatabase.mediaItemDao().insert(item);
-//    }
-//
-//    @Override
-//    public void insertAlbum(Album alb) {
-//        mAppDatabase.albumDao().insert(alb);
-//    }
-//
-//    @Override
-//    public void updateUser(User user) {
-//        mAppDatabase.userDao().update(user);
-//    }
-//
-//    @Override
-//    public void updateMediaItem(MediaItem item) {
+    @Override
+    public void insertUser(User user) {
+        mAppDatabase.userDao().insert(user);
+    }
+
+    @Override
+    public void insertMediaItem(MediaItem item) {
+        mAppDatabase.mediaItemDao().insert(item);
+    }
+
+    @Override
+    public void insertAlbum(Album alb) {
+        mAppDatabase.albumDao().insert(alb);
+    }
+
+    @Override
+    public void updateUser(User user) {
+        mAppDatabase.userDao().update(user);
+    }
+
+    @Override
+    public void updateMediaItem(MediaItem item) {
 //        mAppDatabase.mediaItemDao().update(item);
-//    }
-//
-//    @Override
-//    public void updateAlbum(Album alb) {
-//        mAppDatabase.albumDao().update(alb);
-//    }
+    }
+
+    @Override
+    public void updateAlbum(Album alb) {
+        mAppDatabase.albumDao().update(alb);
+    }
 }

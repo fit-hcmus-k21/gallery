@@ -9,10 +9,12 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
+import com.example.gallery.App;
 import com.example.gallery.data.local.db.dao.MediaItemDao;
 import com.example.gallery.data.local.db.GalleryDatabase;
 import com.example.gallery.data.models.db.MediaItem;
 import com.example.gallery.data.repositories.models.HelperFunction.MediaItemFromExternalStorage;
+import com.example.gallery.data.repositories.models.ViewModel.UserViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,11 +30,20 @@ public class MediaItemRepository {
     LiveData<List<MediaItem>> allMediaItem;
     Application application;
 
+    private static MediaItemRepository currentMediaItemRepository;
+
+    public static MediaItemRepository getInstance(Application application){
+        if(currentMediaItemRepository == null){
+            currentMediaItemRepository = new MediaItemRepository(application);
+        }
+        return currentMediaItemRepository;
+    }
+
     public MediaItemRepository(Application application) {
         this.application = application;
         GalleryDatabase galleryDatabase = GalleryDatabase.getInstance(application);
         mediaItemDao = galleryDatabase.mediaItemDao();
-        allMediaItem = mediaItemDao.getAllMediaItems();
+        allMediaItem = mediaItemDao.getAllMediaItems(UserViewModel.getInstance(App.getInstance()).getUserId());
     }
     public void fetchData() {
 
@@ -119,7 +130,7 @@ public class MediaItemRepository {
         });
     }
 
-    public LiveData<List<MediaItem>> getAllMediaItemsByUserID(int userID){
+    public LiveData<List<MediaItem>> getAllMediaItemsByUserID(String userID){
         return mediaItemDao.getAllMediaItemsByUserID(userID);
     }
     public LiveData<List<MediaItem>> getMediaFromPath(String path){

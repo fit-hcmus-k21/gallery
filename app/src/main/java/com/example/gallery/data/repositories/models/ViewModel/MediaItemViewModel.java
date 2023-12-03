@@ -17,6 +17,15 @@ public class MediaItemViewModel extends AndroidViewModel {
     private MediaItemRepository mediaItemRepository;
     LiveData<List<MediaItem>> allMediaItems;
 
+    private static MediaItemViewModel currentMediaItemViewModel;
+
+    public static MediaItemViewModel getInstance(Application application){
+        if(currentMediaItemViewModel == null){
+            currentMediaItemViewModel = new MediaItemViewModel(application);
+        }
+        return currentMediaItemViewModel;
+    }
+
     public MediaItemViewModel(Application application) {
         super(application);
         mediaItemRepository = new MediaItemRepository(application);

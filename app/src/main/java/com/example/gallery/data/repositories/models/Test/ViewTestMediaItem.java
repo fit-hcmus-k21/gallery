@@ -55,7 +55,7 @@ public class ViewTestMediaItem extends AppCompatActivity {
             LoadDataAndUpdateUI();
         }
         else{
-            Toast.makeText(this, "Permission is not granted", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "Permission is not granted", Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -66,14 +66,14 @@ public class ViewTestMediaItem extends AppCompatActivity {
                 "user1@example.com", "", "", "", ""));
         userViewModel.insertUser(new User(10, "User2", "", "user2", "123",
                 "user2@example.com", "", "", "", ""));
-        userViewModel.getAllUsers().observe(this, new Observer<List<User>>() {
-            @Override
-            public void onChanged(List<User> users) {
-                if(users != null && !users.isEmpty()){
-                    albumViewModel.fetchData();
-                }
-            }
-        });
+//        userViewModel.getAllUsers().observe(this, new Observer<List<User>>() {
+//            @Override
+//            public void onChanged(List<User> users) {
+//                if(users != null && !users.isEmpty()){
+//                    albumViewModel.fetchData();
+//                }
+//            }
+//        });
         albumViewModel.getAllAlbums().observe(this, new Observer<List<Album>>() {
             @Override
             public void onChanged(List<Album> albums) {

@@ -30,5 +30,8 @@ public interface UserDao {
     @Query("SELECT id, fullName, avatarURL, username, password, email, accessToken, googleToken, facebookToken, fingerprintData FROM users")
     LiveData<List<User>> getAllUsers();
 
+    @Query("SELECT id, fullName, avatarURL, email FROM users WHERE id = :id")
+    LiveData<User> getAllUserData(String id);
+
 
 }

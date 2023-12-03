@@ -34,10 +34,10 @@ public interface MediaItemDao {
     void delete(List<MediaItem> mediaItem);
 
     @Query("SELECT id, userID, name, tag, description, path, width, height, fileSize, fileExtension, creationDate, location, albumName, url, favorite, deletedTs, parentPath FROM media_items WHERE userID = :userID")
-    LiveData<List<MediaItem>> getAllMediaItemsByUserID(int userID);
+    LiveData<List<MediaItem>> getAllMediaItemsByUserID(String userID);
 
-    @Query("SELECT id, userID, name, tag, description, path, width, height, fileSize, fileExtension, creationDate, location, albumName, url, favorite, deletedTs, parentPath FROM media_items")
-    LiveData<List<MediaItem>> getAllMediaItems();
+    @Query("SELECT id, userID, name, tag, description, path, width, height, fileSize, fileExtension, creationDate, location, albumName, url, favorite, deletedTs, parentPath FROM media_items WHERE userID = :userID AND deletedTs = 0")
+    LiveData<List<MediaItem>> getAllMediaItems(String userID);
 
     @Query("SELECT id, userID, name, tag, description, path, width, height, fileSize, fileExtension, creationDate, location, albumName, url, favorite, deletedTs, parentPath FROM media_items WHERE deletedTs = 0 AND path = :path  COLLATE NOCASE")
     LiveData<List<MediaItem>> getMediaFromPath(String path);

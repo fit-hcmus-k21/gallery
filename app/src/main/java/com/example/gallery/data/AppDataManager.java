@@ -10,6 +10,7 @@ import com.example.gallery.data.models.api.RegisterRequest;
 import com.example.gallery.data.models.api.RegisterResponse;
 import com.example.gallery.data.models.db.Album;
 import com.example.gallery.data.models.db.MediaItem;
+import com.example.gallery.data.models.db.User;
 import com.example.gallery.data.remote.ApiHeader;
 import com.example.gallery.data.remote.ApiHelper;
 import com.example.gallery.data.local.db.DBHelper;
@@ -57,32 +58,44 @@ public class AppDataManager implements DataManager {
 
     @Override
     public void setCurrentUserEmail(String email) {
-
+        mPreferencesHelper.setCurrentUserEmail(email);
     }
 
     @Override
-    public Long getCurrentUserId() {
-        return null;
+    public String getCurrentUserEmail() {
+        return mPreferencesHelper.getCurrentUserEmail();
     }
 
     @Override
-    public void setCurrentUserId(Long userId) {
+    public String getCurrentUserId() {
+        return mPreferencesHelper.getCurrentUserId();
+    }
 
+    @Override
+    public void setCurrentUserId(String userId) {
+        mPreferencesHelper.setCurrentUserId(userId);
     }
 
     @Override
     public int getCurrentUserLoggedInMode() {
-        return 0;
+
+        return mPreferencesHelper.getCurrentUserLoggedInMode();
     }
 
     @Override
     public void setCurrentUserLoggedInMode(LoggedInMode mode) {
+         mPreferencesHelper.setCurrentUserLoggedInMode(mode);
 
     }
 
     @Override
     public void setCurrentUserName(String userName) {
+        mPreferencesHelper.setCurrentUserName(userName);
+    }
 
+    @Override
+    public String getCurrentUserName() {
+        return mPreferencesHelper.getCurrentUserName();
     }
 
     @Override
@@ -97,11 +110,12 @@ public class AppDataManager implements DataManager {
 
     @Override
     public void setUserAsLoggedOut() {
+        mPreferencesHelper.setCurrentUserLoggedInMode(DataManager.LoggedInMode.LOGGED_IN_MODE_LOGGED_OUT);
 
     }
 
     @Override
-    public void updateApiHeader(Long userID, String accessToken) {
+    public void updateApiHeader(String userID, String accessToken) {
 
     }
 
@@ -111,10 +125,14 @@ public class AppDataManager implements DataManager {
     }
 
     @Override
-    public void updateUserInfo(Long userID, String fullName, String username, String accessToken, String email, String profilePicUrl, LoggedInMode loggedInMode) {
+    public void updateUserInfo(String userID, String fullName, String username, String accessToken, String email, String profilePicUrl, LoggedInMode loggedInMode) {
 
     }
 
+    @Override
+    public void insertUser(User user) {
+//        mAppDatabase.userDao().insert(user);
+    }
 
     @Override
     public Call<LoginResponse> doFacebookLoginApiCall(LoginRequest.FacebookLoginRequest request) {
@@ -145,6 +163,36 @@ public class AppDataManager implements DataManager {
     public Call<RegisterResponse> doServerRegisterApiCall(@Body RegisterRequest.ServerRegisterRequest request) {
         return mApiHelper.doServerRegisterApiCall(request);
     }
+
+    @Override
+    public void updateAlbum(Album alb) {
+        mDbHelper.updateAlbum(alb);
+    }
+
+
+    @Override
+    public void insertMediaItem(MediaItem item) {
+    }
+
+    @Override
+    public void insertAlbum(Album alb) {
+    }
+
+    @Override
+    public void updateUser(User user) {
+    }
+
+    @Override
+    public void updateMediaItem(MediaItem item) {
+//        mAppDatabase.mediaItemDao().update(item);
+    }
+
+    @Override
+    public void clearPreferences() {
+        mPreferencesHelper.clearPreferences();
+    }
+
+
 
 
 }

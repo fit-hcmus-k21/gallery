@@ -16,7 +16,7 @@ import com.example.gallery.R;
 import com.example.gallery.databinding.Slide01SplashScreenBinding;
 import com.example.gallery.ui.base.BaseActivity;
 import com.example.gallery.ui.login.LoginActivity;
-import com.example.gallery.ui.main.MainActivity;
+import com.example.gallery.ui.main.doing.MainActivity;
 
 public class SplashActivity extends BaseActivity<Slide01SplashScreenBinding, SplashViewModel> implements SplashNavigator {
 
@@ -63,8 +63,8 @@ public class SplashActivity extends BaseActivity<Slide01SplashScreenBinding, Spl
 
         new Handler().postDelayed(() -> {
             mSplashBinding.setViewModel(mViewModel);
-            mViewModel.startSeeding();
-        }, 500); // wait a second before starting seeding
+            mViewModel.decideNextActivity();
+        }, 500);
 
 
 

@@ -71,14 +71,14 @@ public class ViewTestAlbum extends AppCompatActivity {
         userViewModel.insertUser(new User(10, "User2", "", "user2", "123",
                 "user2@example.com", "", "", "", ""));
 
-        userViewModel.getAllUsers().observe(this, new Observer<List<User>>() {
-            @Override
-            public void onChanged(List<User> users) {
-                for(int i = 0 ; i < users.size(); i++){
-                    Log.e("TagUserGetID", "UserID: " +  users.get(i).getId());
-                }
-            }
-        });
+//        userViewModel.getAllUsers().observe(this, new Observer<List<User>>() {
+//            @Override
+//            public void onChanged(List<User> users) {
+//                for(int i = 0 ; i < users.size(); i++){
+//                    Log.e("TagUserGetID", "UserID: " +  users.get(i).getId());
+//                }
+//            }
+//        });
         albumViewModel.fetchData();
         AlbumAdapter_Test albumArrayAdapter = new AlbumAdapter_Test(ViewTestAlbum.this);
         albumListView.setAdapter(albumArrayAdapter);
