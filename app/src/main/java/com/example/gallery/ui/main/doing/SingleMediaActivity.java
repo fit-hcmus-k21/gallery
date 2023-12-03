@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -33,12 +34,13 @@ import com.example.gallery.data.repositories.models.ViewModel.MediaItemViewModel
 import com.example.gallery.ui.main.adapter.ViewPagerSingleMediaAdapter;
 import com.example.gallery.utils.GetInDexOfHelper;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.zip.Inflater;
 
-public class SingleMediaActivity extends AppCompatActivity {
+public class SingleMediaActivity extends AppCompatActivity  {
 
     public static int REQUEST_MAKE_FAVORITE_ITEM = 100;
     MediaItemViewModel mediaItemViewModel;
@@ -46,7 +48,7 @@ public class SingleMediaActivity extends AppCompatActivity {
     ViewPager2 viewPager2;
     ViewPagerSingleMediaAdapter viewPagerSingleMediaAdapter;
 
-    ImageView favoriteImageView;
+    ImageView favoriteImageView, editImageView;
     List<MediaItem> mediaItemsList; // Biến thành viên để lưu trữ danh sách các MediaItem
 
     LinearLayout customappbar;
@@ -65,6 +67,9 @@ public class SingleMediaActivity extends AppCompatActivity {
         viewPager2 = findViewById(R.id.single_photo_viewpager2);
         favoriteImageView = findViewById(R.id.media_favorite_icon);
         customappbar = findViewById(R.id.custom_bottom_appbar);
+        editImageView = findViewById(R.id.media_edit_icon);
+
+
 
 
         // Gán Adapter
@@ -72,7 +77,7 @@ public class SingleMediaActivity extends AppCompatActivity {
         viewPager2.setAdapter(viewPagerSingleMediaAdapter);
 
 
-        // Thao tác voới actionbar và tạo nut back ở đây
+        // Thao tác với actionbar và tạo nut back ở đây
         Toolbar toolbar = findViewById(R.id.toolbar_single_media_item);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -82,6 +87,14 @@ public class SingleMediaActivity extends AppCompatActivity {
         Bundle bundle = intent.getExtras();
 
         MediaItem mediaItemIntent = (MediaItem) bundle.getSerializable("mediaItem");
+
+
+//        editImageView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intentEdit = new Intent(SingleMediaActivity.this,)
+//            }
+//        });
 
         // Đây là biến dạng boolen để đảm bảo rằng việc di chuyển đến item đang được chọn chỉ được thực hiện 1 lần
         // Nếu không có biến này thì khi chúng ta thực hiện thao tác thay đổi trạng thái Favorite của item đang được chọn
@@ -126,7 +139,27 @@ public class SingleMediaActivity extends AppCompatActivity {
                 else{
                     favoriteImageView.setImageResource(R.drawable.baseline_heart_svgrepo_com);
                 }
+                if(mediaItemsList.get(position).getFileExtension().equals("image/jpeg")){
+                    editImageView.setEnabled(true);
+                    editImageView.setClickable(true);
+                }
+                else{
+                    editImageView.setEnabled(false);
+                    editImageView.setClickable(false);
+                }
 
+
+                editImageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent editIntent = new Intent(SingleMediaActivity.this,EditActivity.class);
+                        Bundle data = new Bundle();
+                        data.putSerializable("meidaItem",mediaItemsList.get(position));
+                        editIntent.putExtras(data);
+                        startActivityForResult(editIntent,111111);
+
+                    }
+                });
 
                 favoriteImageView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -233,10 +266,40 @@ public class SingleMediaActivity extends AppCompatActivity {
                         "* Ngày sửa: " + mediaItem.getLastModified() + "\n" +
                         "* Định dạng: " + mediaItem.getFileExtension() + "\n" +
                         "* Độ phân giải: " + mediaItem.getWidth() + "x" + mediaItem.getHeight() + "\n" +
-                        "* Độ yêu thích: " + mediaItem.isFavorite() + "\n")
+                        "* Độ yêu thích: " + mediaItem.isFavorite() + "\n" +
+                        "* album: " +mediaItem.getAlbumName() + "\n" +
+                        "* location: " + mediaItem.getLocation()+ "\n" +
+                        "* extension: " + mediaItem.getFileExtension() + "\n" )
                 .setPositiveButton("OK", null);
 
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent receive ) {
+        super.onActivityResult(requestCode, resultCode, receive);
+        if(requestCode == 111111 && resultCode == RESULT_OK){
+            Bundle data = receive.getExtras();
+            String result = data.getString("result");
+            String path ;
+            Toast.makeText(SingleMediaActivity.this,result,Toast.LENGTH_SHORT).show();
+            if(result.equals("SAVE")){
+                path = receive.getStringExtra("afterEdit");         // đường dẫn chứa hình ảnh sau khi đã edit
+                MediaItem mediaItem = (MediaItem) data.getSerializable("received");
+                //lưu hình ảnh vào database
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inJustDecodeBounds = true;
+                BitmapFactory.decodeFile(path,options);
+
+                int width = options.outWidth;
+                int height = options.outHeight;
+                String type = options.outMimeType;
+                Toast.makeText(SingleMediaActivity.this,type,Toast.LENGTH_SHORT).show();
+                long size = new File(path).length();
+                long date = 29382;
+                mediaItemViewModel.insert(new MediaItem(1991,10,mediaItem.getName() + "edit","editTag1","editImage",path,width,height,size,type,mediaItem.getCreationDate(),mediaItem.getLocation(),mediaItem.getAlbumName(),mediaItem.getUrl(),false,mediaItem.getParentPath(),mediaItem.getLastModified(),mediaItem.getDeletedTs()));
+            }
+        }
     }
 }

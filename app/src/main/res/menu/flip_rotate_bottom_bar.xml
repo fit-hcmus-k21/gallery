@@ -1,0 +1,13 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/btnFlip"
+        android:enabled="true"
+        android:icon="@drawable/baseline_flip_24"
+        android:title="Flip"/>
+    <item
+        android:id="@+id/btnRotate"
+        android:enabled="true"
+        android:icon="@drawable/baseline_rotate_right_24"
+        android:title="Rotate"/>
+
+</menu>
