@@ -50,10 +50,10 @@ public class MediaItemFromExternalStorage {
                 MediaStore.Images.Media.SIZE, // THIS IS FILE SIZE
                 MediaStore.Images.Media.MIME_TYPE, // THIS IS FILE EXTENSION
                 MediaStore.Images.Media.DATE_ADDED, // THIS IS CREATION DATE
-                MediaStore.Images.Media.RELATIVE_PATH, // THIS IS LOCATION
+//                MediaStore.Images.Media.RELATIVE_PATH, // THIS IS LOCATION
                 MediaStore.Images.Media.BUCKET_DISPLAY_NAME, // THIS IS ALBUM NAME
                 MediaStore.Images.Media.DATE_MODIFIED,
-                MediaStore.Images.Media.IS_FAVORITE
+//                MediaStore.Images.Media.IS_FAVORITE
                 // URL IS NOT HERE, MAYBE WE CAN ASSIGN IT TO ""
         };
         String orderBy = MediaStore.Images.Media.DATE_ADDED + " DESC";
@@ -103,12 +103,12 @@ public class MediaItemFromExternalStorage {
                 // CreationDate is milisecond format
                 long creationDate = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_ADDED)) * 1000L; // convert to millisecond. Must multiply by 1000L
 
-                String location = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.RELATIVE_PATH));
+//                String location = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.RELATIVE_PATH));
                 String albumName = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_DISPLAY_NAME));
                 String url = "";
 
                 // Get ? favorite
-                boolean favorite = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.IS_FAVORITE)) == 1;
+//                boolean favorite = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.IS_FAVORITE)) == 1;
 
                 // lastModifed is milisecond format
                 long lastModified = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_MODIFIED)) * 1000L; // convert to millisecond. Must multiply by 1000L
@@ -117,7 +117,7 @@ public class MediaItemFromExternalStorage {
                 String parentPath = path.substring(0, path.lastIndexOf("/"));
 
                 listMediaItems.add(new MediaItem(ID, userID, name, tag, discription,
-                        path, width, height, fileSize, fileExtension, creationDate, location, albumName, url, favorite, parentPath, lastModified, 0));
+                        path, width, height, fileSize, fileExtension, creationDate, "", albumName, url, false, parentPath, lastModified, 0));
             } while (cursor.moveToNext());
         }
 
@@ -135,10 +135,10 @@ public class MediaItemFromExternalStorage {
                 MediaStore.Video.Media.SIZE, // THIS IS FILE SIZE
                 MediaStore.Video.Media.MIME_TYPE, // THIS IS FILE EXTENSION
                 MediaStore.Video.Media.DATE_ADDED, // THIS IS CREATION DATE
-                MediaStore.Video.Media.RELATIVE_PATH, // THIS IS LOCATION
+//                MediaStore.Video.Media.RELATIVE_PATH, // THIS IS LOCATION
                 MediaStore.Video.Media.BUCKET_DISPLAY_NAME, // THIS IS ALBUM NAME
                 MediaStore.Video.Media.DATE_MODIFIED,
-                MediaStore.Video.Media.IS_FAVORITE
+//                MediaStore.Video.Media.IS_FAVORITE
                 // URL IS NOT HERE, MAYBE WE CAN ASSIGN IT TO ""
         };
         orderBy = MediaStore.Video.Media.DATE_ADDED + " DESC";
@@ -189,12 +189,12 @@ public class MediaItemFromExternalStorage {
                 // CreationDate is milisecond format
                 long creationDate = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATE_ADDED)) * 1000L; // convert to millisecond. Must multiply by 1000L
 
-                String location = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.RELATIVE_PATH));
+//                String location = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.RELATIVE_PATH));
                 String albumName = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.BUCKET_DISPLAY_NAME));
                 String url = "";
 
                 // Get ? favorite
-                boolean favorite = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.IS_FAVORITE)) == 1;
+//                boolean favorite = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.IS_FAVORITE)) == 1;
 
                 // lastModifed is milisecond format
                 long lastModified = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATE_MODIFIED)) * 1000L; // convert to millisecond. Must multiply by 1000L
@@ -202,7 +202,7 @@ public class MediaItemFromExternalStorage {
                 // Get parentPath
                 String parentPath = path.substring(0, path.lastIndexOf("/"));
                 listMediaItems.add(new MediaItem(ID, userID, name, tag, discription,
-                        path, width, height, fileSize, fileExtension, creationDate, location, albumName, url, favorite, parentPath, lastModified, 0));
+                        path, width, height, fileSize, fileExtension, creationDate, " ", albumName, url, false, parentPath, lastModified, 0));
             } while (cursor.moveToNext());
         }
 
