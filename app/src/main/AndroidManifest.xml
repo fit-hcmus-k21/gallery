@@ -54,6 +54,7 @@
         <activity android:name=".ui.main.doing.FilterAction"/>
         <activity android:name=".ui.main.doing.SharpAction"/>
         <activity android:name=".ui.main.doing.StraightenAction"/>
+        <activity android:name=".ui.main.doing.DuplicationActivity"/>
 
         <activity android:name=".ui.main.doing.ArrangementAction"/>
 

@@ -28,6 +28,7 @@ import com.example.gallery.R;
 import com.example.gallery.data.models.db.MediaItem;
 import com.example.gallery.data.repositories.models.ViewModel.MediaItemViewModel;
 import com.example.gallery.ui.main.adapter.MainMediaItemAdapter;
+import com.example.gallery.ui.main.doing.DuplicationActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -37,6 +38,7 @@ import java.util.List;
 public class MediaItemFragment extends Fragment {
 
     public static final int REQUEST_TAKE_PHOTO = 256;
+    public static final int REQUEST_SIMILAR_PHOTO = 123;
 
     View mView;
     MediaItemViewModel mediaItemViewModel;
@@ -171,6 +173,9 @@ public class MediaItemFragment extends Fragment {
         }
         else if(id == R.id.camera_item){
             takeAPickture();
+        }else if(id == R.id.similarPhoto){
+            Intent intent = new Intent(getContext(), DuplicationActivity.class);
+            startActivityForResult(intent,REQUEST_SIMILAR_PHOTO);
         }
 
 
@@ -247,4 +252,5 @@ public class MediaItemFragment extends Fragment {
 //            // Lưu ảnh vào MediaStore.Images.Media
 //
 //    }
+
 }
