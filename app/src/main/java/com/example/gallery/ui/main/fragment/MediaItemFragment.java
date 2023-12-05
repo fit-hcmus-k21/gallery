@@ -1,5 +1,6 @@
 package com.example.gallery.ui.main.fragment;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
@@ -36,6 +37,7 @@ import com.example.gallery.data.models.db.User;
 import com.example.gallery.data.repositories.models.ViewModel.MediaItemViewModel;
 import com.example.gallery.ui.main.adapter.MainMediaItemAdapter;
 import com.example.gallery.ui.main.adapter.MediaItemAdapter;
+import com.example.gallery.utils.BytesToStringConverter;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -179,6 +181,9 @@ public class MediaItemFragment extends Fragment {
             takeAPickture();
         }
 
+        else if(id == R.id.statistic){
+            showStatisticDialog();
+        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -253,4 +258,27 @@ public class MediaItemFragment extends Fragment {
 //            // Lưu ảnh vào MediaStore.Images.Media
 //
 //    }
+    private void showStatisticDialog(){
+        List<MediaItem> list =  mediaItemViewModel.getAllMediaItems().getValue();
+        long folderSize = 0;
+        int imageCnt = 0;
+        int videoCnt = 0;
+
+        for(int i = 0 ; i < list.size();i++){
+            folderSize += list.get(i).getFileSize();
+            if(list.get(i).getFileExtension().equals("video/mp4"))
+                videoCnt++;
+            else imageCnt++;
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Thống kê")
+                .setMessage("Số ảnh và video: " + list.size()  +"\n"
+                        + "Số ảnh: " + imageCnt + "\n"
+                        + "Số video: " + videoCnt + "\n"
+                        + "Kích thước: " + BytesToStringConverter.longToString(folderSize))
+                .setPositiveButton("OK", null);
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
 }
