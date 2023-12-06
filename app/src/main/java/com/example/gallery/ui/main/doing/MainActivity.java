@@ -1,6 +1,7 @@
 package com.example.gallery.ui.main.doing;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -11,7 +12,10 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.example.gallery.App;
 import com.example.gallery.R;
+import com.example.gallery.data.local.prefs.AppPreferencesHelper;
+import com.example.gallery.data.local.prefs.PreferencesHelper;
 import com.example.gallery.data.models.db.Album;
 import com.example.gallery.data.models.db.User;
 import com.example.gallery.data.repositories.models.HelperFunction.RequestPermissionHelper;
@@ -28,27 +32,27 @@ public class MainActivity extends AppCompatActivity {
 
     private ViewPager2 viewPager2;
     private BottomNavigationView bottomNavigationView;
-    UserViewModel userViewModel;
-    AlbumViewModel albumViewModel;
-    MediaItemViewModel mediaItemViewModel;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.doing_main_activity);
+        System.out.println("in oncreate main: 42");
 
-        // Khoi tao cac viewmodel
-        userViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
-        albumViewModel = ViewModelProviders.of(this).get(AlbumViewModel.class);
-        mediaItemViewModel = ViewModelProviders.of(this).get(MediaItemViewModel.class);
+//        UserViewModel.getInstance().setUserId(AppPreferencesHelper.getInstance().getCurrentUserId());
+        System.out.println("in oncreate main: 45");
+
+
 
         //TODO kiêểm tra lại phần quyền truy cập
         if(RequestPermissionHelper.checkAndRequestPermission(this, 101)){
-            fetchData();
+//            fetchData();
         }
-        else{
-            Toast.makeText(this, "Permission is not granted", Toast.LENGTH_SHORT).show();
+//        else{
+//            Toast.makeText(this, "Permission is not granted", Toast.LENGTH_SHORT).show();
         }
+//        }
 
         // ****************************** End code tạm thời ******************************
 
@@ -112,31 +116,18 @@ public class MainActivity extends AppCompatActivity {
 //            }
 //        });
 
-    }
+//    }
 
     private void fetchData() {
 
+
+
 //         ******************************  Lấy dữ liệu từ external - Code tam thời ******************************
-        userViewModel.insertUser(new User(1, "User1", "", "user1", "123",
-                "user1@example.com", "", "", "", ""));
-        userViewModel.insertUser(new User(10, "User2", "", "user2", "123",
-                "user2@example.com", "", "", "", ""));
-        userViewModel.getAllUsers().observe(this, new Observer<List<User>>() {
-            @Override
-            public void onChanged(List<User> users) {
-                if(users != null && !users.isEmpty()){
-                    albumViewModel.fetchData();
-                }
-            }
-        });
-        albumViewModel.getAllAlbums().observe(this, new Observer<List<Album>>() {
-            @Override
-            public void onChanged(List<Album> albums) {
-                if(albums != null && !albums.isEmpty()){
-                    mediaItemViewModel.fetchData();
-                }
-            }
-        });
+//        userViewModel.insertUser(new User("1", "User1", "", "user1", "123",
+//                "user1@example.com", "", "", "", ""));
+//        userViewModel.insertUser(new User("10", "User2", "", "user2", "123",
+//                "user2@example.com", "", "", "", ""));
+
 // ******************************  Lấy dữ liệu từ external - Code tam thời ******************************
 
         // Ánh xạ các Widget
@@ -166,6 +157,8 @@ public class MainActivity extends AppCompatActivity {
                 }
                 else if (id == R.id.nav_memories){
                     viewPager2.setCurrentItem(3);
+                } else if (id == R.id.nav_profile){
+                    viewPager2.setCurrentItem(4);
                 }
 
                 return true;
@@ -193,6 +186,10 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case 3:
                         bottomNavigationView.getMenu().findItem(R.id.nav_memories).setChecked(true);
+                        break;
+
+                    case 4:
+                        bottomNavigationView.getMenu().findItem(R.id.nav_profile).setChecked(true);
                         break;
                 }
 

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="16dp">
+
+    <Button
+        android:id="@+id/btnAddFromPhone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add Image from Phone"
+        android:layout_marginBottom="16dp"/>
+
+    <Button
+        android:id="@+id/btnAddFromCamera"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add Image from Camera"
+        android:layout_below="@id/btnAddFromPhone"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"/>
+
+    <EditText
+        android:id="@+id/editTextImageUrl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter Image URL"
+        android:layout_below="@id/btnAddFromCamera"
+        android:layout_marginTop="16dp"
+        android:inputType="text"/>
+
+    <Button
+        android:id="@+id/btnAddFromLink"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add Image from Link"
+        android:layout_below="@id/editTextImageUrl"
+        android:layout_marginTop="16dp"/>
+
+    <Button
+        android:id="@+id/btnBackup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Backup"
+        android:layout_below="@id/btnAddFromLink"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"/>
+
+    <Button
+        android:id="@+id/btnSyncToRemote"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Sync to Cloud Storage"
+        android:layout_below="@id/btnBackup"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"/>
+
+    <Button
+        android:id="@+id/btnLogout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Logout"
+        android:layout_below="@id/btnSyncToRemote"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"/>
+
+
+
+</RelativeLayout>

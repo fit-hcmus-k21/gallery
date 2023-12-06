@@ -39,7 +39,7 @@ public class Album {
         private String coverPhotoPath;
 
         @ColumnInfo(name = "userID", index = true)
-        private int userID;
+        private String userID;
 
         @ColumnInfo(name = "path")
         private String path;
@@ -51,8 +51,10 @@ public class Album {
 
         // constructor
 
+        public Album() {
+        }
 
-        public Album( String name, String description, Long creationDate, String coverPhotoPath, int userID, String path, long deletedTs) {
+        public Album( String name, String description, Long creationDate, String coverPhotoPath, String userID, String path, long deletedTs) {
                 this.name = name;
                 this.description = description;
                 this.creationDate = creationDate;
@@ -104,12 +106,16 @@ public class Album {
                 this.coverPhotoPath = coverPhotoPath;
         }
 
-        public int getUserID() {
+        public String getUserID() {
                 return userID;
         }
 
-        public void setUserID(int userID) {
+        public void setUserID(String userID) {
                 this.userID = userID;
+        }
+
+        public void setAlbumName(String name) {
+                this.name = name;
         }
 
         public String getPath() {

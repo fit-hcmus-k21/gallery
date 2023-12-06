@@ -34,6 +34,8 @@ public class ViewPagerSingleMediaAdapter extends RecyclerView.Adapter<ViewPagerS
 
 
     public void setData(List<MediaItem> mediaItemList){
+        System.out.println("View Pager Single Media Adapter 001: setData: mediaItemList = " + mediaItemList);
+
         this.mediaItemList = mediaItemList;
         notifyDataSetChanged();
     }
@@ -44,7 +46,8 @@ public class ViewPagerSingleMediaAdapter extends RecyclerView.Adapter<ViewPagerS
     @Override
     public int getItemViewType(int position) {
         if(mediaItemList != null && mediaItemList.size() > 0) {
-            if(mediaItemList.get(position).getFileExtension().equals("video/mp4")){
+            System.out.println("On get item view type 47 | View Pager Single Media Adapter");
+            if(mediaItemList.get(position).getFileExtension() != null  && mediaItemList.get(position).getFileExtension().equals("video/mp4")){
                 return TYPE_VIDEO;
             }
             else {
@@ -57,6 +60,7 @@ public class ViewPagerSingleMediaAdapter extends RecyclerView.Adapter<ViewPagerS
     @NonNull
     @Override
     public ViewPagerSingleMediaViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        System.out.println("View Pager Single Media Adapter |Begin | onCreateViewHolder: viewType = " + viewType);
         View view = null;
 
         if(viewType == TYPE_PHOTO){
@@ -66,11 +70,13 @@ public class ViewPagerSingleMediaAdapter extends RecyclerView.Adapter<ViewPagerS
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_single_video, parent, false);
         }
         assert view != null;
+        System.out.println("View Pager Single Media Adapter | End | onCreateViewHolder: view = " + view);
         return new ViewPagerSingleMediaViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewPagerSingleMediaViewHolder holder, int position) {
+        System.out.println("View Pager Single Media Adapter start: onBindViewHolder: position = " + position);
         MediaItem mediaItem = mediaItemList.get(position);
 
         int viewType = getItemViewType(position);
@@ -92,6 +98,7 @@ public class ViewPagerSingleMediaAdapter extends RecyclerView.Adapter<ViewPagerS
 
 
         }
+        System.out.println("View Pager Single Media Adapter end: onBindViewHolder: position = " + position);
 
     }
 
@@ -120,8 +127,12 @@ public class ViewPagerSingleMediaAdapter extends RecyclerView.Adapter<ViewPagerS
         ImageView imageView;
         PlayerView playerView;
         public ViewPagerSingleMediaViewHolder(@NonNull View itemView) {
+
             super(itemView);
             int viewType = getItemViewType();
+
+            System.out.println("View Pager Single Media Adapter | start | ViewPagerSingleMediaViewHolder: itemView = " + itemView);
+
 
             imageView = itemView.findViewById(R.id.single_media_view);
             playerView = itemView.findViewById(R.id.player_view);

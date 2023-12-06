@@ -13,5 +13,8 @@
         android:id="@+id/setting"
         android:title="Cài đặt Album"
         app:showAsAction="never" />
-
+    <item
+        android:id="@+id/statistic"
+        android:title="Thống kê"
+        app:showAsAction="never"/>
 </menu>

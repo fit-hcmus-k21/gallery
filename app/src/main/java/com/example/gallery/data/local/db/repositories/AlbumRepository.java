@@ -21,6 +21,8 @@ public class AlbumRepository {
         allAlbums = albumDao.loadAll();
     }
 
+
+
     public void insert(Album alb) {
         Executors.newSingleThreadExecutor().execute(new Runnable() {
             @Override

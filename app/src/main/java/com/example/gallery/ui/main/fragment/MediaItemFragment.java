@@ -1,41 +1,37 @@
 package com.example.gallery.ui.main.fragment;
 
+import android.app.AlertDialog;
 import android.content.Intent;
-import android.content.res.ColorStateList;
-import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.gallery.R;
 import com.example.gallery.data.models.db.MediaItem;
-import com.example.gallery.data.models.db.User;
-import com.example.gallery.data.repositories.models.ViewModel.MediaItemViewModel;
+
+import com.example.gallery.data.repositories.models.Repository.MediaItemRepository;
 import com.example.gallery.ui.main.adapter.MainMediaItemAdapter;
-import com.example.gallery.ui.main.adapter.MediaItemAdapter;
+
+import com.example.gallery.utils.BytesToStringConverter;
+import com.example.gallery.ui.main.doing.DuplicationActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -45,9 +41,9 @@ import java.util.List;
 public class MediaItemFragment extends Fragment {
 
     public static final int REQUEST_TAKE_PHOTO = 256;
+    public static final int REQUEST_SIMILAR_PHOTO = 123;
 
     View mView;
-    MediaItemViewModel mediaItemViewModel;
     private RecyclerView recyclerView;
     private MainMediaItemAdapter mainMediaItemAdapter;
     private int mCurrentType = MediaItem.TYPE_GRID;
@@ -82,11 +78,12 @@ public class MediaItemFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         // Khởi tạo viewModel
-        mediaItemViewModel = ViewModelProviders.of(this).get(MediaItemViewModel.class);
         dateListString = new ArrayList<>();
 
         // Ánh xạ các biến
         recyclerView = view.findViewById(R.id.rcv_media_item);
+        toolbar = view.findViewById(R.id.toolbar_media_item);
+
 
 
         // Xử lý các layoutmanager
@@ -114,8 +111,12 @@ public class MediaItemFragment extends Fragment {
 ////                holder.imageView.getContext().startActivity(intent);
 //            }
 //        });
+
+        // check if mediaItemViewModel is null or mediaItemViewModel.getAllMediaItems() is null
+
         // Data from viewModel
-        mediaItemViewModel.getAllMediaItems().observe(getViewLifecycleOwner(), new Observer<List<MediaItem>>() {
+        MediaItemRepository.getInstance().getAllMediaItems().observe(getViewLifecycleOwner(), new Observer<List<MediaItem>>() {
+
             @Override
             public void onChanged(List<MediaItem> mediaItems) {
                 if(mediaItems == null) {
@@ -123,12 +124,23 @@ public class MediaItemFragment extends Fragment {
                 }
 
                 for(MediaItem mediaItem : mediaItems){
+                    System.out.println("MediaItemFragment 001: onViewCreated: getAllMediaItems: onChanged: in loop");
+
                     mediaItem.setTypeDisplay(mCurrentType);
                 }
 
+                System.out.println("on observe : " + mediaItems.size() + " before set hash map");
+
                 HashMap<String, List<MediaItem>> mediaItemGroupByDate = setMediaItemGroupByDate(mediaItems);
 
+                System.out.println("on observe : after set hash map , before set data");
+
+
                 mainMediaItemAdapter.setData(mediaItems, mediaItemGroupByDate, dateListString); // trong adapter có hàm setData và có notifydatasetchanged
+
+                System.out.println("on observe : after set hash map , after set data");
+
+
 
             }
         });
@@ -177,8 +189,14 @@ public class MediaItemFragment extends Fragment {
         }
         else if(id == R.id.camera_item){
             takeAPickture();
+        }else if(id == R.id.similarPhoto){
+            Intent intent = new Intent(getContext(), DuplicationActivity.class);
+            startActivityForResult(intent,REQUEST_SIMILAR_PHOTO);
         }
 
+        else if(id == R.id.statistic){
+            showStatisticDialog();
+        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -253,4 +271,28 @@ public class MediaItemFragment extends Fragment {
 //            // Lưu ảnh vào MediaStore.Images.Media
 //
 //    }
+    private void showStatisticDialog(){
+        List<MediaItem> list =  MediaItemRepository.getInstance().getAllMediaItems().getValue();
+        long folderSize = 0;
+        int imageCnt = 0;
+        int videoCnt = 0;
+
+        for(int i = 0 ; i < list.size();i++){
+            folderSize += list.get(i).getFileSize();
+            if(list.get(i).getFileExtension().equals("video/mp4"))
+                videoCnt++;
+            else imageCnt++;
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Thống kê")
+                .setMessage("Số ảnh và video: " + list.size()  +"\n"
+                        + "Số ảnh: " + imageCnt + "\n"
+                        + "Số video: " + videoCnt + "\n"
+                        + "Kích thước: " + BytesToStringConverter.longToString(folderSize))
+                .setPositiveButton("OK", null);
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
 }
