@@ -12,14 +12,6 @@
 
         />
 
-<!--    <item-->
-<!--        android:id="@+id/nav_add_img"-->
-<!--        android:enabled="true"-->
-<!--        android:icon="@drawable/baseline_add_to_photos_24"-->
-<!--        android:title="Add"-->
-<!--        app:showAsAction="always"-->
-
-<!--        />-->
     <item
         android:id="@+id/nav_albums"
         android:enabled="true"

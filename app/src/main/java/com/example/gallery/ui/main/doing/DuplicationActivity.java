@@ -50,6 +50,7 @@ public class DuplicationActivity extends AppCompatActivity  {
     @SuppressLint("MissingInflatedId")
     @Override
     public void onCreate(Bundle saveInstanceState){
+        System.out.println("DuplicationActivity 001: onCreate");
         super.onCreate(saveInstanceState);
         setContentView(R.layout.duplicate_screen);
 
@@ -57,7 +58,6 @@ public class DuplicationActivity extends AppCompatActivity  {
         btnDelete = findViewById(R.id.btnDeleteSimilar);
         btnReturn = findViewById(R.id.btnReturn);
         duplicateRecyclerview = findViewById(R.id.mainItem);
-        mediaItemViewModel = ViewModelProviders.of(this).get(MediaItemViewModel.class);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
 
 
@@ -109,7 +109,10 @@ public class DuplicationActivity extends AppCompatActivity  {
 
                 //get similar photos
                 for(int i = 0 ; i < mediaItemGroupToSort.size(); ++i){
+                    System.out.println("Bitmap 112 | Duplication | " + i);
                     newList.add(find(mediaItemGroupToSort.get(dateListString.get(i))));
+                    System.out.println("Bitmap 114 | Duplication | " + i);
+
                 }
 
 
@@ -172,28 +175,65 @@ public class DuplicationActivity extends AppCompatActivity  {
 
     // ----------------------------------------
     public List<MediaItem> find(List<MediaItem> photos){
+//        // tính giá trị finger
+//        List<MediaItem> temp = new ArrayList<>(photos);
+//        List<Long> fingerValues = CalculateFingerValue(photos);
+//        List<MediaItem> output = new ArrayList<>();                 // lưa danh sách ảnh trùng sau khi check
+//        for(int i = 0; i < temp.size()-1; ++i){
+//            boolean check = false;
+//            int j = i + 1;
+//            while(j < temp.size()){
+//                int dist = 0;
+//                try {
+//                dist = hamDist(fingerValues.get(i),fingerValues.get(j));
+//                }catch (Exception e){
+//                    System.out.println("Bitmap 203 | Duplication | " + e);
+//                }
+//                if(dist < 10){
+//                    if(check == false){
+//                        output.add(temp.get(i));
+//                        check = true;
+//                    }
+//                    output.add(temp.get(j));
+//                    System.out.println("Bitmap 196 | Duplication | " + temp.get(j));
+//                    temp.remove(j);
+//                    System.out.println("Bitmap 196 | Duplication | " + temp.size());
+//                    fingerValues.remove(j);
+//                    System.out.println("Bitmap 197 | Duplication | " + temp.size());
+//                    --j;
+//                }
+//                ++j;
+//            }
+//        }
+//        return output;
+//        --------------------------------------------
         // tính giá trị finger
         List<MediaItem> temp = new ArrayList<>(photos);
         List<Long> fingerValues = CalculateFingerValue(photos);
-        List<MediaItem> output = new ArrayList<>();                 // lưa danh sách ảnh trùng sau khi check
-        for(int i = 0; i < temp.size()-1; ++i){
+        List<MediaItem> output = new ArrayList<>(); // lưa danh sách ảnh trùng sau khi check
+
+        for (int i = 0; i < temp.size() - 1; ++i) {
             boolean check = false;
-            int j = i + 1;
-            while(j < temp.size()){
-                int dist = hamDist(fingerValues.get(i),fingerValues.get(j));
-                if(dist < 10){
-                    if(check == false){
-                        output.add(temp.get(i));
-                        check = true;
+
+            for (int j = i + 1; j < temp.size(); ++j) {
+                try {
+                    int dist = hamDist(fingerValues.get(i), fingerValues.get(j));
+
+                    if (dist < 10) {
+                        if (!check) {
+                            output.add(temp.get(i));
+                            check = true;
+                        }
+
+                        output.add(temp.get(j));
+                        System.out.println("Bitmap 229 | Duplication | " + temp.get(j));
                     }
-                    output.add(temp.get(j));
-                    temp.remove(j);
-                    fingerValues.remove(j);
-                    --j;
+                } catch (Exception e) {
+                    System.out.println("Bitmap 232 | Duplication | " + e);
                 }
-                ++j;
             }
         }
+
         return output;
     }
     public List<Long> CalculateFingerValue(List<MediaItem> photos){

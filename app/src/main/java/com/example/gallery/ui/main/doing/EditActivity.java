@@ -9,7 +9,6 @@ import android.util.DisplayMetrics;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -20,12 +19,17 @@ import androidx.appcompat.widget.AppCompatButton;
 
 import com.example.gallery.App;
 import com.example.gallery.R;
+import com.example.gallery.data.local.prefs.AppPreferencesHelper;
 import com.example.gallery.data.models.db.MediaItem;
+import com.example.gallery.data.models.db.Album;
+import com.example.gallery.data.repositories.models.Repository.AlbumRepository;
+import com.example.gallery.data.repositories.models.Repository.MediaItemRepository;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Random;
 
 public class EditActivity extends AppCompatActivity implements View.OnClickListener {
     public static Bitmap rootImage, saveImage;
@@ -151,8 +155,9 @@ public class EditActivity extends AppCompatActivity implements View.OnClickListe
             finish();
         }
     }
-    private String saveBitmapToStorage(Bitmap bitmap) {
-        String fileName = "image.jpg"; // Tên tệp hình ảnh
+    public  String saveBitmapToStorage(Bitmap bitmap) {
+        String fileName = getFileNameFromPath(mediaItem.getPath()) + "_edited" + new Random().nextInt(1000) + mediaItem.getFileExtension();
+
         File storageDir = getExternalCacheDir(); // Lấy thư mục tạm ngoài
         File imageFile = new File(storageDir, fileName);
 
@@ -161,12 +166,19 @@ public class EditActivity extends AppCompatActivity implements View.OnClickListe
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
             outputStream.flush();
             outputStream.close();
-            return imageFile.getAbsolutePath();
+            String absolutePath = imageFile.getAbsolutePath();
+
+            return absolutePath;
         } catch (IOException e) {
             // Xảy ra lỗi khi lưu tệp hình ảnh
             e.printStackTrace();
             return null;
         }
+    }
+
+    public  String getFileNameFromPath(String path){
+        String[] parts = path.split("/");
+        return parts[parts.length - 1];
     }
     @Override
     public void onBackPressed() {

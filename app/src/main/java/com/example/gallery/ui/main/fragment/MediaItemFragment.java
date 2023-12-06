@@ -33,6 +33,7 @@ import com.example.gallery.ui.main.adapter.MainMediaItemAdapter;
 import com.example.gallery.utils.BytesToStringConverter;
 import com.example.gallery.ui.main.doing.DuplicationActivity;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -56,6 +57,9 @@ public class MediaItemFragment extends Fragment {
     LinearLayoutManager linearLayoutManager;
     StaggeredGridLayoutManager staggeredGridLayoutManager;
     List<String> dateListString;
+    HashMap<String, List<MediaItem>> mediaItemGroupByDate;
+    List<MediaItem> mediaItemsLíst;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -129,6 +133,12 @@ public class MediaItemFragment extends Fragment {
                     mediaItem.setTypeDisplay(mCurrentType);
                 }
 
+                mediaItemGroupByDate = setMediaItemGroupByDate(mediaItems);
+
+                mediaItemsLíst = mediaItems;
+
+
+                mainMediaItemAdapter.setData(mediaItemsLíst, mediaItemGroupByDate, dateListString); // trong adapter có hàm setData và có notifydatasetchanged
                 System.out.println("on observe : " + mediaItems.size() + " before set hash map");
 
                 HashMap<String, List<MediaItem>> mediaItemGroupByDate = setMediaItemGroupByDate(mediaItems);
@@ -164,6 +174,19 @@ public class MediaItemFragment extends Fragment {
                 result.put(date, mediaItemList);
             }
         }
+
+        // sort dateListString desc
+//        for(int i = 0 ; i < dateListString.size() - 1; i++){
+//            for(int j = i + 1; j < dateListString.size(); j++){
+//                String date1 = dateListString.get(i);
+//                String date2 = dateListString.get(j);
+//                if(date1.compareTo(date2) < 0){
+//                    String temp = date1;
+//                    dateListString.set(i, date2);
+//                    dateListString.set(j, temp);
+//                }
+//            }
+//        }
 
         return result;
     }
@@ -212,22 +235,6 @@ public class MediaItemFragment extends Fragment {
 
     }
 
-    // Hàm chuyển đôi type hiển thị cho các data, mà không cần phải chờ livedata, lấy trực tiếp dữ liệu từ recyclerview
-//    public void setTypeDisplayRecyclerView(int typeDisplay){
-//       mCurrentType = typeDisplay; // Cập nhật lại biến type của hiện tại
-//
-//       if(mainMediaItemAdapter != null){
-//           HashMap<String, List<MediaItem>> listHashMapMediaItem= mainMediaItemAdapter.getData(); // Dữ liệu của recyclerview
-//
-//           for(String date : listHashMapMediaItem.keySet()){
-//               List<MediaItem> mediaItemList = listHashMapMediaItem.get(date);
-//               for(MediaItem mediaItem : mediaItemList){
-//                   mediaItem.setTypeDisplay(mCurrentType);
-//               }
-//           }
-//           mainMediaItemAdapter.notifyDataSetChanged(); // Thông báo cho recyclerview là dữ liệu đã thay đổi
-//       }
-//    }
     public void onClickChangeTypeDisplay(){ // Bao gồm việc thây đổi type hiển thị cho item, và đổi icon của menu, đổi thêm layoutmanager
         if(mCurrentType == MediaItem.TYPE_GRID){
 //            setTypeDisplayRecyclerView(MediaItem.TYPE_LIST);
@@ -271,6 +278,7 @@ public class MediaItemFragment extends Fragment {
 //            // Lưu ảnh vào MediaStore.Images.Media
 //
 //    }
+
     private void showStatisticDialog(){
         List<MediaItem> list =  MediaItemRepository.getInstance().getAllMediaItems().getValue();
         long folderSize = 0;

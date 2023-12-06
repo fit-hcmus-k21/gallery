@@ -64,20 +64,6 @@ public class MediaItemAdapter extends RecyclerView.Adapter<MediaItemAdapter.Medi
 
         View view = null;
         // This switch case is used to check the viewType to inflate the layout for item correctly
-//        switch (viewType)
-//        {
-//            case MediaItem.TYPE_GRID:
-//                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_grid, parent, false);
-//                break;
-//            case MediaItem.TYPE_LIST:
-//                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list, parent, false);
-//                break;
-//            case MediaItem.TYPE_STAGGERED:
-//                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_staggered, parent, false);
-//                break;
-//            default:
-//                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_grid, parent, false);
-//        }
         if(viewType == TYPE_PHOTO){
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_grid, parent, false);
         }

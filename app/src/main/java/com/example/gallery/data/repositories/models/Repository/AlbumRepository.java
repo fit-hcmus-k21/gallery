@@ -46,8 +46,24 @@ public class AlbumRepository {
     }
 
     public LiveData<List<Album>> getAlbums(){
+
         return allAlbums;
     }
+
+    public boolean isExistAlbum(String albName) {
+        LiveData<List<Album>> albumsLiveData = getAlbums();
+
+        if (albumsLiveData != null && albumsLiveData.getValue() != null) {
+            for (Album album : albumsLiveData.getValue()) {
+                if (album != null && album.getName() != null && album.getName().equals(albName)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
     public void fetchData(){
         allAlbums.observeForever(new Observer<List<Album>>() {
             @Override

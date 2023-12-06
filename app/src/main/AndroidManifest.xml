@@ -51,8 +51,6 @@
 
 <!--                     activities                    -->
 
-
-
         <activity android:name=".ui.main.doing.MainActivity"/>
 
         <activity android:name=".ui.splash.SplashActivity"
@@ -114,6 +112,8 @@
         </activity>
         <activity android:name=".ui.main.doing.SingleMediaActivity"/>
         <activity android:name=".ui.main.doing.InnerAlbumScreen"/>
+
+        <activity android:name=".ui.main.Slide35_QRCodeActivity"/>
 
     </application>
 

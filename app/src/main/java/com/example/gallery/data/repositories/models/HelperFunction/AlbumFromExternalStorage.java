@@ -58,6 +58,7 @@ public class AlbumFromExternalStorage {
             do{
                 String folderName = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_DISPLAY_NAME));
 //                Log.e("Mytag", "Folder name: " + folderName);
+
                 if(isFavoriteAlbumExist == false){
                     if(folderName != null && cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.IS_FAVORITE)) == 1){
 

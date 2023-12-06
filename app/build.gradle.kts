@@ -141,4 +141,8 @@ dependencies {
 
     // Add the dependency to recognize text from image
     implementation("com.google.firebase:firebase-ml-vision:24.0.3")
+
+    // dependency for image metadata
+    implementation("com.drewnoakes:metadata-extractor:2.19.0")
+
 }

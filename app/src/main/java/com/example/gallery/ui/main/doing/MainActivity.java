@@ -1,32 +1,21 @@
 package com.example.gallery.ui.main.doing;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager2.widget.ViewPager2;
 
-import com.example.gallery.App;
 import com.example.gallery.R;
-import com.example.gallery.data.local.prefs.AppPreferencesHelper;
-import com.example.gallery.data.local.prefs.PreferencesHelper;
-import com.example.gallery.data.models.db.Album;
-import com.example.gallery.data.models.db.User;
+
 import com.example.gallery.data.repositories.models.HelperFunction.RequestPermissionHelper;
-import com.example.gallery.data.repositories.models.ViewModel.AlbumViewModel;
-import com.example.gallery.data.repositories.models.ViewModel.MediaItemViewModel;
-import com.example.gallery.data.repositories.models.ViewModel.UserViewModel;
+
 import com.example.gallery.ui.main.adapter.MyViewPager2Adapter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -51,11 +40,12 @@ public class MainActivity extends AppCompatActivity {
         }
 //        else{
 //            Toast.makeText(this, "Permission is not granted", Toast.LENGTH_SHORT).show();
-        }
+//        }
 //        }
 
         // ****************************** End code tạm thời ******************************
 
+    }
 //        // Ánh xạ các Widget
 //        viewPager2 = findViewById(R.id.viewPager2_main);
 //        bottomNavigationView = findViewById(R.id.bottomNavigation_main);
@@ -205,4 +195,5 @@ public class MainActivity extends AppCompatActivity {
 
         }
     }
+
 }

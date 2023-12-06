@@ -1,4 +1,4 @@
-package com.example.gallery.data.repositories.models;
+package com.example.gallery.data.models.others;
 
 
 import android.graphics.Bitmap;
@@ -30,14 +30,8 @@ public class QRCodeGenerator {
     private String url;
     private String filePath; // This file is a photo that is selected from the gallery
     private int photoIdentifier;
-    private MediaItem destQRCodeImg;
     private QRCodeCallback qrCodeCallback; // Hàm này dùng để cho Slide35 có thể lấy đảm bảo lấy được dữ liệu từ API
 
-//    // constructors
-//    public QRCodeGenerator(String filePath, QRCodeCallback qrCodeCallback) {
-//        this.filePath = filePath;
-//        this.qrCodeCallback = qrCodeCallback;
-//    }
 
     // methods
     public void callApi(String image_path, QRCodeCallback qrCodeCallback) {
@@ -48,26 +42,26 @@ public class QRCodeGenerator {
         ImgurApi.imgurApi.uploadImage(multipartBody, "Bearer 2c3779246c9fc0626ea90b101d3d84f427e48d03").enqueue(new Callback<Imgur>() {
             @Override
             public void onResponse(Call<Imgur> call, Response<Imgur> response) {
-               if(response.isSuccessful()){
+                if (response.isSuccessful()) {
 
                     Imgur imgur = response.body();
 
-                     if(imgur.isSuccess()){
+                    if (imgur.isSuccess()) {
 
-                          String link = imgur.getData().getLink();
-                          Bitmap bitmap = generatorQRCode(link);
+                        String link = imgur.getData().getLink();
+                        Bitmap bitmap = generatorQRCode(link);
 
 //                          destQRCodeImg = WritePhotoToExternalStorage.writePhotoToExternalStorage(this, bitmap);
 
-                          qrCodeCallback.onQRCodeGenerated(bitmap);
+                        qrCodeCallback.onQRCodeGenerated(bitmap);
 
-                     }
+                    }
 
-               }
-               else{
-                     Log.e("QRCodeGenerator", "response is not successful");
-               }
+                } else {
+                    Log.e("QRCodeGenerator", "response is not successful");
+                }
             }
+
             @Override
             public void onFailure(Call<Imgur> call, Throwable t) {
                 Log.e("Error", t.getMessage());
@@ -76,11 +70,11 @@ public class QRCodeGenerator {
 
     }
 
-    public Bitmap generatorQRCode(String url){
+    public Bitmap generatorQRCode(String url) {
         MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
 
         try {
-            BitMatrix bitMatrix = multiFormatWriter.encode(url, BarcodeFormat.QR_CODE, 400, 400);
+            BitMatrix bitMatrix = multiFormatWriter.encode(url, BarcodeFormat.QR_CODE, 800, 800);
 
             Bitmap bitmap = new BarcodeEncoder().createBitmap(bitMatrix);
             return bitmap;
@@ -92,15 +86,5 @@ public class QRCodeGenerator {
     public interface QRCodeCallback {
         void onQRCodeGenerated(Bitmap bitmap);
     }
-
-    public void generateQRCode(int photoIdentifier) {
-
-        // handle here
-
-    }
-
-    public MediaItem getQRCodeImg() {
-
-        return destQRCodeImg;
-    }
 }
+

@@ -104,6 +104,7 @@ public class MainMediaItemAdapter extends RecyclerView.Adapter<MainMediaItemAdap
                 int index = mediaItemListAll.indexOf(mediaItem);
 
                 Intent intent = new Intent(holder.itemView.getContext(), SingleMediaActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
                 Bundle bundle = new Bundle();
 
@@ -127,52 +128,6 @@ public class MainMediaItemAdapter extends RecyclerView.Adapter<MainMediaItemAdap
         }
         return 0;
     }
-//    public ArrayList<HashMap<String, List<MediaItem>>> getData(){
-//        return grouptMediaItemByDateArrayList;
-//    }
-//
-//    @NonNull
-//    @Override
-//    public MediaItemAdapter.MediaItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-//        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_rcv_layout, parent, false);
-//
-//        return new MediaItemAdapter.MediaItemViewHolder(view);
-//    }
-//
-//    @Override
-//    public void onBindViewHolder(@NonNull MediaItemAdapter.MediaItemViewHolder holder, int position) {
-//        HashMap<String, List<MediaItem>> mediaItemHashMap = grouptMediaItemByDateArrayList.get(position);
-//
-//        String date = mediaItemHashMap.keySet().iterator().next();
-//        holder.headingTextView.setText(date);
-//
-//        List<MediaItem> mediaItemList = mediaItemHashMap.get(date);
-//
-//        MediaItemAdapter mediaItemAdapter = new MediaItemAdapter();
-//        mediaItemAdapter.setData(mediaItemList);
-//        holder.recyclerView.setAdapter(mediaItemAdapter);
-//        holder.recyclerView.setLayoutManager(new LinearLayoutManager(holder.recyclerView.getContext(), LinearLayoutManager.HORIZONTAL, false));
-//    }
-//
-//    @Override
-//    public int getItemCount() {
-//        if(!grouptMediaItemByDateArrayList.isEmpty()){
-//            return grouptMediaItemByDateArrayList.size();
-//        }
-//        return 0;
-//    }
-//    public static class MainMediaItemViewHolder extends RecyclerView.ViewHolder {
-//
-//        TextView headingTextView;
-//        RecyclerView recyclerView;
-//
-//        public MediaItemViewHolder(@NonNull View itemView) {
-//            super(itemView);
-//
-//            headingTextView = itemView.findViewById(R.id.tv_rcv_item);
-//            recyclerView = itemView.findViewById(R.id.rcv_item);
-//        }
-//    }
 
     public static class MainMediaItemViewHolder extends RecyclerView.ViewHolder {
 
