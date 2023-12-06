@@ -55,12 +55,13 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                System.out.println("Album Adapter | onBindViewHolder: onClick: album = " + album);
                 Intent intent = new Intent(holder.itemView.getContext(), InnerAlbumScreen.class);
 
                 Bundle bundle = new Bundle();
 
-                bundle.putString("albumPath", album.getPath());
-                Log.e("Mytag", "onClick: " + album.getPath());
+                bundle.putString("albumName", album.getName());
+                System.out.println( "onClick album name: " + album.getName());
                 intent.putExtras(bundle);
 
                 holder.itemView.getContext().startActivity(intent);
@@ -80,8 +81,10 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
         ImageView imageView;
         TextView textView;
         public AlbumViewHolder(@NonNull View itemView) {
+
             super(itemView);
 
+            System.out.println("Album Adapter | AlbumViewHolder: itemView = " + itemView);
             imageView = itemView.findViewById(R.id.img_album);
             textView = itemView.findViewById(R.id.txt_album_name);
 
