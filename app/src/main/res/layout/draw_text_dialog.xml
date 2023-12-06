@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="10dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/drawtextTitle"
+        android:text="TEXT"
+        android:textSize="30dp"
+        android:gravity="center"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:ignore="MissingConstraints" />
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:hint="Enter Your Text"
+        android:id="@+id/textChoose"
+        app:layout_constraintTop_toBottomOf="@+id/drawtextTitle"
+        tools:ignore="MissingConstraints" />
+    <androidx.cardview.widget.CardView
+        android:layout_width="70dp"
+        android:layout_height="60dp"
+        app:cardCornerRadius="7dp"
+        app:cardElevation="5dp"
+        android:layout_marginLeft="10dp"
+        android:id="@+id/SizeAndColor"
+        app:layout_constraintTop_toBottomOf="@+id/textChoose"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginTop="10dp"
+        tools:ignore="MissingConstraints">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <androidx.appcompat.widget.AppCompatButton
+                android:layout_width="70dp"
+                android:layout_height="30dp"
+                android:id="@+id/btnColour"
+                android:text="Colour"
+                android:textSize="8dp"/>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:layout_width="70dp"
+                android:layout_height="30dp"
+                android:text="Size"
+                android:id="@+id/btnSize"
+                android:textSize="8dp"/>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+    <com.google.android.material.slider.Slider
+        android:layout_width="220dp"
+        android:layout_height="2dp"
+        android:id="@+id/SliderSize"
+        app:layout_constraintRight_toRightOf="parent"
+        android:valueFrom="1"
+        android:valueTo="100"
+        android:stepSize="1"
+        android:layout_marginTop="15dp"
+        android:visibility="invisible"
+        app:layout_constraintLeft_toRightOf="@+id/SizeAndColor"
+        app:layout_constraintTop_toBottomOf="@+id/textChoose"
+        tools:ignore="MissingConstraints" />
+    <LinearLayout
+        android:layout_width="220dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/Color"
+        app:layout_constraintLeft_toRightOf="@+id/SizeAndColor"
+        app:layout_constraintTop_toBottomOf="@+id/textChoose"
+        app:layout_constraintRight_toRightOf="parent"
+        android:orientation="horizontal">
+        <com.google.android.material.slider.Slider
+            android:layout_width="180dp"
+            android:layout_height="2dp"
+            android:id="@+id/SliderColor"
+            android:valueFrom="1"
+            android:valueTo="9"
+            android:stepSize="1"
+            android:layout_marginTop="15dp"
+
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toRightOf="@+id/SizeAndColor"
+            app:layout_constraintTop_toBottomOf="@+id/DoodleTitle"
+            tools:ignore="MissingConstraints" />
+        <View
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:background="@color/teal_700"
+            android:id="@+id/choosenColor"/>
+
+    </LinearLayout>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnOk"
+        app:layout_constraintTop_toBottomOf="@+id/SizeAndColor"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:text="OK"
+        tools:ignore="MissingConstraints" />
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

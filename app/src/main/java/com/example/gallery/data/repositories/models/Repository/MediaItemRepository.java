@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.provider.MediaStore;
 import android.util.Log;
 
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
@@ -112,6 +113,7 @@ public class MediaItemRepository {
 
         return allMediaItem;
     }
+
     public void insert(MediaItem mediaItem){
         System.out.println("MediaItemRepository: insert: " + mediaItem.getId() + " " + mediaItem.getUserID() + " " + mediaItem.getAlbumName());
         ExecutorService executorService = Executors.newSingleThreadExecutor();

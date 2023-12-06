@@ -50,6 +50,9 @@
             android:value="@string/facebook_client_token" />
 
 <!--                     activities                    -->
+
+
+
         <activity android:name=".ui.main.doing.MainActivity"/>
 
         <activity android:name=".ui.splash.SplashActivity"
@@ -60,10 +63,17 @@
 
             </intent-filter>
         </activity>
+        <activity android:name=".ui.main.doing.EditActivity"/>
+        <activity android:name=".ui.main.doing.FlipAndRotateAction"/>
+        <activity android:name=".ui.main.doing.DrawAction"/>
+        <activity android:name=".ui.main.doing.FilterAction"/>
+        <activity android:name=".ui.main.doing.SharpAction"/>
+        <activity android:name=".ui.main.doing.StraightenAction"/>
+        <activity android:name=".ui.main.doing.DuplicationActivity"/>
 
-        <activity android:name=".data.repositories.models.Test.ViewTestMediaItem"
-            >
+        <activity android:name=".ui.main.doing.ArrangementAction"/>
 
+        <activity android:name=".data.repositories.models.Test.ViewTestMediaItem" >
         </activity>
 
         <activity android:name=".ui.login.LoginActivity"
@@ -73,9 +83,13 @@
                   android:launchMode="singleTop" />
 
         <activity android:name=".ui.main.MainActivity"
-                  android:launchMode="singleTop" />
+                  android:launchMode="singleTop" >
 
-        <activity android:name=".ui.main.Slide07_PhotosGridviewScreenActivity" />
+        </activity>
+
+        <activity android:name=".ui.main.Slide07_PhotosGridviewScreenActivity"  >
+
+        </activity>
 
         <activity android:name=".ui.resetPassword.ResetPasswordActivity" />
 

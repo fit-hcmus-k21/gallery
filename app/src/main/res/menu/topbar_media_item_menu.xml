@@ -24,6 +24,12 @@
         android:id="@+id/app_information"
         android:title="Thông tin ứng dụng"
         app:showAsAction="never"/>
+    <item
+        android:id="@+id/similarPhoto"
+        android:title="Lọc ảnh trùng"
+        app:showAsAction="never"
+        />
+
 
 
 </menu>
