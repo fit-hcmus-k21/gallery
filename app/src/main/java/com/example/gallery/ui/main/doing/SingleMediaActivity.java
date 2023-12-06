@@ -134,11 +134,14 @@ public class SingleMediaActivity extends AppCompatActivity {
         viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                System.out.println("Single media activity | on page scrolled 137 | position : " + position);
                 super.onPageScrolled(position, positionOffset, positionOffsetPixels);
             }
 
             @Override
             public void onPageSelected(int position) {
+                System.out.println("Single media activity | on page selected 143 | position : " + position);
+                mediaItemLiveData.setValue(mediaItemsList.get(position));
 
                 MediaItem selectedMediaItem = mediaItemsList.get(position);
                 Log.e("MyTag", "onPageSelected: " + position);
@@ -236,6 +239,7 @@ public class SingleMediaActivity extends AppCompatActivity {
             mediaItemLiveData.observe(this, new Observer<MediaItem>() {
                 @Override
                 public void onChanged(MediaItem mediaItem) {
+                    System.out.println("Single Media Activity | On changed 239 " + mediaItem);
                     DisPlayInforMationAlerDialog(mediaItem);
                 }
             });
@@ -253,13 +257,19 @@ public class SingleMediaActivity extends AppCompatActivity {
             //TODO handle media_set_wallpaper_item
         }
         else if(id == R.id.media_convert_text_item){
-            mediaItemLiveData.observe(this, new Observer<MediaItem>() {
-                @Override
-                public void onChanged(MediaItem mediaItem) {
-//                    showOCRResultDialog(mediaItem.getPath());
-                    textRecognition(mediaItem);
-                }
-            });
+            textRecognition(mediaItemLiveData.getValue());
+//            mediaItemLiveData.observe(this, new Observer<MediaItem>() {
+//                @Override
+//                public void onChanged(MediaItem mediaItem) {
+////                    showOCRResultDialog(mediaItem.getPath());
+//                    System.out.println("Single Media Activity | On changed 260 " + mediaItem );
+//                    textRecognition(mediaItem);
+//
+//                    // reset lại option
+//
+//
+//                }
+//            });
 
         }
 
@@ -285,6 +295,7 @@ public class SingleMediaActivity extends AppCompatActivity {
         alertDialog.show();
     }
     private void textRecognition(MediaItem mediaItem){
+        System.out.println("SingleMediaActivity | textRecognition | mediaitem: " + mediaItem);
         FirebaseVisionImage image;
         try{
 //            image = FirebaseVisionImage.fromFilePath(this,Uri.parse(mediaItem.getPath()));
@@ -333,11 +344,17 @@ public class SingleMediaActivity extends AppCompatActivity {
         alertDialog.show();
     }
     private void shareImageToInternet(MediaItem mediaItem){
+        System.out.println("Share image : 337");
+
         Uri uri = Uri.parse(mediaItem.getPath());
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("image/*");
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+        System.out.println("Share image : 342");
         intent.putExtra(Intent.EXTRA_STREAM, uri);
         startActivity(Intent.createChooser(intent, "share image"));
+        System.out.println("Share image : 347");
+
     }
 }
