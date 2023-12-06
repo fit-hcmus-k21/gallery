@@ -12,6 +12,7 @@ import com.example.gallery.ui.main.fragment.AlbumFragment;
 import com.example.gallery.ui.main.fragment.FindFragment;
 import com.example.gallery.ui.main.fragment.MediaItemFragment;
 import com.example.gallery.ui.main.fragment.MemoryFragment;
+import com.example.gallery.ui.profile.ProfileFragment;
 
 public class MyViewPager2Adapter extends FragmentStateAdapter {
 
@@ -32,6 +33,9 @@ public class MyViewPager2Adapter extends FragmentStateAdapter {
                 return new FindFragment();
             case 3:
                 return new MemoryFragment();
+            case 4:
+                return new ProfileFragment();
+
             default:
                 return new MediaItemFragment();
         }
@@ -39,6 +43,6 @@ public class MyViewPager2Adapter extends FragmentStateAdapter {
 
     @Override
     public int getItemCount() {
-        return 4;
+        return 5;
     }
 }

@@ -28,6 +28,7 @@ public abstract class GalleryDatabase extends RoomDatabase {
     private static GalleryDatabase sInstance;
 
     public static synchronized GalleryDatabase getInstance() {
+        System.out.println("GalleryDatabase.getInstance");
         if (sInstance == null) {
             sInstance = Room.databaseBuilder(
                     App.getInstance(),

@@ -70,8 +70,11 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
 
+                    android:backgroundTint="#C6E2FF"
+
                     android:drawableStart="@drawable/baseline_person_outline_24"
-                    android:hint="name"
+
+                    android:hint="Name"
                     android:inputType="text"
                     android:textColor="#333333"
                     android:textSize="20dp"
@@ -93,8 +96,10 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
 
+                    android:backgroundTint="#C6E2FF"
+
                     android:drawableStart="@drawable/baseline_person_outline_24"
-                    android:hint="email"
+                    android:hint="Email"
                     android:inputType="text"
                     android:textColor="#333333"
                     android:textSize="20dp"
@@ -116,10 +121,12 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
                     android:drawableStart="@drawable/outline_lock_24"
-                    android:hint="password"
+                    android:hint="Password"
                     android:inputType="textPassword"
                     android:textColor="#333333"
                     android:textSize="20dp"
+                    android:backgroundTint="#C6E2FF"
+
 
 
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -144,10 +151,13 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
                     android:drawableStart="@drawable/outline_lock_24"
-                    android:hint="retype password"
+
+                    android:hint="Retype password"
                     android:inputType="textPassword"
                     android:textColor="#333333"
                     android:textSize="20dp"
+                    android:backgroundTint="#C6E2FF"
+
 
 
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -189,7 +199,7 @@
                 android:layout_marginTop="20dp"
 
                 android:gravity="center_horizontal"
-                android:text="or register with"
+                android:text="-------------OR-------------"
 
                 />
 
@@ -203,15 +213,65 @@
                 >
 
                 <ImageButton
+                    android:id="@+id/button_google_login"
                     android:layout_width="60dp"
                     android:layout_height="60dp"
                     android:layout_marginRight="12dp"
-                    android:background="@drawable/icon_google" />
+                    android:background="@drawable/icon_google"
+
+                    />
 
                 <ImageButton
+                    android:id="@+id/button_facebook_login"
                     android:layout_width="60dp"
                     android:layout_height="60dp"
-                    android:background="@drawable/icon_facebook" />
+                    android:background="@drawable/icon_facebook"
+
+                    />
+
+
+
+                <!--                <com.google.android.material.button.MaterialButton-->
+<!--                    style="?attr/materialButtonOutlinedStyle"-->
+
+<!--                    android:id="@+id/button_google_login"-->
+<!--                    android:layout_width="240dp"-->
+<!--                    android:layout_height="44dp"-->
+<!--                    android:layout_marginTop="12dp"-->
+
+<!--                    app:icon="@drawable/icon_google"-->
+<!--                    app:iconSize="28dp"-->
+<!--                    app:iconPadding="8dp"-->
+<!--                    android:text="Sign up with Google"-->
+<!--                    android:textAllCaps="false"-->
+<!--                    android:textColor="#0000BB"-->
+<!--                    android:textSize="12dp"-->
+<!--                    android:textAlignment="textStart"-->
+
+<!--                    />-->
+
+<!--                &lt;!&ndash; Facebook Login Button &ndash;&gt;-->
+<!--                <com.google.android.material.button.MaterialButton-->
+<!--                    style="?attr/materialButtonOutlinedStyle"-->
+
+<!--                    android:id="@+id/button_facebook_login"-->
+<!--                    android:layout_width="240dp"-->
+<!--                    android:layout_height="44dp"-->
+<!--                    android:layout_marginTop="8dp"-->
+<!--                    app:layout_constraintStart_toStartOf="parent"-->
+<!--                    app:layout_constraintTop_toBottomOf="@+id/button_google_login"-->
+
+<!--                    app:icon="@drawable/icon_facebook"-->
+<!--                    app:iconSize="28dp"-->
+<!--                    app:iconPadding="8dp"-->
+<!--                    android:text="Sign up with Facebook"-->
+<!--                    android:textAllCaps="false"-->
+<!--                    android:textColor="#0000BB"-->
+<!--                    android:textSize="12dp"-->
+<!--                    android:textAlignment="textStart"-->
+<!--                    />-->
+
+
 
             </LinearLayout>
 

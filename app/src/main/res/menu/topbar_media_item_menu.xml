@@ -28,6 +28,12 @@
         android:id="@+id/statistic"
         android:title="Thống kê"
         app:showAsAction="never"/>
+    <item
+        android:id="@+id/similarPhoto"
+        android:title="Lọc ảnh trùng"
+        app:showAsAction="never"
+        />
+
 
 
 </menu>
