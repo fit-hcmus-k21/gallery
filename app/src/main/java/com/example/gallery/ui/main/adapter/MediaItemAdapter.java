@@ -129,8 +129,12 @@ public class MediaItemAdapter extends RecyclerView.Adapter<MediaItemAdapter.Medi
     }
 
     public void setOnItemClickListener(OnItemClickListener listener){
+        System.out.println("MediaItemAdapter | Set on Item Click Listener | before | listener = " + listener);
 
         this.listener = listener;
+
+        System.out.println("MediaItemAdapter | Set on Item Click Listener | after | listener = " + listener);
+
     }
     public interface OnItemClickListener {
         void onItemClick(MediaItem mediaItem);
