@@ -1,10 +1,12 @@
 package com.example.gallery.ui.main.doing;
 
-import android.app.Dialog;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
+
 import android.view.MenuItem;
+import android.app.Dialog;
+
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -16,7 +18,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -24,6 +25,8 @@ import com.example.gallery.R;
 import com.example.gallery.data.models.db.MediaItem;
 import com.example.gallery.data.repositories.models.Repository.MediaItemRepository;
 import com.example.gallery.ui.main.adapter.MediaItemAdapter;
+import com.example.gallery.utils.BytesToStringConverter;
+
 import com.google.android.material.appbar.MaterialToolbar;
 
 import java.util.ArrayList;
@@ -31,6 +34,7 @@ import java.util.List;
 
 public class InnerAlbumScreen extends AppCompatActivity {
     RecyclerView recyclerView;
+    MediaItemAdapter mediaItemAdapter;
     MaterialToolbar topAppBar;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -42,6 +46,8 @@ public class InnerAlbumScreen extends AppCompatActivity {
 
         // Khởi tạo viewModel
 
+        MaterialToolbar materialToolbar = findViewById(R.id.topAppBar);
+
         // Ánh xạ các view
         recyclerView = findViewById(R.id.inner_album_recycler_view);
 
@@ -50,7 +56,7 @@ public class InnerAlbumScreen extends AppCompatActivity {
         recyclerView.setLayoutManager(gridLayoutManager);
 
         // Xử lý Adapter
-        MediaItemAdapter mediaItemAdapter = new MediaItemAdapter();
+        mediaItemAdapter = new MediaItemAdapter();
         recyclerView.setAdapter(mediaItemAdapter);
 
         // Lấy dữ liệu từ intent
@@ -84,6 +90,12 @@ public class InnerAlbumScreen extends AppCompatActivity {
                 startActivity(intent);
                 System.out.println("On Item Click | Inner Album Screen after");
             }
+        });
+        materialToolbar.setOnMenuItemClickListener(item -> {
+            if(item.getItemId() == R.id.statistic){
+                showStatisticDialog();
+            }
+            return true;
         });
 
         topAppBar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
@@ -186,5 +198,28 @@ public class InnerAlbumScreen extends AppCompatActivity {
 
 
         return result;
+    }
+    private void showStatisticDialog(){
+        List<MediaItem> list = mediaItemAdapter.getData();
+        long folderSize = 0;
+        int imageCnt = 0;
+        int videoCnt = 0;
+        for(int i = 0 ; i < list.size();i++){
+            folderSize += list.get(i).getFileSize();
+            if(list.get(i).getFileExtension().equals("video/mp4"))
+                videoCnt++;
+            else imageCnt++;
+        }
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Thống kê")
+                .setMessage("Số ảnh và video: " + list.size() +"\n"
+                        + "Số ảnh: " + imageCnt + "\n"
+                        + "Số video: " + videoCnt + "\n"
+                        + "Kích thước: " + BytesToStringConverter.longToString(folderSize))
+                .setPositiveButton("OK", null);
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 }

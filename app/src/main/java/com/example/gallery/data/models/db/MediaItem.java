@@ -1,6 +1,8 @@
 package com.example.gallery.data.models.db;
 
 
+import android.graphics.BitmapFactory;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.room.ColumnInfo;
@@ -9,6 +11,7 @@ import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 import androidx.room.ForeignKey;
 
+import java.io.File;
 import java.io.Serializable;
 
 
@@ -195,32 +198,53 @@ public class MediaItem implements Serializable {
     }
 
     public int getWidth() {
+        if (width == 0) {
+            setInfo();
+        }
         return width;
     }
 
     public void setWidth(int width) {
+
         this.width = width;
     }
 
     public int getHeight() {
+        if (height == 0) {
+            setInfo();
+        }
         return height;
     }
 
     public void setHeight(int height) {
+
+
         this.height = height;
+
     }
 
     public long getFileSize() {
+
+        if (fileSize == 0){
+            setInfo();
+        }
         return fileSize;
     }
 
     public void setFileSize(long fileSize) {
+
         this.fileSize = fileSize;
     }
 
     public String getFileExtension() {
+        if (fileExtension == null){
+            setInfo();
+        }
+
         return fileExtension;
     }
+
+
 
     public void setFileExtension(String fileExtension) {
         this.fileExtension = fileExtension;
@@ -235,6 +259,9 @@ public class MediaItem implements Serializable {
     }
 
     public String getLocation() {
+        if (location == null){
+            setInfo();
+        }
         return location;
     }
 
@@ -309,6 +336,65 @@ public class MediaItem implements Serializable {
         }
         MediaItem mediaItem = (MediaItem) obj;
         return mediaItem.getPath() == this.getPath();
+    }
+
+
+//    ------------------
+//    set info media item
+    public void setInfo() {
+        // set width, height, filesize, fileExtension, location
+
+        // Đường dẫn đến tập tin hình ảnh
+        String imagePath = getPath();
+        if (imagePath == null) {
+            System.out.println("MediaItem : setInfo | Please input image path");
+            return;
+        }
+
+        // Tạo đối tượng File từ đường dẫn
+        File imageFile = new File(imagePath);
+
+        fileExtension = getFileExtension(imageFile);
+        setFileExtension(fileExtension);
+
+        // Lấy thông tin file size
+        long fileSize = imageFile.length(); // Kích thước file trong bytes
+        setFileSize(fileSize);
+
+        // Hiển thị thông tin
+        System.out.println("File Extension: " + fileExtension);
+        System.out.println("File Size (Bytes): " + fileSize);
+
+        // Đọc ảnh để lấy thông tin chi tiết hơn
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(imagePath, options);
+
+        int imageWidth = options.outWidth;
+        int imageHeight = options.outHeight;
+
+        setHeight(imageHeight);
+        setWidth(imageWidth);
+
+        System.out.println("Image Width: " + imageWidth);
+        System.out.println("Image Height: " + imageHeight);
+
+        // Lấy thông tin vị trí
+        String location = "";
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            location = imageFile.toPath().toString();
+        }
+        setLocation(location);
+    }
+
+    // Hàm để lấy file extension từ một đối tượng File
+    public String getFileExtension(File file) {
+        String fileName = file.getName();
+        int lastDotIndex = fileName.lastIndexOf(".");
+        if (lastDotIndex != -1) {
+            return fileName.substring(lastDotIndex + 1);
+        }
+        return ""; // Trả về chuỗi trống nếu không tìm thấy đuôi file
     }
 }
 
