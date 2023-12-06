@@ -24,6 +24,6 @@ public interface DBHelper {
     void updateMediaItem(MediaItem item);
     void updateAlbum(Album alb);
 
-
+    boolean isUserExist(String userID);
 
 }

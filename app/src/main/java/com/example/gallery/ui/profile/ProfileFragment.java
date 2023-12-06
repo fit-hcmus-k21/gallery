@@ -65,14 +65,41 @@ public class ProfileFragment extends BaseFragment<ProfileBinding, ProfileViewMod
 
 
 
+
+
+
+//    ------------------------------
+
+
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         System.out.println("On created view : " + mProfileBinding);
 
-        mProfileBinding.txtUserID.setText("Your userId: " + mViewModel.getDataManager().getCurrentUserId() + " huhu");
+//        ------------------------------
+        System.out.println("mViewModel: " + mViewModel);
+        mViewModel.getNumberOfImages().observe(getViewLifecycleOwner(), new androidx.lifecycle.Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+                System.out.println("ProfileFragment 86: " + integer);
+                mProfileBinding.txtNumImg.setText("Number of images: " + integer);
+            }
+        });
+
+        mViewModel.getNumberOfAlbums().observe(getViewLifecycleOwner(), new androidx.lifecycle.Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+                System.out.println("ProfileFragment 86: " + integer);
+                mProfileBinding.txtNumAlbum.setText("Number of albums: " + integer);
+            }
+        });
+
+//        ------------------------------
+
+        mProfileBinding.txtUserID.setText("Your userId: " + mViewModel.getDataManager().getCurrentUserId() + " ");
         mProfileBinding.txtEmail.setText("Your email: " + mViewModel.getDataManager().getCurrentUserEmail());
-        mProfileBinding.txtName.setText("Your name: " + mViewModel.getDataManager().getCurrentUserName());
+        mProfileBinding.txtName.setText("Hello, " + mViewModel.getDataManager().getCurrentUserName());
 //        mProfileBinding.txtNumImg.setText("Number of images: " + UserViewModel.getInstance().getNumberOfItems().getValue()); // loi failed to open file '/data/data/com.example.gallery/code_cache
 
     }
@@ -104,26 +131,7 @@ public class ProfileFragment extends BaseFragment<ProfileBinding, ProfileViewMod
 
         mProfileBinding.setViewModel(mViewModel);
 
-        System.out.println("Start insert albums");
 
-        // default albums
-//        Album alb1 = new Album();
-//        alb1.setAlbumName("From Urls");
-//        alb1.setUserID(AppPreferencesHelper.getInstance().getCurrentUserId());
-
-//        AlbumViewModel.getInstance().insertAlbum(alb1);
-//
-//        Album alb2 = new Album();
-//
-//        alb2.setAlbumName("Default");
-//        alb2.setUserID(AppPreferencesHelper.getInstance().getCurrentUserId());
-//        AlbumViewModel.getInstance().insertAlbum(alb2);
-//
-//        Album alb3 = new Album();
-//
-//        alb3.setAlbumName("Camera");
-//        alb3.setUserID(AppPreferencesHelper.getInstance().getCurrentUserId());
-//        AlbumViewModel.getInstance().insertAlbum(alb3);
 
 
         // Inflate the layout for this fragment

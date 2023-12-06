@@ -78,7 +78,7 @@ public class MediaItemViewModel extends AndroidViewModel {
 
     public LiveData<Integer> getNumberOfMediaItems() {
 
-        return mediaItemRepository.getMediaItemsCount();
+        return mediaItemRepository.getNumberOfMediaItems();
     }
 
 }

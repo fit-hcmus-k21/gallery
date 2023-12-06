@@ -48,7 +48,7 @@ public class MediaItemRepository {
         mediaItemDao = AppDatabase.getInstance().mediaItemDao();
         System.out.println("on media repos 48");
         allMediaItem = mediaItemDao.getAllMediaItems(AppPreferencesHelper.getInstance().getCurrentUserId());
-        totalMediaItems = mediaItemDao.getMediaItemsCount(AppPreferencesHelper.getInstance().getCurrentUserId());
+        totalMediaItems = mediaItemDao.getNumberOfMediaItems(AppPreferencesHelper.getInstance().getCurrentUserId());
         System.out.println("on media repos 52");
 
 
@@ -130,7 +130,7 @@ public class MediaItemRepository {
         executorService.execute(new Runnable() {
             @Override
             public void run() {
-                mediaItemDao.insertAll(mediaItems);
+//                mediaItemDao.insertAll(mediaItems);
             }
         });
     }
@@ -233,8 +233,8 @@ public class MediaItemRepository {
         });
     }
 
-    public LiveData<Integer> getMediaItemsCount(){
-        return totalMediaItems;
+    public LiveData<Integer> getNumberOfMediaItems(){
+        return mediaItemDao.getNumberOfMediaItems(AppPreferencesHelper.getInstance().getCurrentUserId());
     }
 
 }

@@ -31,6 +31,8 @@ import com.example.gallery.data.DataManager;
 import com.example.gallery.data.local.db.AppDBHelper;
 import com.example.gallery.data.models.db.Album;
 import com.example.gallery.data.models.db.MediaItem;
+import com.example.gallery.data.repositories.models.Repository.AlbumRepository;
+import com.example.gallery.data.repositories.models.Repository.MediaItemRepository;
 import com.example.gallery.data.repositories.models.ViewModel.AlbumViewModel;
 import com.example.gallery.data.repositories.models.ViewModel.MediaItemViewModel;
 import com.example.gallery.ui.base.BaseViewModel;
@@ -82,6 +84,15 @@ import okhttp3.Response;
  */
 
 public class ProfileViewModel extends BaseViewModel<ProfileNavigator> {
+
+
+    public LiveData<Integer> getNumberOfImages() {
+        return MediaItemRepository.getInstance().getNumberOfMediaItems();
+    }
+
+    public LiveData<Integer> getNumberOfAlbums() {
+        return AlbumRepository.getInstance().getNumberOfAlbums();
+    }
 
 
 
@@ -259,9 +270,11 @@ public class ProfileViewModel extends BaseViewModel<ProfileNavigator> {
                     item.setPath(imgPath);
                     item.setOrigin(imageUrl);
                     item.setCreationDate(Date.parse(new Date().toString()));
-                    item.setId(new Random().nextInt(10000));
+//                    item.setId(new Random().nextInt(10000));
                     item.setUserID(getDataManager().getCurrentUserId());
-                    item.setAlbumName("From Urls");
+                    item.setAlbumName("Download");
+
+                    // check if album not exist in table albums
 
                     MediaItemViewModel.getInstance().insert(item);
 //                    Toast.makeText(App.getInstance(), "Insert successfully", Toast.LENGTH_SHORT).show();
@@ -376,7 +389,9 @@ public class ProfileViewModel extends BaseViewModel<ProfileNavigator> {
     }
 
     public void clearText() {
+
         getNavigator().getmProfileBinding().editTextImageUrl.setText("");
+        getNavigator().getmProfileBinding().imageViewDownloaded.setVisibility(View.GONE);
     }
 
 

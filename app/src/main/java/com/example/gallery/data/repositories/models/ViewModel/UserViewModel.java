@@ -8,6 +8,8 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.gallery.App;
+import com.example.gallery.data.AppDataManager;
+import com.example.gallery.data.local.prefs.AppPreferencesHelper;
 import com.example.gallery.data.models.db.Album;
 import com.example.gallery.data.models.db.MediaItem;
 import com.example.gallery.data.models.db.User;
@@ -51,7 +53,7 @@ public class UserViewModel extends AndroidViewModel {
 
         allAlbums = AlbumRepository.getInstance().getAlbums();
         System.out.println("on user view model constr: 53");
-
+        setUserId(AppPreferencesHelper.getInstance().getCurrentUserId());
     }
 
 
@@ -87,7 +89,7 @@ public class UserViewModel extends AndroidViewModel {
     }
 
     public LiveData<Integer> getNumberOfItems(){
-        return MediaItemRepository.getInstance().getMediaItemsCount();
+        return MediaItemRepository.getInstance().getNumberOfMediaItems();
     }
 
 

@@ -14,7 +14,10 @@ import androidx.annotation.NonNull;
 
 
 import com.example.gallery.App;
+import com.example.gallery.data.AppDataManager;
 import com.example.gallery.data.DataManager;
+import com.example.gallery.data.local.db.AppDBHelper;
+import com.example.gallery.data.local.db.DBHelper;
 import com.example.gallery.data.repositories.models.ViewModel.UserViewModel;
 import com.example.gallery.ui.base.BaseViewModel;
 
@@ -59,8 +62,10 @@ public class LoginViewModel extends BaseViewModel<LoginNavigator> {
                 if (task.isSuccessful()) {
                     System.out.println("in login 60");
                     Toast.makeText(App.getInstance(), "Login success", Toast.LENGTH_SHORT).show();
+
                     // set login mode to LoggedInMode.LOGGED_IN_MODE_SERVER
                     getDataManager().setCurrentUserLoggedInMode(DataManager.LoggedInMode.LOGGED_IN_MODE_SERVER);
+                    // set userID
                     getDataManager().setCurrentUserId(mAuth.getCurrentUser().getUid());
                     getDataManager().setCurrentUserEmail(mAuth.getCurrentUser().getEmail());
                     getDataManager().setCurrentUserName(mAuth.getCurrentUser().getDisplayName());
@@ -68,14 +73,9 @@ public class LoginViewModel extends BaseViewModel<LoginNavigator> {
                     System.out.println("in login 69");
 
 
-                    UserViewModel.getInstance().setUserId(mAuth.getCurrentUser().getUid());
-
-                    // set current user id
-                    getDataManager().setCurrentUserId(mAuth.getCurrentUser().getUid());
-                    System.out.println("in login 73");
-
 
                     // open main activity
+                    startSeeding();
                     getNavigator().openMainActivity();
                 } else {
                     setIsLoading(false);
@@ -86,6 +86,19 @@ public class LoginViewModel extends BaseViewModel<LoginNavigator> {
                 Toast.makeText(App.getInstance(), "Login failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         });
     }
+
+    public void startSeeding() {
+        // check if not have data in local db, then fetch data from server
+        if (AppDBHelper.getInstance().isUserExist(getDataManager().getCurrentUserId())) {
+            System.out.println("User" + getDataManager().getCurrentUserId() + " exist");
+        } else {
+            System.out.println("User not exist");
+            // fetch data from server
+
+        }
+
+    }
+
 
     // Method to perform Facebook login
 
@@ -200,6 +213,7 @@ public class LoginViewModel extends BaseViewModel<LoginNavigator> {
         setIsLoading(true);
         getNavigator().openResetPasswordActivity();
     }
+
 
 
 

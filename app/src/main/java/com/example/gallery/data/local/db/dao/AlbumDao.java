@@ -59,4 +59,10 @@ public interface AlbumDao {
     void updateAlbumDeletedTs(String path, long deletedTs);
 
 
+//    ---------------------------------------
+
+    @Query("SELECT COUNT(*) FROM albums WHERE userID = :userID")
+    LiveData<Integer> getNumberOfAlbums(String userID);
+
+
 }

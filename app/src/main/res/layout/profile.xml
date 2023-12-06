@@ -30,19 +30,19 @@
 
                 />
 
-            <Button
-                android:id="@+id/btnAddFromCamera"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/btnAddFromDevice"
-                android:layout_marginTop="6dp"
-                android:layout_marginBottom="16dp"
-                android:text="Take a photo"
+<!--            <Button-->
+<!--                android:id="@+id/btnAddFromCamera"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_below="@id/btnAddFromDevice"-->
+<!--                android:layout_marginTop="6dp"-->
+<!--                android:layout_marginBottom="16dp"-->
+<!--                android:text="Take a photo"-->
 
-                android:backgroundTint="#C6E2FF"
+<!--                android:backgroundTint="#C6E2FF"-->
 
-                android:onClick="@{()->viewModel.addImageFromCamera()}"
-                />
+<!--                android:onClick="@{()->viewModel.addImageFromCamera()}"-->
+<!--                />-->
 
             <TextView
                 android:layout_width="match_parent"
@@ -51,7 +51,7 @@
                 android:textSize="16dp"
                 android:layout_marginTop="6dp"
                 android:id="@+id/txtDownloadStatus"
-                android:layout_below="@id/btnAddFromCamera"
+                android:layout_below="@id/btnAddFromDevice"
                 android:textColor="@color/teal_700"
                 />
 

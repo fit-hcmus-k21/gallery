@@ -8,11 +8,13 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 
 import com.example.gallery.App;
+import com.example.gallery.data.AppDataManager;
 import com.example.gallery.data.DataManager;
 import com.example.gallery.data.local.db.AppDBHelper;
 import com.example.gallery.data.models.api.RegisterRequest;
 import com.example.gallery.data.models.api.RegisterResponse;
 import com.example.gallery.data.models.db.Album;
+import com.example.gallery.data.models.db.MediaItem;
 import com.example.gallery.data.models.db.User;
 import com.example.gallery.data.remote.AppApiHelper;
 import com.example.gallery.data.repositories.models.ViewModel.AlbumViewModel;
@@ -67,50 +69,78 @@ public class RegisterViewModel extends BaseViewModel<RegisterNavigator> {
                 System.out.println("Register: 64");
 
                 DatabaseReference usersRef = database.getReference("users");
-                // Ghi trường "fullName" của người dùng hiện tại
-                usersRef.child(mAuth.getCurrentUser().getUid()).child("fullName").setValue(fullname)
+
+// Ghi trường "fullName" của người dùng hiện tại vào child "user_info"
+                usersRef.child(mAuth.getCurrentUser().getUid()).child("user_info").child("fullName").setValue(fullname)
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
                                 // Ghi dữ liệu thành công
-                                System.out.println("Ghi dữ liệu thành công");
+                                System.out.println("Ghi dữ liệu fullName thành công");
+
+                                // Đường dẫn đến người dùng hiện tại
+                                DatabaseReference currentUserRef = usersRef.child(mAuth.getCurrentUser().getUid());
+
+                                // Ghi trường "creationDate" của người dùng hiện tại với dd/mm/yyyyy
+                                Date date = new Date();
+                                currentUserRef.child("user_info").child("creationDate").setValue(date.toString())
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                // Ghi dữ liệu thành công
+                                                System.out.println("Ghi dữ liệu creation_date thành công");
+
+
+
+
+                                                // Ghi trường "email" của người dùng hiện tại
+                                                currentUserRef.child("user_info").child("email").setValue(email)
+                                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                            @Override
+                                                            public void onSuccess(Void aVoid) {
+                                                                // Ghi dữ liệu thành công
+                                                                System.out.println("Ghi dữ liệu email thành công");
+
+                                                            }
+                                                        })
+                                                        .addOnFailureListener(new OnFailureListener() {
+                                                            @Override
+                                                            public void onFailure(@NonNull Exception e) {
+                                                                // Xử lý lỗi
+                                                                System.out.println("Xử lý lỗi khi ghi dữ liệu email" + e.toString());
+                                                            }
+                                                        });
+
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                // Xử lý lỗi
+                                                System.out.println("Xử lý lỗi khi ghi dữ liệu creationDate" + e.toString());
+                                            }
+                                        });
                             }
                         })
                         .addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
                                 // Xử lý lỗi
-                                System.out.println("Xử lý lỗi" + e.toString());
+                                System.out.println("Xử lý lỗi khi ghi dữ liệu fullName" + e.toString());
                             }
                         });
 
-                // Đường dẫn đến người dùng hiện tại
-                DatabaseReference currentUserRef = usersRef.child(mAuth.getCurrentUser().getUid());
-
-
-                // Ghi trường "creationDate" của người dùng hiện tại với dd/mm/yyyyy
-                Date date = new Date();
-                currentUserRef.child("creationDate").setValue(date.toString())
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                // Ghi dữ liệu thành công
-                                System.out.println("Ghi dữ liệu creationDate thành công");
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                // Xử lý lỗi
-                                System.out.println("Xử lý lỗi khi ghi dữ liệu creationDate" + e.toString());
-                            }
-                        });
 
 // Đường dẫn đến nút "albums" của người dùng hiện tại
-                DatabaseReference albumsRef = currentUserRef.child("albums");
+                DatabaseReference currentUserRef = usersRef.child(mAuth.getCurrentUser().getUid());
+
+                DatabaseReference albumsRef = currentUserRef.child("user_data").child("albums");
 
                 // Ghi dữ liệu vào nút "albums"
-                albumsRef.child("album1").setValue("Album 1")
+                Album album = new Album();
+                album.setUserID(mAuth.getCurrentUser().getUid());
+                album.setAlbumName("Default");
+                albumsRef.child("default").setValue(album)
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
@@ -126,11 +156,14 @@ public class RegisterViewModel extends BaseViewModel<RegisterNavigator> {
                             }
                         });
 
-                // Đường dẫn đến nút "images" của người dùng hiện tại
-                DatabaseReference imagesRef = currentUserRef.child("images");
+                // Đường dẫn đến nút "media_items" của người dùng hiện tại
+                DatabaseReference imagesRef = currentUserRef.child("user_data").child("media_items");
 
                 // Ghi dữ liệu vào nút "images"
-                imagesRef.child("image1").setValue("Image 1")
+                MediaItem mediaItem = new MediaItem();
+                mediaItem.setAlbumName("default");
+                mediaItem.setUserID(mAuth.getCurrentUser().getUid());
+                imagesRef.child("default").setValue(mediaItem)
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
@@ -146,7 +179,7 @@ public class RegisterViewModel extends BaseViewModel<RegisterNavigator> {
                             }
                         });
 
-//                set logged in mode in prefs
+//                set logged in mode in prefs, userID
                 getDataManager().setCurrentUserId(mAuth.getCurrentUser().getUid());
                 getDataManager().setCurrentUserLoggedInMode(DataManager.LoggedInMode.LOGGED_IN_MODE_SERVER);
                 getDataManager().setCurrentUserName(fullname);
@@ -157,10 +190,13 @@ public class RegisterViewModel extends BaseViewModel<RegisterNavigator> {
                 user.setId(mAuth.getCurrentUser().getUid());
                 user.setFullName(fullname);
                 user.setEmail(email);
+                AppDBHelper.getInstance().insertUser(user);
 
 
-                UserViewModel.getInstance().insertUser(user);
-                UserViewModel.getInstance().setUserId(mAuth.getCurrentUser().getUid());
+                // insert default albums
+                insertDefaultAlbums(mAuth.getCurrentUser().getUid());
+
+
 
 
 
@@ -174,6 +210,57 @@ public class RegisterViewModel extends BaseViewModel<RegisterNavigator> {
             }
         });
     }
+
+    public void insertDefaultAlbums(String userID) {
+        // Camera
+        Album cameraAlbum = new Album();
+        cameraAlbum.setAlbumName("Camera");
+        cameraAlbum.setUserID(userID);
+        AppDBHelper.getInstance().insertAlbum(cameraAlbum);
+
+        // Facebook
+        Album facebookAlbum = new Album();
+        facebookAlbum.setAlbumName("Facebook");
+        facebookAlbum.setUserID(userID);
+        AppDBHelper.getInstance().insertAlbum(facebookAlbum);
+
+        // Messenger
+        Album messengerAlbum = new Album();
+        messengerAlbum.setAlbumName("Messenger");
+        messengerAlbum.setUserID(userID);
+        AppDBHelper.getInstance().insertAlbum(messengerAlbum);
+
+        // Instagram
+        Album instagramAlbum = new Album();
+        instagramAlbum.setAlbumName("Instagram");
+        instagramAlbum.setUserID(userID);
+        AppDBHelper.getInstance().insertAlbum(instagramAlbum);
+
+        // Favorite
+        Album favoriteAlbum = new Album();
+        favoriteAlbum.setAlbumName("Favorite");
+        favoriteAlbum.setUserID(userID);
+        AppDBHelper.getInstance().insertAlbum(favoriteAlbum);
+
+        // Bin
+        Album binAlbum = new Album();
+        binAlbum.setAlbumName("Bin");
+        binAlbum.setUserID(userID);
+        AppDBHelper.getInstance().insertAlbum(binAlbum);
+
+        // ScreenShot
+        Album screenShotAlbum = new Album();
+        screenShotAlbum.setAlbumName("ScreenShot");
+        screenShotAlbum.setUserID(userID);
+        AppDBHelper.getInstance().insertAlbum(screenShotAlbum);
+
+        // Download
+        Album downloadAlbum = new Album();
+        downloadAlbum.setAlbumName("Download");
+        downloadAlbum.setUserID(userID);
+        AppDBHelper.getInstance().insertAlbum(downloadAlbum);
+    }
+
 
 
     public void onFbRegisterClick() {

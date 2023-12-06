@@ -177,4 +177,9 @@ public class AlbumRepository {
         });
     }
 
+//    --------------------------------------------
+    public LiveData<Integer> getNumberOfAlbums(){
+        return albumDao.getNumberOfAlbums(AppPreferencesHelper.getInstance().getCurrentUserId());
+    }
+
 }

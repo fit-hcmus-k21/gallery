@@ -30,6 +30,10 @@ public class AppDataManager implements DataManager {
 
     private final PreferencesHelper mPreferencesHelper;
 
+
+
+
+
     public  AppDataManager() {
         mApiHelper = AppApiHelper.getInstance();
         mDbHelper = AppDBHelper.getInstance();
@@ -193,6 +197,11 @@ public class AppDataManager implements DataManager {
         mPreferencesHelper.clearPreferences();
     }
 
+
+    @Override
+    public boolean isUserExist(String userID) {
+        return mDbHelper.isUserExist(userID);
+    }
 
 
 
