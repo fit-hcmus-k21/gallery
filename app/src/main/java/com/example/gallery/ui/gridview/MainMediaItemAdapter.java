@@ -1,4 +1,4 @@
-package com.example.gallery.ui.main.adapter;
+package com.example.gallery.ui.gridview;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -30,18 +30,10 @@ public class MainMediaItemAdapter extends RecyclerView.Adapter<MainMediaItemAdap
     private int currentType = MediaItem.TYPE_GRID;
     //
     public void setData(List<MediaItem> mediaItemListAll, HashMap<String, List<MediaItem>> groupMediaItemByDate, List<String> dateListString) {
-        System.out.println("MainMediaItemAdapter 001: setData: mediaItemListAll = " + mediaItemListAll.get(0).getPath());
        this.mediaItemListAll = mediaItemListAll;
-       System.out.println("line 35");
        this.groupMediaItemByDate = groupMediaItemByDate;
-        System.out.println("line 37");
-
        this.dateListString = dateListString;
-        System.out.println("line 40");
-
        notifyDataSetChanged();
-
-       System.out.println("MainMediaItemAdapter 001: after set data");
     }
     public void setCurrentType(int currentType){
         this.currentType = currentType;
@@ -54,7 +46,6 @@ public class MainMediaItemAdapter extends RecyclerView.Adapter<MainMediaItemAdap
     @NonNull
     @Override
     public MainMediaItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        System.out.println("MainMediaItemAdapter 001: onCreateViewHolder: viewType = " + viewType);
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_rcv_layout, parent, false);
 
         return new MainMediaItemViewHolder(view);
@@ -62,7 +53,7 @@ public class MainMediaItemAdapter extends RecyclerView.Adapter<MainMediaItemAdap
 
     @Override
     public void onBindViewHolder(@NonNull MainMediaItemViewHolder holder, int position) {
-        System.out.println("MainMediaItemAdapter 001: onBindViewHolder: position = " + position);
+//        System.out.println("MainMediaItemAdapter 001: onBindViewHolder: position = " + position);
 
         String date = dateListString.get(position);
         holder.headingTextView.setText(date);
@@ -80,27 +71,16 @@ public class MainMediaItemAdapter extends RecyclerView.Adapter<MainMediaItemAdap
             holder.recyclerView.setLayoutManager(linearLayoutManager);
         }
 
-        System.out.println("Before renew adapter line 83");
         mediaItemAdapter = new MediaItemAdapter(); // Phải tạo 1 adapter mới vì nếu dùng adapter của MediaItemAdapter thì sẽ bị lỗi
         // Nói chung nên tạo adapter trong đây để tránh lỗi
 
-        System.out.println("Before set adapter line 87");
-
-
         holder.recyclerView.setAdapter(mediaItemAdapter);
-
-        System.out.println("After set data line 92");
-
-
         mediaItemAdapter.setData(mediaItemList);
-
-        System.out.println("After set data line 97");
 
         // Xử lý sự kiện click từ recyclerview con
         mediaItemAdapter.setOnItemClickListener(new MediaItemAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(MediaItem mediaItem) {
-                System.out.println("On Item Click | MainMediaItemAdapter before");
                 int index = mediaItemListAll.indexOf(mediaItem);
 
                 Intent intent = new Intent(holder.itemView.getContext(), SingleMediaActivity.class);
@@ -111,12 +91,8 @@ public class MainMediaItemAdapter extends RecyclerView.Adapter<MainMediaItemAdap
                 intent.putExtras(bundle);
 
                 holder.itemView.getContext().startActivity(intent);
-                System.out.println("On Item Click | MainMediaItemAdapter after");
             }
         });
-
-        System.out.println("Finish line 116");
-
 
     }
 
@@ -127,6 +103,9 @@ public class MainMediaItemAdapter extends RecyclerView.Adapter<MainMediaItemAdap
         }
         return 0;
     }
+
+
+
 //    public ArrayList<HashMap<String, List<MediaItem>>> getData(){
 //        return grouptMediaItemByDateArrayList;
 //    }
@@ -138,8 +117,7 @@ public class MainMediaItemAdapter extends RecyclerView.Adapter<MainMediaItemAdap
 //
 //        return new MediaItemAdapter.MediaItemViewHolder(view);
 //    }
-//
-//    @Override
+////
 //    public void onBindViewHolder(@NonNull MediaItemAdapter.MediaItemViewHolder holder, int position) {
 //        HashMap<String, List<MediaItem>> mediaItemHashMap = grouptMediaItemByDateArrayList.get(position);
 //

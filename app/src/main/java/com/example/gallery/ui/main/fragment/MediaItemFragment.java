@@ -33,6 +33,7 @@ import android.widget.Toast;
 import com.example.gallery.R;
 import com.example.gallery.data.models.db.MediaItem;
 import com.example.gallery.data.models.db.User;
+import com.example.gallery.data.repositories.models.Repository.MediaItemRepository;
 import com.example.gallery.data.repositories.models.ViewModel.MediaItemViewModel;
 import com.example.gallery.ui.main.adapter.MainMediaItemAdapter;
 import com.example.gallery.ui.main.adapter.MediaItemAdapter;
@@ -47,7 +48,6 @@ public class MediaItemFragment extends Fragment {
     public static final int REQUEST_TAKE_PHOTO = 256;
 
     View mView;
-    MediaItemViewModel mediaItemViewModel;
     private RecyclerView recyclerView;
     private MainMediaItemAdapter mainMediaItemAdapter;
     private int mCurrentType = MediaItem.TYPE_GRID;
@@ -82,7 +82,6 @@ public class MediaItemFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         // Khởi tạo viewModel
-        mediaItemViewModel = ViewModelProviders.of(this).get(MediaItemViewModel.class);
         dateListString = new ArrayList<>();
 
         // Ánh xạ các biến
@@ -117,31 +116,36 @@ public class MediaItemFragment extends Fragment {
 
         // check if mediaItemViewModel is null or mediaItemViewModel.getAllMediaItems() is null
 
-//        if (mediaItemViewModel == null) {
-//            System.out.println("mediaItemViewModel is null");
-//        }
-//        if (mediaItemViewModel.getAllMediaItems() == null) {
-//            System.out.println("mediaItemViewModel.getAllMediaItems() is null");
-//        }
-//        // Data from viewModel
-//        mediaItemViewModel.getAllMediaItems().observe(getViewLifecycleOwner(), new Observer<List<MediaItem>>() {
-//
-//            @Override
-//            public void onChanged(List<MediaItem> mediaItems) {
-//                if(mediaItems == null) {
-//                    return;
-//                }
-//
-//                for(MediaItem mediaItem : mediaItems){
-//                    mediaItem.setTypeDisplay(mCurrentType);
-//                }
-//
-//                HashMap<String, List<MediaItem>> mediaItemGroupByDate = setMediaItemGroupByDate(mediaItems);
-//
-//                mainMediaItemAdapter.setData(mediaItems, mediaItemGroupByDate, dateListString); // trong adapter có hàm setData và có notifydatasetchanged
-//
-//            }
-//        });
+        // Data from viewModel
+        MediaItemRepository.getInstance().getAllMediaItems().observe(getViewLifecycleOwner(), new Observer<List<MediaItem>>() {
+
+            @Override
+            public void onChanged(List<MediaItem> mediaItems) {
+                if(mediaItems == null) {
+                    return;
+                }
+
+                for(MediaItem mediaItem : mediaItems){
+                    System.out.println("MediaItemFragment 001: onViewCreated: getAllMediaItems: onChanged: in loop");
+
+                    mediaItem.setTypeDisplay(mCurrentType);
+                }
+
+                System.out.println("on observe : " + mediaItems.size() + " before set hash map");
+
+                HashMap<String, List<MediaItem>> mediaItemGroupByDate = setMediaItemGroupByDate(mediaItems);
+
+                System.out.println("on observe : after set hash map , before set data");
+
+
+                mainMediaItemAdapter.setData(mediaItems, mediaItemGroupByDate, dateListString); // trong adapter có hàm setData và có notifydatasetchanged
+
+                System.out.println("on observe : after set hash map , after set data");
+
+
+
+            }
+        });
 
     }
 

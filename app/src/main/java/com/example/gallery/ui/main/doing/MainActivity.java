@@ -31,9 +31,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ViewPager2 viewPager2;
     private BottomNavigationView bottomNavigationView;
-    UserViewModel userViewModel;
-    AlbumViewModel albumViewModel ;
-    MediaItemViewModel mediaItemViewModel ;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -45,14 +43,10 @@ public class MainActivity extends AppCompatActivity {
         System.out.println("in oncreate main: 45");
 
 
-        // Khoi tao cac viewmodel
-        userViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
-        albumViewModel = ViewModelProviders.of(this).get(AlbumViewModel.class);
-        mediaItemViewModel = ViewModelProviders.of(this).get(MediaItemViewModel.class);
 
         //TODO kiêểm tra lại phần quyền truy cập
         if(RequestPermissionHelper.checkAndRequestPermission(this, 101)){
-            fetchData();
+//            fetchData();
         }
 //        else{
 //            Toast.makeText(this, "Permission is not granted", Toast.LENGTH_SHORT).show();
@@ -131,22 +125,7 @@ public class MainActivity extends AppCompatActivity {
 //                "user1@example.com", "", "", "", ""));
 //        userViewModel.insertUser(new User("10", "User2", "", "user2", "123",
 //                "user2@example.com", "", "", "", ""));
-        userViewModel.getAllUserData().observe(this, new Observer<User>() {
-            @Override
-            public void onChanged(User user) {
-                if(user != null ){
-                    albumViewModel.fetchData();
-                }
-            }
-        });
-        albumViewModel.getAllAlbums().observe(this, new Observer<List<Album>>() {
-            @Override
-            public void onChanged(List<Album> albums) {
-                if(albums != null && !albums.isEmpty()){
-                    mediaItemViewModel.fetchData();
-                }
-            }
-        });
+
 // ******************************  Lấy dữ liệu từ external - Code tam thời ******************************
 
         // Ánh xạ các Widget

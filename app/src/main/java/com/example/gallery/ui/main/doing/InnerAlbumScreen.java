@@ -59,6 +59,8 @@ public class InnerAlbumScreen extends AppCompatActivity {
         mediaItemAdapter.setOnItemClickListener(new MediaItemAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(MediaItem mediaItem) {
+                System.out.println("On Item Click | Inner Album Screen before");
+
                 Intent intent = new Intent(InnerAlbumScreen.this, SingleMediaActivity.class);
 
                 Bundle bundle = new Bundle();
@@ -67,6 +69,7 @@ public class InnerAlbumScreen extends AppCompatActivity {
                 intent.putExtras(bundle);
 
                 startActivity(intent);
+                System.out.println("On Item Click | Inner Album Screen after");
             }
         });
 
