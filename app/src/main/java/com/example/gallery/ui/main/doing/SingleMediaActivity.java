@@ -36,6 +36,7 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.gallery.R;
 import com.example.gallery.data.models.db.MediaItem;
+import com.example.gallery.data.repositories.models.Repository.MediaItemRepository;
 import com.example.gallery.data.repositories.models.ViewModel.MediaItemViewModel;
 import com.example.gallery.ui.main.adapter.ViewPagerSingleMediaAdapter;
 import com.example.gallery.utils.GetInDexOfHelper;
@@ -56,7 +57,6 @@ import java.util.zip.Inflater;
 public class SingleMediaActivity extends AppCompatActivity {
 
     public static int REQUEST_MAKE_FAVORITE_ITEM = 100;
-    MediaItemViewModel mediaItemViewModel;
 
     ViewPager2 viewPager2;
     ViewPagerSingleMediaAdapter viewPagerSingleMediaAdapter;
@@ -71,11 +71,10 @@ public class SingleMediaActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        System.out.println("SingleMediaActivity | OnCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.single_photo_screen);
 
-        // Create instance of ViewModel
-        mediaItemViewModel = ViewModelProviders.of(this).get(MediaItemViewModel.class);
 
         // Ánh xạ các view
         viewPager2 = findViewById(R.id.single_photo_viewpager2);
@@ -104,9 +103,10 @@ public class SingleMediaActivity extends AppCompatActivity {
         // Nếu không có biến này thì khi chúng ta thực hiện thao tác thay đổi trạng thái Favorite của item đang được chọn
         // thì nó sẽ tự động di chuyển đến item mà ta đã truyền vào trước đó gây mất đồng bộ
         final boolean[] isMoveToCurrentItem = {false};
-        mediaItemViewModel.getAllMediaItems().observe(this, new Observer<List<MediaItem>>() {
+        MediaItemRepository.getInstance().getAllMediaItems().observe(this, new Observer<List<MediaItem>>() {
             @Override
             public void onChanged(List<MediaItem> mediaItems) {
+                System.out.println("SingleMediaActivity | OnCreate | onChanged all media items");
 
                 mediaItemsList = mediaItems;
 
@@ -115,11 +115,17 @@ public class SingleMediaActivity extends AppCompatActivity {
 
                 // Lấy dữ liệu của MediaItem đang được chọn tra về LiveData
                 mediaItemLiveData.setValue(mediaItems.get(index));
+                System.out.println("SingleMediaActivity | OnCreate | onChanged all media items | 101");
+                System.out.println("SingleMediaActivity | mediaItemLiveData = " + mediaItemLiveData.getValue());
 
                 if(!isMoveToCurrentItem[0]){
                     Log.e("MyTag", "onChanged: " + index)   ;
+                    System.out.println("SingleMediaActivity | OnCreate | onChanged all media items | 105");
+
                     viewPager2.setCurrentItem(index, false);
+                    System.out.println("SingleMediaActivity | OnCreate | onChanged all media items | 108");
                     isMoveToCurrentItem[0] = true;
+
                 }
 
             }
@@ -128,11 +134,14 @@ public class SingleMediaActivity extends AppCompatActivity {
         viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                System.out.println("Single media activity | on page scrolled 137 | position : " + position);
                 super.onPageScrolled(position, positionOffset, positionOffsetPixels);
             }
 
             @Override
             public void onPageSelected(int position) {
+                System.out.println("Single media activity | on page selected 143 | position : " + position);
+                mediaItemLiveData.setValue(mediaItemsList.get(position));
 
                 MediaItem selectedMediaItem = mediaItemsList.get(position);
                 Log.e("MyTag", "onPageSelected: " + position);
@@ -153,11 +162,12 @@ public class SingleMediaActivity extends AppCompatActivity {
                 favoriteImageView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        System.out.println("SingleMediaActivity | OnCreate | onClick | update favorite");
 
                         // Đây chỉ mới là việc thay đổi dữ liêu của Favorite trong database tự định nghĩa
                         // Chúng ta phải tiêến hành cập nhật trong MediaStore.Images.Media/MediaStores.Video.Media trường Favorite nữa
                         selectedMediaItem.setFavorite(!selectedMediaItem.isFavorite());
-                        mediaItemViewModel.updateFavorite(selectedMediaItem.getId(), selectedMediaItem.isFavorite());
+                        MediaItemRepository.getInstance().updateFavorite(selectedMediaItem.getId(), selectedMediaItem.isFavorite());
 
                         if(selectedMediaItem.isFavorite()){
                             favoriteImageView.setImageResource(R.drawable.heart_svgrepo_com_color);
@@ -195,15 +205,20 @@ public class SingleMediaActivity extends AppCompatActivity {
 
             @Override
             public void onPageScrollStateChanged(int state) {
+                System.out.println("SingleMediaActivity | OnCreate | onPageScrollStateChanged");
                 super.onPageScrollStateChanged(state);
             }
         });
+
+        System.out.println("SingleMediaActivity | OnCreate | End");
+
     }
 
     // Override lại hàm khởi tạo 1 menu, và gán menu đó cho biến mMenu. Có thể thao tác trong file xml cho menu
     // Nhưng không hiểu vì sao lại lỗi, không hiêển thị được icon nên dùng cách này
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        System.out.println("SingleMediaActivity | onCreateOptionsMenu");
         getMenuInflater().inflate(R.menu.top_appbar_media_item_menu, menu);
         mMenu = menu;
         return super.onCreateOptionsMenu(menu);
@@ -214,6 +229,7 @@ public class SingleMediaActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        System.out.println("SingleMediaActivity | onOptionsItemSelected");
         int id = item.getItemId();
 
         if(id == android.R.id.home ){
@@ -223,6 +239,7 @@ public class SingleMediaActivity extends AppCompatActivity {
             mediaItemLiveData.observe(this, new Observer<MediaItem>() {
                 @Override
                 public void onChanged(MediaItem mediaItem) {
+                    System.out.println("Single Media Activity | On changed 239 " + mediaItem);
                     DisPlayInforMationAlerDialog(mediaItem);
                 }
             });
@@ -240,13 +257,19 @@ public class SingleMediaActivity extends AppCompatActivity {
             //TODO handle media_set_wallpaper_item
         }
         else if(id == R.id.media_convert_text_item){
-            mediaItemLiveData.observe(this, new Observer<MediaItem>() {
-                @Override
-                public void onChanged(MediaItem mediaItem) {
-//                    showOCRResultDialog(mediaItem.getPath());
-                    textRecognition(mediaItem);
-                }
-            });
+            textRecognition(mediaItemLiveData.getValue());
+//            mediaItemLiveData.observe(this, new Observer<MediaItem>() {
+//                @Override
+//                public void onChanged(MediaItem mediaItem) {
+////                    showOCRResultDialog(mediaItem.getPath());
+//                    System.out.println("Single Media Activity | On changed 260 " + mediaItem );
+//                    textRecognition(mediaItem);
+//
+//                    // reset lại option
+//
+//
+//                }
+//            });
 
         }
 
@@ -254,6 +277,7 @@ public class SingleMediaActivity extends AppCompatActivity {
     }
 
     private void DisPlayInforMationAlerDialog(MediaItem mediaItem) {
+        System.out.println("SingleMediaActivity | DisPlayInforMationAlerDialog");
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Chi tiết ảnh")
@@ -271,6 +295,7 @@ public class SingleMediaActivity extends AppCompatActivity {
         alertDialog.show();
     }
     private void textRecognition(MediaItem mediaItem){
+        System.out.println("SingleMediaActivity | textRecognition | mediaitem: " + mediaItem);
         FirebaseVisionImage image;
         try{
 //            image = FirebaseVisionImage.fromFilePath(this,Uri.parse(mediaItem.getPath()));
@@ -283,6 +308,7 @@ public class SingleMediaActivity extends AppCompatActivity {
                                 @Override
                                 public void onSuccess(FirebaseVisionText firebaseVisionText) {
                                     String result = firebaseVisionText.getText();
+                                    System.out.println("SingleMediaActivity | textRecognition | onSuccess | result = " + result);
                                     showOCRResultDialog(result);
                                 }
                             })
@@ -318,11 +344,20 @@ public class SingleMediaActivity extends AppCompatActivity {
         alertDialog.show();
     }
     private void shareImageToInternet(MediaItem mediaItem){
-        Uri uri = Uri.parse(mediaItem.getPath());
+        System.out.println("Share image : 337 | mediaitem: " + mediaItem + " | path: " + mediaItem.getPath());
+
+        Uri uri = FileProvider.getUriForFile(this, getPackageName() + ".provider", new File(mediaItem.getPath()));
+
+//        Uri uri = Uri.parse(mediaItem.getPath());
+        System.out.print("Uri: "  + uri);
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("image/*");
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+        System.out.println("Share image : 342");
         intent.putExtra(Intent.EXTRA_STREAM, uri);
-        startActivity(Intent.createChooser(intent, "share image"));
+        startActivity(Intent.createChooser(intent, "Share this image with..."));
+        System.out.println("Share image : 347");
+
     }
 }

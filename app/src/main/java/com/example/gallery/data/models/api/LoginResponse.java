@@ -38,7 +38,7 @@ public class LoginResponse {
 
     @Expose
     @SerializedName("user_id")
-    private Long userId;
+    private String userId;
 
     @Expose
     @SerializedName("user_name")
@@ -132,7 +132,7 @@ public class LoginResponse {
         return userEmail;
     }
 
-    public Long getUserId() {
+    public String getUserId() {
         return userId;
     }
 

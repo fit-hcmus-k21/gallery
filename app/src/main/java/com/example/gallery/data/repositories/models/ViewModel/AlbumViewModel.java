@@ -7,6 +7,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.gallery.App;
 import com.example.gallery.data.models.db.Album;
 import com.example.gallery.data.repositories.models.Repository.AlbumRepository;
 
@@ -15,9 +16,19 @@ import java.util.List;
 public class AlbumViewModel extends AndroidViewModel {
     private AlbumRepository albumRepository;
     private LiveData<List<Album>> allAlbums;
+
+    private static AlbumViewModel currentAlbumViewModel;
+
+    public static AlbumViewModel getInstance(){
+        if(currentAlbumViewModel == null){
+            currentAlbumViewModel = new AlbumViewModel(App.getInstance());
+        }
+        return currentAlbumViewModel;
+    }
+
     public AlbumViewModel(@NonNull Application application) {
         super(application);
-        albumRepository = new AlbumRepository(application);
+        albumRepository = AlbumRepository.getInstance();
         allAlbums = albumRepository.getAlbums();
     }
     public void fetchData(){
@@ -46,6 +57,10 @@ public class AlbumViewModel extends AndroidViewModel {
     }
     public void updateAlbumDeletedTs(String path, long deletedTs){
         albumRepository.updateAlbumDeletedTs(path, deletedTs);
+    }
+
+    public void insertAlbum(Album album){
+        albumRepository.insert(album);
     }
 
 }
