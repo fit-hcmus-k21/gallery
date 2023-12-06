@@ -1,6 +1,7 @@
 package com.example.gallery.data.models.db;
 
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
@@ -27,12 +28,12 @@ import java.io.Serializable;
                         entity = Album.class,
                         parentColumns = "name",
                         childColumns = "albumName",
-                        onDelete = ForeignKey.NO_ACTION // Thêm mới ở đây
+                        onDelete = ForeignKey.NO_ACTION // If delete album, mediaItem still exist
                 )
-        },
-        primaryKeys = {
-            "id", "userID"
         }
+//        primaryKeys = {
+//            "id", "userID"
+//        }
 )
 public class MediaItem implements Serializable {
     // This is used to represent for MediaItem in entites with the atribute typeDisplay which uses for recognize the type to display in recyclerview
@@ -41,11 +42,15 @@ public class MediaItem implements Serializable {
     public static final int TYPE_STAGGERED = 3;
 
 
+//    @ColumnInfo(name = "id", index = true)
+
+    @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
     private int id;
 
-    @ColumnInfo(name = "userID", index = true)
-    private int userID;
+    @ColumnInfo( name = "userID", index = true)
+    @NonNull
+    private String userID;
 
     @ColumnInfo(name = "name")
     private String name;
@@ -96,6 +101,9 @@ public class MediaItem implements Serializable {
     @ColumnInfo(name = "deletedTs") // Deleted timestamp
     private long deletedTs;
 
+    @ColumnInfo(name = "origin")
+    private String origin;
+
     // Add ignore attribute to display some work
 
     @Ignore
@@ -111,9 +119,11 @@ public class MediaItem implements Serializable {
 
 
     // Constructor
+    public MediaItem() {
+    }
 
 
-    public MediaItem(int id, int userID, String name, String tag, String description, String path,
+    public MediaItem(int id, String userID, String name, String tag, String description, String path,
                      int width, int height, long fileSize, String fileExtension, Long creationDate, String location,
                      String albumName, String url, boolean favorite, String parentPath, Long lastModified, long deletedTs) {
         this.id = id;
@@ -144,11 +154,11 @@ public class MediaItem implements Serializable {
         this.id = id;
     }
 
-    public int getUserID() {
+    public String getUserID() {
         return userID;
     }
 
-    public void setUserID(int userID) {
+    public void setUserID(String userID) {
         this.userID = userID;
     }
 
@@ -278,6 +288,15 @@ public class MediaItem implements Serializable {
 
     public void setDeletedTs(long deletedTs) {
         this.deletedTs = deletedTs;
+    }
+
+    public void setOrigin(String url) {
+        this.origin = url;
+
+    }
+
+    public String getOrigin() {
+        return origin;
     }
 
     @Override

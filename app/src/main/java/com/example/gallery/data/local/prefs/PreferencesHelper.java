@@ -9,10 +9,11 @@ public interface PreferencesHelper {
 
 
     void setCurrentUserEmail(String email);
+    String getCurrentUserEmail();
 
-    Long getCurrentUserId();
+    String getCurrentUserId();
 
-    void setCurrentUserId(Long userId);
+    void setCurrentUserId(String userId);
 
     int getCurrentUserLoggedInMode();
 
@@ -20,8 +21,11 @@ public interface PreferencesHelper {
 
 
     void setCurrentUserName(String userName);
+    String getCurrentUserName();
 
     String getCurrentUserProfilePicUrl();
 
     void setCurrentUserProfilePicUrl(String profilePicUrl);
+
+    void clearPreferences();
 }

@@ -12,10 +12,10 @@ public interface DataManager extends DBHelper, PreferencesHelper, ApiHelper {
 
 
     void setUserAsLoggedOut();
-    void updateApiHeader(Long userID, String accessToken);
+    void updateApiHeader(String userID, String accessToken);
 
     void updateUserInfo (
-            Long userID,
+            String userID,
             String fullName,
             String username,
             String email,
@@ -23,6 +23,7 @@ public interface DataManager extends DBHelper, PreferencesHelper, ApiHelper {
             String profilePicUrl,
             LoggedInMode loggedInMode
     );
+
 
     enum LoggedInMode {
         LOGGED_IN_MODE_LOGGED_OUT(0),

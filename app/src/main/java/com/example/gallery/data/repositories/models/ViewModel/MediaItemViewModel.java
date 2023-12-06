@@ -7,6 +7,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.gallery.App;
 import com.example.gallery.data.models.db.MediaItem;
 import com.example.gallery.data.repositories.models.Repository.MediaItemRepository;
 
@@ -14,18 +15,28 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public class MediaItemViewModel extends AndroidViewModel {
-    private MediaItemRepository mediaItemRepository;
-    LiveData<List<MediaItem>> allMediaItems;
+    private MediaItemRepository mediaItemRepository ;
+    LiveData<List<MediaItem>> allMediaItems ;
+
+    private static MediaItemViewModel currentMediaItemViewModel;
+
+    public static MediaItemViewModel getInstance(){
+        if(currentMediaItemViewModel == null){
+            currentMediaItemViewModel = new MediaItemViewModel(App.getInstance());
+        }
+        return currentMediaItemViewModel;
+    }
 
     public MediaItemViewModel(Application application) {
         super(application);
-        mediaItemRepository = new MediaItemRepository(application);
+        mediaItemRepository = MediaItemRepository.getInstance();
         allMediaItems = mediaItemRepository.getAllMediaItems();
     }
     public void fetchData() {
         mediaItemRepository.fetchData();
     }
     public LiveData<List<MediaItem>> getAllMediaItems() {
+
         return allMediaItems;
     }
     public void insert(MediaItem mediaItem) {
@@ -63,6 +74,11 @@ public class MediaItemViewModel extends AndroidViewModel {
     }
     public void updateMediaItemTag(int id, String tag) {
         mediaItemRepository.updateMediaItemTag(id, tag);
+    }
+
+    public LiveData<Integer> getNumberOfMediaItems() {
+
+        return mediaItemRepository.getNumberOfMediaItems();
     }
 
 }

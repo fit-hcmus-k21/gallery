@@ -22,7 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.gallery.R;
 import com.example.gallery.data.models.db.MediaItem;
-import com.example.gallery.data.repositories.models.ViewModel.MediaItemViewModel;
+import com.example.gallery.data.repositories.models.Repository.MediaItemRepository;
 import com.example.gallery.ui.main.adapter.MediaItemAdapter;
 import com.google.android.material.appbar.MaterialToolbar;
 
@@ -30,18 +30,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class InnerAlbumScreen extends AppCompatActivity {
-    MediaItemViewModel mediaItemViewModel;
     RecyclerView recyclerView;
     MaterialToolbar topAppBar;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        System.out.println("InnerAlbumScreen  27: onCreate: ");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.inner_album_layout);
         topAppBar = findViewById(R.id.topAppBar);
 
 
         // Khởi tạo viewModel
-        mediaItemViewModel = ViewModelProviders.of(this).get(MediaItemViewModel.class);
 
         // Ánh xạ các view
         recyclerView = findViewById(R.id.inner_album_recycler_view);
@@ -56,21 +55,25 @@ public class InnerAlbumScreen extends AppCompatActivity {
 
         // Lấy dữ liệu từ intent
         Bundle bundle = getIntent().getExtras();
-        String albumPath = bundle.getString("albumPath");
+        String albumName = bundle.getString("albumName");
 
-        mediaItemViewModel.getAllMediaItems().observe(this, new Observer<List<MediaItem>>() {
+        MediaItemRepository.getInstance().getAllMediaItems().observe(this, new Observer<List<MediaItem>>() {
             @Override
             public void onChanged(List<MediaItem> mediaItems) {
 
-                List<MediaItem> mediaItemList = getMediaItemsOfAlbum(mediaItems, albumPath);
+                List<MediaItem> mediaItemList = getMediaItemsOfAlbum(mediaItems, albumName);
 //                Log.e("Mytag", "onChanged: " + mediaItemList.size());
+                System.out.println("InnerAlbumScreen  53: onChanged before set data: mediaItemList = " + mediaItems);
                 mediaItemAdapter.setData(mediaItemList);
+                System.out.println("InnerAlbumScreen  55: onChanged: after set data  " );
             }
         });
 
         mediaItemAdapter.setOnItemClickListener(new MediaItemAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(MediaItem mediaItem) {
+                System.out.println("On Item Click | Inner Album Screen before");
+
                 Intent intent = new Intent(InnerAlbumScreen.this, SingleMediaActivity.class);
 
                 Bundle bundle = new Bundle();
@@ -79,6 +82,7 @@ public class InnerAlbumScreen extends AppCompatActivity {
                 intent.putExtras(bundle);
 
                 startActivity(intent);
+                System.out.println("On Item Click | Inner Album Screen after");
             }
         });
 
@@ -121,7 +125,7 @@ public class InnerAlbumScreen extends AppCompatActivity {
                             }
                             else{
                                 //get album name
-                                String albumName = albumPath;
+                                String albumName = bundle.getString("albumName");
                                 albumName = albumName.substring(albumName.lastIndexOf('/')+1);
                                 Intent arrange = new Intent(InnerAlbumScreen.this, ArrangementAction.class);
                                 Bundle data = new Bundle();
@@ -160,20 +164,20 @@ public class InnerAlbumScreen extends AppCompatActivity {
 
     }
 
-    private List<MediaItem> getMediaItemsOfAlbum(List<MediaItem> mediaItems, String albumPath) {
+    private List<MediaItem> getMediaItemsOfAlbum(List<MediaItem> mediaItems, String albumName) {
         List<MediaItem> result = new ArrayList<>();
 
-        if(albumPath.equals("favoritePath")){ // Không nên dùng == để so sánh chuỗi hãy dùng equals
+//        if(albumName.equals("favoritePath")){ // Không nên dùng == để so sánh chuỗi hãy dùng equals
+//            for(MediaItem mediaItem : mediaItems){
+//                if(mediaItem.isFavorite()){
+//                    result.add(mediaItem);
+//                    Log.e("Mytag", "getMediaItemsOfAlbum: " + mediaItem.getName());
+//                }
+//            }
+//        }
+        {
             for(MediaItem mediaItem : mediaItems){
-                if(mediaItem.isFavorite()){
-                    result.add(mediaItem);
-                    Log.e("Mytag", "getMediaItemsOfAlbum: " + mediaItem.getPath());
-                }
-            }
-        }
-        else{
-            for(MediaItem mediaItem : mediaItems){
-                if(mediaItem.getParentPath().equals(albumPath)){
+                if(mediaItem.getAlbumName().equals(albumName)){
                     result.add(mediaItem);
                 }
             }
