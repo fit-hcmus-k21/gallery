@@ -3,10 +3,12 @@ package com.example.gallery.ui.main.doing;
 
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -17,6 +19,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.gallery.R;
 import com.example.gallery.data.models.db.MediaItem;
+import com.example.gallery.data.repositories.models.Repository.MediaItemRepository;
 import com.example.gallery.data.repositories.models.ViewModel.MediaItemViewModel;
 import com.example.gallery.ui.main.adapter.DuplicateParentAdapter;
 import java.text.DecimalFormat;
@@ -72,7 +75,7 @@ public class DuplicationActivity extends AppCompatActivity  {
             }
         });
 
-        mediaItemViewModel.getAllMediaItems().observe(this, new Observer<List<MediaItem>>() {
+        MediaItemRepository.getInstance().getAllMediaItems().observe(this, new Observer<List<MediaItem>>() {
             @Override
             public void onChanged(List<MediaItem> mediaItems) {
                 mediaItemGroupToSort = new HashMap<>();
@@ -84,10 +87,10 @@ public class DuplicationActivity extends AppCompatActivity  {
 
                 // get Image in album Camera
                 for(MediaItem iterator : mediaItems){
-                    if(iterator.getAlbumName().equals("Camera") && iterator.getFileExtension().equals("image/jpeg")) {
+//                    if(iterator.getAlbumName().equals("Camera") && iterator.getFileExtension().equals("image/jpeg")) {
                         firstData.add(iterator);
                         date.add(new SimpleDateFormat("yyyy/MM/dd").format(iterator.getCreationDate()));
-                    }
+//                    }
                 }
 
                 //get date list and sort
@@ -197,17 +200,37 @@ public class DuplicationActivity extends AppCompatActivity  {
 
         List<Long> finger = new ArrayList<>();
         float scaleW, scaleH;
+        System.out.println("Bitmap 203 | Duplication | " + photos.size());
         for(int i = 0 ; i < photos.size(); ++i){
             MediaItem photo = photos.get(i);
-            Bitmap bitmap = MediaStore.Images.Thumbnails.getThumbnail(DuplicationActivity.this.getContentResolver(),photo.getId(),MediaStore.Images.Thumbnails.MICRO_KIND,null);
-            scaleW = 8.0f/bitmap.getWidth();
-            scaleH = 8.0f/bitmap.getHeight();
-            Matrix matrix = new Matrix();
-            matrix.postScale(scaleW,scaleH);
-            Bitmap scaleBitmap = Bitmap.createBitmap(bitmap,0,0,bitmap.getWidth(),bitmap.getHeight(),matrix,false);
-            finger.add(getFingerPrint(scaleBitmap));
-            bitmap.recycle();;
-            scaleBitmap.recycle();
+//            Bitmap bitmap = MediaStore.Images.Thumbnails.getThumbnail(DuplicationActivity.this.getContentResolver(),photo.getId(),MediaStore.Images.Thumbnails.MICRO_KIND,null);
+
+            // Đường dẫn đến tập tin hình ảnh
+            String imagePath = photo.getPath();
+
+            // Sử dụng BitmapFactory để đọc ảnh từ đường dẫn và tạo Bitmap
+            Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
+
+            // Kiểm tra xem Bitmap có được tạo thành công không
+            if (bitmap != null) {
+                System.out.println("Bitmap 204 | Duplication | " + bitmap);
+
+                scaleW = 8.0f/bitmap.getWidth();
+                scaleH = 8.0f/bitmap.getHeight();
+                Matrix matrix = new Matrix();
+                matrix.postScale(scaleW,scaleH);
+                Bitmap scaleBitmap = Bitmap.createBitmap(bitmap,0,0,bitmap.getWidth(),bitmap.getHeight(),matrix,false);
+                finger.add(getFingerPrint(scaleBitmap));
+                bitmap.recycle();;
+                scaleBitmap.recycle();
+            } else {
+                // Xử lý trường hợp không thể tạo Bitmap từ đường dẫn
+                Log.e("Error", "Unable to create Bitmap from the specified path");
+                System.out.println("Bitmap 219 | Duplication | " + bitmap);
+            }
+
+
+
 
         }
         return finger;
