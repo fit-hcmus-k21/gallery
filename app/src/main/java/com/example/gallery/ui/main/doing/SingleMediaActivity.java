@@ -168,8 +168,9 @@ public class SingleMediaActivity extends AppCompatActivity  {
                     favoriteImageView.setImageResource(R.drawable.baseline_heart_svgrepo_com);
                 }
 
-                // hiện tại có nhiều ảnh chưa set file extension nên sẽ update và remove comment sau *********
+                //  update và remove comment sau *********
 //                if(mediaItemsList.get(position).getFileExtension() != null && mediaItemsList.get(position).getFileExtension().equals("image/jpeg")){
+//                    System.out.println("SingleMediaActivity | File extension = " + mediaItemsList.get(position).getFileExtension() + " | position = " + position);
 //                    editImageView.setEnabled(true);
 //                    editImageView.setClickable(true);
 //                }

@@ -19,7 +19,7 @@ import com.example.gallery.data.models.db.User;
  * Created on 27/10/2023
  */
 
-@Database(entities = {User.class, Album.class, MediaItem.class }, version = 2)
+@Database(entities = {User.class, Album.class, MediaItem.class }, version = 1)
 public abstract class GalleryDatabase extends RoomDatabase {
     public abstract UserDao userDao();
     public abstract AlbumDao albumDao();
