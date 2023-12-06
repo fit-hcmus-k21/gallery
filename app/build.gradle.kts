@@ -139,4 +139,6 @@ dependencies {
 
     implementation("com.google.android.material:material:1.5.0")
 
+    // Add the dependency to recognize text from image
+    implementation("com.google.firebase:firebase-ml-vision:24.0.3")
 }

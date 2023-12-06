@@ -1,8 +1,13 @@
 package com.example.gallery.ui.main.doing;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.PendingIntent;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.ContentValues;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.net.Uri;
@@ -13,6 +18,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.MimeTypeMap;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -21,6 +27,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.FileProvider;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
@@ -33,7 +40,15 @@ import com.example.gallery.data.repositories.models.Repository.MediaItemReposito
 import com.example.gallery.data.repositories.models.ViewModel.MediaItemViewModel;
 import com.example.gallery.ui.main.adapter.ViewPagerSingleMediaAdapter;
 import com.example.gallery.utils.GetInDexOfHelper;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.ml.vision.FirebaseVision;
+import com.google.firebase.ml.vision.common.FirebaseVisionImage;
+import com.google.firebase.ml.vision.text.FirebaseVisionText;
+import com.google.firebase.ml.vision.text.FirebaseVisionTextRecognizer;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -47,6 +62,7 @@ public class SingleMediaActivity extends AppCompatActivity {
     ViewPagerSingleMediaAdapter viewPagerSingleMediaAdapter;
 
     ImageView favoriteImageView;
+    ImageView shareImageView;
     List<MediaItem> mediaItemsList; // Biến thành viên để lưu trữ danh sách các MediaItem
 
     LinearLayout customappbar;
@@ -63,6 +79,7 @@ public class SingleMediaActivity extends AppCompatActivity {
         // Ánh xạ các view
         viewPager2 = findViewById(R.id.single_photo_viewpager2);
         favoriteImageView = findViewById(R.id.media_favorite_icon);
+        shareImageView = findViewById(R.id.media_share_icon);
         customappbar = findViewById(R.id.custom_bottom_appbar);
 
 
@@ -133,7 +150,12 @@ public class SingleMediaActivity extends AppCompatActivity {
                     favoriteImageView.setImageResource(R.drawable.baseline_heart_svgrepo_com);
                 }
 
-
+                shareImageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        shareImageToInternet(selectedMediaItem);
+                    }
+                });
                 favoriteImageView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -230,7 +252,16 @@ public class SingleMediaActivity extends AppCompatActivity {
         else if(id == R.id.media_set_wallpaper_item){
             //TODO handle media_set_wallpaper_item
         }
+        else if(id == R.id.media_convert_text_item){
+            mediaItemLiveData.observe(this, new Observer<MediaItem>() {
+                @Override
+                public void onChanged(MediaItem mediaItem) {
+//                    showOCRResultDialog(mediaItem.getPath());
+                    textRecognition(mediaItem);
+                }
+            });
 
+        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -252,5 +283,61 @@ public class SingleMediaActivity extends AppCompatActivity {
 
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
+    }
+    private void textRecognition(MediaItem mediaItem){
+        FirebaseVisionImage image;
+        try{
+//            image = FirebaseVisionImage.fromFilePath(this,Uri.parse(mediaItem.getPath()));
+            image = FirebaseVisionImage.fromFilePath(this,Uri.fromFile(new File(mediaItem.getPath())));
+            FirebaseVisionTextRecognizer detector = FirebaseVision.getInstance()
+                    .getOnDeviceTextRecognizer();
+            Task<FirebaseVisionText> textTask =
+                    detector.processImage(image)
+                            .addOnSuccessListener(new OnSuccessListener<FirebaseVisionText>() {
+                                @Override
+                                public void onSuccess(FirebaseVisionText firebaseVisionText) {
+                                    String result = firebaseVisionText.getText();
+                                    System.out.println("SingleMediaActivity | textRecognition | onSuccess | result = " + result);
+                                    showOCRResultDialog(result);
+                                }
+                            })
+                            .addOnFailureListener(
+                                    new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Toast.makeText(SingleMediaActivity.this,
+                                                    "Failed", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                            );
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    private void showOCRResultDialog(String text) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Kết quả")
+                .setMessage(text)
+                .setPositiveButton("OK", null)
+                .setNeutralButton("Copy", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        ClipboardManager clipboardManager = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                        ClipData clip = ClipData.newPlainText("text", text);
+                        clipboardManager.setPrimaryClip(clip);
+                    }
+                });
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+    private void shareImageToInternet(MediaItem mediaItem){
+        Uri uri = Uri.parse(mediaItem.getPath());
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("image/*");
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        intent.putExtra(Intent.EXTRA_STREAM, uri);
+        startActivity(Intent.createChooser(intent, "share image"));
     }
 }

@@ -37,7 +37,7 @@ public class AlbumFromExternalStorage {
                 MediaStore.Images.Media.DATA,
                 MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
                 MediaStore.Images.Media.DATE_ADDED,
-                MediaStore.Images.Media.IS_FAVORITE
+//                MediaStore.Images.Media.IS_FAVORITE
         };
 
         String sortOrder = MediaStore.Images.Media.DATE_ADDED + " DESC";
@@ -73,6 +73,7 @@ public class AlbumFromExternalStorage {
                     }
 
                 }
+
 
 
                 if(folderName != null && !folderNames.contains(folderName)){

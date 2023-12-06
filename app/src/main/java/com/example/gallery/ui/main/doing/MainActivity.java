@@ -1,6 +1,7 @@
 package com.example.gallery.ui.main.doing;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -51,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
 //        else{
 //            Toast.makeText(this, "Permission is not granted", Toast.LENGTH_SHORT).show();
         }
+//        }
 
         // ****************************** End code tạm thời ******************************
 
