@@ -10,9 +10,12 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
 import com.example.gallery.App;
+import com.example.gallery.data.local.db.AppDatabase;
 import com.example.gallery.data.local.db.dao.MediaItemDao;
 import com.example.gallery.data.local.db.GalleryDatabase;
+import com.example.gallery.data.local.prefs.AppPreferencesHelper;
 import com.example.gallery.data.models.db.MediaItem;
+import com.example.gallery.data.models.db.User;
 import com.example.gallery.data.repositories.models.HelperFunction.MediaItemFromExternalStorage;
 import com.example.gallery.data.repositories.models.ViewModel.UserViewModel;
 
@@ -28,22 +31,28 @@ import java.util.concurrent.Future;
 public class MediaItemRepository {
     private MediaItemDao mediaItemDao;
     LiveData<List<MediaItem>> allMediaItem;
+    LiveData<Integer> totalMediaItems;
     Application application;
 
     private static MediaItemRepository currentMediaItemRepository;
 
-    public static MediaItemRepository getInstance(Application application){
+    public static MediaItemRepository getInstance(){
         if(currentMediaItemRepository == null){
-            currentMediaItemRepository = new MediaItemRepository(application);
+            currentMediaItemRepository = new MediaItemRepository(App.getInstance());
         }
         return currentMediaItemRepository;
     }
 
     public MediaItemRepository(Application application) {
         this.application = application;
-        GalleryDatabase galleryDatabase = GalleryDatabase.getInstance(application);
-        mediaItemDao = galleryDatabase.mediaItemDao();
-        allMediaItem = mediaItemDao.getAllMediaItems(UserViewModel.getInstance(App.getInstance()).getUserId());
+        mediaItemDao = AppDatabase.getInstance().mediaItemDao();
+        System.out.println("on media repos 48");
+        allMediaItem = mediaItemDao.getAllMediaItems(AppPreferencesHelper.getInstance().getCurrentUserId());
+        totalMediaItems = mediaItemDao.getMediaItemsCount(AppPreferencesHelper.getInstance().getCurrentUserId());
+        System.out.println("on media repos 52");
+
+
+
     }
     public void fetchData() {
 
@@ -100,14 +109,19 @@ public class MediaItemRepository {
 
     }
     public LiveData<List<MediaItem>> getAllMediaItems(){
+
         return allMediaItem;
     }
     public void insert(MediaItem mediaItem){
+        System.out.println("MediaItemRepository: insert: " + mediaItem.getId() + " " + mediaItem.getUserID() + " " + mediaItem.getAlbumName());
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         executorService.execute(new Runnable() {
             @Override
             public void run() {
+                // show id, userID, album name
+                System.out.println("MediaItemRepository: insert on run: 121" + mediaItem.getPath());
                 mediaItemDao.insert(mediaItem);
+                System.out.println("after insert in Media Repos: 123");
             }
         });
     }
@@ -217,6 +231,10 @@ public class MediaItemRepository {
                 mediaItemDao.updateMediaItemTag(id, tag);
             }
         });
+    }
+
+    public LiveData<Integer> getMediaItemsCount(){
+        return totalMediaItems;
     }
 
 }

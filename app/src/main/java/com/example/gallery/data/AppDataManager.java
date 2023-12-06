@@ -176,6 +176,7 @@ public class AppDataManager implements DataManager {
 
     @Override
     public void insertAlbum(Album alb) {
+
     }
 
     @Override

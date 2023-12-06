@@ -33,10 +33,13 @@ public interface MediaItemDao {
     @Delete
     void delete(List<MediaItem> mediaItem);
 
-    @Query("SELECT id, userID, name, tag, description, path, width, height, fileSize, fileExtension, creationDate, location, albumName, url, favorite, deletedTs, parentPath FROM media_items WHERE userID = :userID")
+    @Query("SELECT COUNT(*) FROM media_items WHERE userID = :userID")
+    LiveData<Integer> getMediaItemsCount(String userID);
+
+    @Query("SELECT id, userID, name, tag, description, path, width, height, fileSize, fileExtension, creationDate, location, albumName, url, favorite, deletedTs, parentPath FROM media_items WHERE userID = :userID ")
     LiveData<List<MediaItem>> getAllMediaItemsByUserID(String userID);
 
-    @Query("SELECT id, userID, name, tag, description, path, width, height, fileSize, fileExtension, creationDate, location, albumName, url, favorite, deletedTs, parentPath FROM media_items WHERE userID = :userID AND deletedTs = 0")
+    @Query("SELECT id, userID, name, tag, description, path, width, height, fileSize, fileExtension, creationDate, location, albumName, url, favorite, deletedTs, parentPath FROM media_items WHERE userID = :userID ")
     LiveData<List<MediaItem>> getAllMediaItems(String userID);
 
     @Query("SELECT id, userID, name, tag, description, path, width, height, fileSize, fileExtension, creationDate, location, albumName, url, favorite, deletedTs, parentPath FROM media_items WHERE deletedTs = 0 AND path = :path  COLLATE NOCASE")

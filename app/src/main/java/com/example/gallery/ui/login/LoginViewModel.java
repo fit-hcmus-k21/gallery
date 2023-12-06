@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 
 import com.example.gallery.App;
 import com.example.gallery.data.DataManager;
+import com.example.gallery.data.repositories.models.ViewModel.UserViewModel;
 import com.example.gallery.ui.base.BaseViewModel;
 
 import com.facebook.AccessToken;
@@ -56,6 +57,7 @@ public class LoginViewModel extends BaseViewModel<LoginNavigator> {
             FirebaseAuth mAuth = FirebaseAuth.getInstance();
             mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
+                    System.out.println("in login 60");
                     Toast.makeText(App.getInstance(), "Login success", Toast.LENGTH_SHORT).show();
                     // set login mode to LoggedInMode.LOGGED_IN_MODE_SERVER
                     getDataManager().setCurrentUserLoggedInMode(DataManager.LoggedInMode.LOGGED_IN_MODE_SERVER);
@@ -63,8 +65,15 @@ public class LoginViewModel extends BaseViewModel<LoginNavigator> {
                     getDataManager().setCurrentUserEmail(mAuth.getCurrentUser().getEmail());
                     getDataManager().setCurrentUserName(mAuth.getCurrentUser().getDisplayName());
 
+                    System.out.println("in login 69");
+
+
+                    UserViewModel.getInstance().setUserId(mAuth.getCurrentUser().getUid());
+
                     // set current user id
                     getDataManager().setCurrentUserId(mAuth.getCurrentUser().getUid());
+                    System.out.println("in login 73");
+
 
                     // open main activity
                     getNavigator().openMainActivity();

@@ -10,9 +10,10 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
 import com.example.gallery.App;
+import com.example.gallery.data.local.db.AppDatabase;
+import com.example.gallery.data.local.prefs.AppPreferencesHelper;
 import com.example.gallery.data.models.db.Album;
 import com.example.gallery.data.local.db.dao.AlbumDao;
-import com.example.gallery.data.local.db.GalleryDatabase;
 import com.example.gallery.data.repositories.models.HelperFunction.AlbumFromExternalStorage;
 import com.example.gallery.data.repositories.models.ViewModel.UserViewModel;
 
@@ -31,17 +32,17 @@ public class AlbumRepository {
 
     private static AlbumRepository currentAlbumRepository;
 
-    public static AlbumRepository getInstance(Application application){
+    public static AlbumRepository getInstance(){
         if(currentAlbumRepository == null){
-            currentAlbumRepository = new AlbumRepository(application);
+            currentAlbumRepository = new AlbumRepository(App.getInstance());
         }
         return currentAlbumRepository;
     }
     public AlbumRepository(Application application){
         this.application = application;
-        GalleryDatabase galleryDatabase = GalleryDatabase.getInstance(application);
+        AppDatabase galleryDatabase = AppDatabase.getInstance();
         albumDao = galleryDatabase.albumDao();
-        allAlbums = albumDao.getAllAlbums(UserViewModel.getInstance(App.getInstance()).getUserId());
+        allAlbums = albumDao.getAllAlbums(AppPreferencesHelper.getInstance().getCurrentUserId());
     }
 
     public LiveData<List<Album>> getAlbums(){
@@ -80,8 +81,11 @@ public class AlbumRepository {
                         insertAll(albumsExternal);
                     }
                 } catch (ExecutionException e) {
+                    System.out.println("Error insert all album");
                     throw new RuntimeException(e);
                 } catch (InterruptedException e) {
+                    System.out.println("Error insert all album 2");
+
                     throw new RuntimeException(e);
                 }
 
@@ -98,16 +102,23 @@ public class AlbumRepository {
         executorService.execute(new Runnable() {
             @Override
             public void run() {
-                albumDao.insertAll(album);
+//                albumDao.insertAll(album);
             }
         });
     }
     public void insert(Album album){
+
+
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         executorService.execute(new Runnable() {
             @Override
             public void run() {
-                albumDao.insert(album);
+                AppDatabase.getInstance().runInTransaction(new Runnable() {
+                    @Override
+                    public void run() {
+                        albumDao.insert(album);
+                    }
+                });
             }
         });
     }

@@ -52,6 +52,7 @@ public class MediaItemAdapter extends RecyclerView.Adapter<MediaItemAdapter.Medi
     @NonNull
     @Override
     public MediaItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+//        System.out.println("MediaItemAdapter 001: onCreateViewHolder: viewType = " + viewType);
 
         View view = null;
         // This switch case is used to check the viewType to inflate the layout for item correctly

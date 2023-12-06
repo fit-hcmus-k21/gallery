@@ -7,9 +7,12 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.gallery.App;
 import com.example.gallery.data.models.db.Album;
 import com.example.gallery.data.models.db.MediaItem;
 import com.example.gallery.data.models.db.User;
+import com.example.gallery.data.repositories.models.Repository.AlbumRepository;
+import com.example.gallery.data.repositories.models.Repository.MediaItemRepository;
 import com.example.gallery.data.repositories.models.Repository.UserRepository;
 
 
@@ -28,18 +31,30 @@ public class UserViewModel extends AndroidViewModel {
 
     //   ------------------------------------
 
-    public static UserViewModel getInstance(Application application){
+
+
+    public static UserViewModel getInstance(){
         if(currentUserViewModel == null){
-            currentUserViewModel = new UserViewModel(application);
+            currentUserViewModel = new UserViewModel(App.getInstance());
         }
+        System.out.println("get Instance of UserViewModel:" + currentUserViewModel);
+
         return currentUserViewModel;
     }
 
     public UserViewModel(@NonNull Application application) {
         super(application);
-        userRepository = UserRepository.getInstance(application);
-//        allUsers = userRepository.getUsers();
+        userRepository = UserRepository.getInstance();
+        System.out.println("on user view model constr: 48");
+        allMediaItems = MediaItemRepository.getInstance().getAllMediaItems();
+        System.out.println("on user view model constr: 50");
+
+        allAlbums = AlbumRepository.getInstance().getAlbums();
+        System.out.println("on user view model constr: 53");
+
     }
+
+
 
 
      public LiveData<User> getAllUserData() {
@@ -69,6 +84,10 @@ public class UserViewModel extends AndroidViewModel {
 
     public LiveData<List<Album>> getAllAlbums(){
         return allAlbums;
+    }
+
+    public LiveData<Integer> getNumberOfItems(){
+        return MediaItemRepository.getInstance().getMediaItemsCount();
     }
 
 

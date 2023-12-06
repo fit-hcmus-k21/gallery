@@ -23,6 +23,7 @@ public abstract class BaseFragment<T extends ViewDataBinding, V extends BaseView
 //      -------------------
 
 
+
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);

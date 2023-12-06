@@ -35,6 +35,7 @@ public class SplashActivity extends BaseActivity<Slide01SplashScreenBinding, Spl
     protected void onCreate( Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mSplashBinding = getViewDataBinding();
+        System.out.println("Currently on splash screen");
 
         // Inside SplashActivity
         mViewModel = new ViewModelProvider(this).get(SplashViewModel.class);

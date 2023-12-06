@@ -11,7 +11,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.example.gallery.App;
 import com.example.gallery.R;
+import com.example.gallery.data.local.prefs.AppPreferencesHelper;
 import com.example.gallery.data.models.db.Album;
 import com.example.gallery.data.models.db.User;
 import com.example.gallery.data.repositories.models.ViewModel.AlbumViewModel;
@@ -24,6 +26,8 @@ public class ViewTestAlbum extends AppCompatActivity {
     private ListView albumListView;
     private AlbumViewModel albumViewModel;
     private UserViewModel userViewModel;
+
+    private static String userID = AppPreferencesHelper.getInstance().getCurrentUserId();
     
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -66,9 +70,9 @@ public class ViewTestAlbum extends AppCompatActivity {
     private void loadAndDisplayAlbum() {
         albumViewModel = ViewModelProviders.of(this).get(AlbumViewModel.class);
         userViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
-        userViewModel.insertUser(new User(1, "User1", "", "user1", "123",
+        userViewModel.insertUser(new User(userID, "User1", "", "user1", "123",
                 "user1@example.com", "", "", "", ""));
-        userViewModel.insertUser(new User(10, "User2", "", "user2", "123",
+        userViewModel.insertUser(new User(userID, "User2", "", "user2", "123",
                 "user2@example.com", "", "", "", ""));
 
 //        userViewModel.getAllUsers().observe(this, new Observer<List<User>>() {

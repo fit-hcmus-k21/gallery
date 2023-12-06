@@ -7,8 +7,10 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.gallery.App;
+import com.example.gallery.data.local.db.AppDatabase;
 import com.example.gallery.data.local.db.dao.UserDao;
 import com.example.gallery.data.local.db.GalleryDatabase;
+import com.example.gallery.data.local.prefs.AppPreferencesHelper;
 import com.example.gallery.data.models.db.User;
 import com.example.gallery.data.repositories.models.ViewModel.UserViewModel;
 
@@ -23,26 +25,30 @@ public class UserRepository {
 
     private static UserRepository currentUserInstance;
 
-    public static UserRepository getInstance(Application application){
+    public static UserRepository getInstance(){
         if(currentUserInstance == null){
-            currentUserInstance = new UserRepository(application);
+            System.out.println("get Instance of UserRepository");
+            currentUserInstance = new UserRepository(App.getInstance());
         }
         return currentUserInstance;
     }
 
     public UserRepository(Application application){
         this.application = application;
-        GalleryDatabase galleryDatabase = GalleryDatabase.getInstance(application);
+        System.out.println("UserRepository constructor");
+        AppDatabase galleryDatabase = AppDatabase.getInstance();
+        System.out.println("galleryDatabase : " + galleryDatabase);
         userDao = galleryDatabase.userDao();
+        System.out.println("userDao from UserRepos: " + userDao);
 //        users = userDao.getAllUsers();
 
-        currentUserInstance = this;
     }
 
 //    public LiveData<List<User>> getUsers() {
 //        return users;
 //    }
     public void insertUser(User user){
+        System.out.println("UserRepository insertUser");
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         executorService.execute(new Runnable() {
             @Override
@@ -62,6 +68,6 @@ public class UserRepository {
     }
 
     public LiveData<User> getAllUserData() {
-        return userDao.getAllUserData(UserViewModel.getInstance(App.getInstance()).getUserId());
+        return userDao.getAllUserData(AppPreferencesHelper.getInstance().getCurrentUserId());
     }
 }

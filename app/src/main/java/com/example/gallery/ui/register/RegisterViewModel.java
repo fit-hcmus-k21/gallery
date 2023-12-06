@@ -9,9 +9,14 @@ import androidx.annotation.NonNull;
 
 import com.example.gallery.App;
 import com.example.gallery.data.DataManager;
+import com.example.gallery.data.local.db.AppDBHelper;
 import com.example.gallery.data.models.api.RegisterRequest;
 import com.example.gallery.data.models.api.RegisterResponse;
+import com.example.gallery.data.models.db.Album;
+import com.example.gallery.data.models.db.User;
 import com.example.gallery.data.remote.AppApiHelper;
+import com.example.gallery.data.repositories.models.ViewModel.AlbumViewModel;
+import com.example.gallery.data.repositories.models.ViewModel.UserViewModel;
 import com.example.gallery.ui.base.BaseViewModel;
 import com.example.gallery.utils.ValidateText;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -44,6 +49,7 @@ public class RegisterViewModel extends BaseViewModel<RegisterNavigator> {
             if (task.isSuccessful()) {
                 Toast.makeText(App.getInstance(), "Registration successful", Toast.LENGTH_SHORT).show();
 
+                System.out.println("Register: 52");
                 FirebaseUser currentUser = mAuth.getCurrentUser();
                 if (currentUser != null) {
                     // Update user profile
@@ -58,6 +64,7 @@ public class RegisterViewModel extends BaseViewModel<RegisterNavigator> {
                 // Write a message to the database
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
 
+                System.out.println("Register: 64");
 
                 DatabaseReference usersRef = database.getReference("users");
                 // Ghi trường "fullName" của người dùng hiện tại
@@ -139,11 +146,24 @@ public class RegisterViewModel extends BaseViewModel<RegisterNavigator> {
                             }
                         });
 
-//                set logged in mode
+//                set logged in mode in prefs
                 getDataManager().setCurrentUserId(mAuth.getCurrentUser().getUid());
                 getDataManager().setCurrentUserLoggedInMode(DataManager.LoggedInMode.LOGGED_IN_MODE_SERVER);
                 getDataManager().setCurrentUserName(fullname);
                 getDataManager().setCurrentUserEmail(email);
+
+                // insert user, default albums  to room/
+                User user = new User();
+                user.setId(mAuth.getCurrentUser().getUid());
+                user.setFullName(fullname);
+                user.setEmail(email);
+
+
+                UserViewModel.getInstance().insertUser(user);
+                UserViewModel.getInstance().setUserId(mAuth.getCurrentUser().getUid());
+
+
+
 
 
                 setIsLoading(true);

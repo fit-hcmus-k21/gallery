@@ -35,6 +35,7 @@ public class AppDBHelper implements DBHelper {
 
     @Override
     public void insertUser(User user) {
+        System.out.println("AppDBHelper.insertUser");
         mAppDatabase.userDao().insert(user);
     }
 

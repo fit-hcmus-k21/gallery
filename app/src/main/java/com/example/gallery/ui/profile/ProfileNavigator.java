@@ -2,6 +2,7 @@ package com.example.gallery.ui.profile;
 
 import android.app.Activity;
 
+import com.example.gallery.databinding.ProfileBinding;
 import com.facebook.CallbackManager;
 
 /**
@@ -11,6 +12,10 @@ public interface ProfileNavigator {
 
     void openLoginActivity();
 
+
+    ProfileBinding getmProfileBinding();
+
+    ProfileViewModel getmProfileViewModel() ;
 
 
 }

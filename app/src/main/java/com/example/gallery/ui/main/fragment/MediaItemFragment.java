@@ -114,24 +114,34 @@ public class MediaItemFragment extends Fragment {
 ////                holder.imageView.getContext().startActivity(intent);
 //            }
 //        });
-        // Data from viewModel
-        mediaItemViewModel.getAllMediaItems().observe(getViewLifecycleOwner(), new Observer<List<MediaItem>>() {
-            @Override
-            public void onChanged(List<MediaItem> mediaItems) {
-                if(mediaItems == null) {
-                    return;
-                }
 
-                for(MediaItem mediaItem : mediaItems){
-                    mediaItem.setTypeDisplay(mCurrentType);
-                }
+        // check if mediaItemViewModel is null or mediaItemViewModel.getAllMediaItems() is null
 
-                HashMap<String, List<MediaItem>> mediaItemGroupByDate = setMediaItemGroupByDate(mediaItems);
-
-                mainMediaItemAdapter.setData(mediaItems, mediaItemGroupByDate, dateListString); // trong adapter có hàm setData và có notifydatasetchanged
-
-            }
-        });
+//        if (mediaItemViewModel == null) {
+//            System.out.println("mediaItemViewModel is null");
+//        }
+//        if (mediaItemViewModel.getAllMediaItems() == null) {
+//            System.out.println("mediaItemViewModel.getAllMediaItems() is null");
+//        }
+//        // Data from viewModel
+//        mediaItemViewModel.getAllMediaItems().observe(getViewLifecycleOwner(), new Observer<List<MediaItem>>() {
+//
+//            @Override
+//            public void onChanged(List<MediaItem> mediaItems) {
+//                if(mediaItems == null) {
+//                    return;
+//                }
+//
+//                for(MediaItem mediaItem : mediaItems){
+//                    mediaItem.setTypeDisplay(mCurrentType);
+//                }
+//
+//                HashMap<String, List<MediaItem>> mediaItemGroupByDate = setMediaItemGroupByDate(mediaItems);
+//
+//                mainMediaItemAdapter.setData(mediaItems, mediaItemGroupByDate, dateListString); // trong adapter có hàm setData và có notifydatasetchanged
+//
+//            }
+//        });
 
     }
 

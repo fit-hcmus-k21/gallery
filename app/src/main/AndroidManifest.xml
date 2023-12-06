@@ -67,7 +67,6 @@
 
         <activity android:name=".ui.resetPassword.ResetPasswordActivity" />
 
-        <activity android:name=".ui.profile.ProfileActivity" />
 
 
 

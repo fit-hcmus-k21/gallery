@@ -53,6 +53,7 @@ public class MainMediaItemAdapter extends RecyclerView.Adapter<MainMediaItemAdap
 
     @Override
     public void onBindViewHolder(@NonNull MainMediaItemViewHolder holder, int position) {
+//        System.out.println("MainMediaItemAdapter 001: onBindViewHolder: position = " + position);
 
         String date = dateListString.get(position);
         holder.headingTextView.setText(date);

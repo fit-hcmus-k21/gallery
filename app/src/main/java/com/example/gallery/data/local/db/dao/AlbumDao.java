@@ -38,7 +38,7 @@ public interface AlbumDao {
     @Query("SELECT * FROM albums WHERE userID = 22")
     LiveData<List<Album>> loadAll ();
     @Query("SELECT * FROM albums WHERE userID = :userID")
-    LiveData<List<Album>> getAllAlbumsByUserID (int userID);
+    LiveData<List<Album>> getAllAlbumsByUserID (String userID);
 
     @Query("SELECT id, name, description, creationDate, coverPhotoPath, userID, path, deletedTs FROM albums WHERE userID = :userID")
     LiveData<List<Album>> getAllAlbums(String userID);

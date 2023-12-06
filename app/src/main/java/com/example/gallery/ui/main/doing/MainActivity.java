@@ -13,6 +13,8 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.gallery.App;
 import com.example.gallery.R;
+import com.example.gallery.data.local.prefs.AppPreferencesHelper;
+import com.example.gallery.data.local.prefs.PreferencesHelper;
 import com.example.gallery.data.models.db.Album;
 import com.example.gallery.data.models.db.User;
 import com.example.gallery.data.repositories.models.HelperFunction.RequestPermissionHelper;
@@ -29,14 +31,19 @@ public class MainActivity extends AppCompatActivity {
 
     private ViewPager2 viewPager2;
     private BottomNavigationView bottomNavigationView;
-    UserViewModel userViewModel = UserViewModel.getInstance(App.getInstance());
-    AlbumViewModel albumViewModel = AlbumViewModel.getInstance(App.getInstance());
-    MediaItemViewModel mediaItemViewModel = MediaItemViewModel.getInstance(App.getInstance());
+    UserViewModel userViewModel;
+    AlbumViewModel albumViewModel ;
+    MediaItemViewModel mediaItemViewModel ;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.doing_main_activity);
+        System.out.println("in oncreate main: 42");
+
+//        UserViewModel.getInstance().setUserId(AppPreferencesHelper.getInstance().getCurrentUserId());
+        System.out.println("in oncreate main: 45");
+
 
         // Khoi tao cac viewmodel
         userViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
@@ -45,9 +52,9 @@ public class MainActivity extends AppCompatActivity {
 
         //TODO kiêểm tra lại phần quyền truy cập
         if(RequestPermissionHelper.checkAndRequestPermission(this, 101)){
-//            fetchData();
+            fetchData();
         }
-        else{
+//        else{
 //            Toast.makeText(this, "Permission is not granted", Toast.LENGTH_SHORT).show();
         }
 
@@ -113,16 +120,16 @@ public class MainActivity extends AppCompatActivity {
 //            }
 //        });
 
-    }
+//    }
 
     private void fetchData() {
 
 
 
 //         ******************************  Lấy dữ liệu từ external - Code tam thời ******************************
-//        userViewModel.insertUser(new User(1, "User1", "", "user1", "123",
+//        userViewModel.insertUser(new User("1", "User1", "", "user1", "123",
 //                "user1@example.com", "", "", "", ""));
-//        userViewModel.insertUser(new User(10, "User2", "", "user2", "123",
+//        userViewModel.insertUser(new User("10", "User2", "", "user2", "123",
 //                "user2@example.com", "", "", "", ""));
         userViewModel.getAllUserData().observe(this, new Observer<User>() {
             @Override

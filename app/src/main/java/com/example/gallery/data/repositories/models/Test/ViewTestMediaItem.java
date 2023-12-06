@@ -62,9 +62,9 @@ public class ViewTestMediaItem extends AppCompatActivity {
 
     private void LoadDataAndUpdateUI() {
 
-        userViewModel.insertUser(new User(1, "User1", "", "user1", "123",
+        userViewModel.insertUser(new User("", "User1", "", "user1", "123",
                 "user1@example.com", "", "", "", ""));
-        userViewModel.insertUser(new User(10, "User2", "", "user2", "123",
+        userViewModel.insertUser(new User("", "User2", "", "user2", "123",
                 "user2@example.com", "", "", "", ""));
 //        userViewModel.getAllUsers().observe(this, new Observer<List<User>>() {
 //            @Override
