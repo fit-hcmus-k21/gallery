@@ -24,7 +24,7 @@ import android.widget.LinearLayout;
 
 import com.example.gallery.R;
 import com.example.gallery.data.models.db.Album;
-import com.example.gallery.data.repositories.models.ViewModel.AlbumViewModel;
+import com.example.gallery.data.repositories.models.Repository.AlbumRepository;
 import com.example.gallery.ui.main.adapter.AlbumAdapter;
 
 import java.util.List;
@@ -33,7 +33,6 @@ public class AlbumFragment extends Fragment {
 
 
     View mView;
-    AlbumViewModel albumViewModel;
     private RecyclerView recyclerView;
     private  AlbumAdapter albumAdapter;
     private Menu mMenu;
@@ -58,9 +57,6 @@ public class AlbumFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Khởi tạo ViewModel
-        albumViewModel = ViewModelProviders.of(this).get(AlbumViewModel.class);
-
 
 
         // Ánh xạ các biến
@@ -84,7 +80,7 @@ public class AlbumFragment extends Fragment {
 //        recyclerView.addItemDecoration(itemDecorationVertical);
 
         // Xử lý dữ liệu
-        albumViewModel.getAllAlbums().observe(getViewLifecycleOwner(), new Observer<List<Album>>() {
+        AlbumRepository.getInstance().getAlbums().observe(getViewLifecycleOwner(), new Observer<List<Album>>() {
             @Override
             public void onChanged(List<Album> albums) {
                 albumAdapter.setData(albums);

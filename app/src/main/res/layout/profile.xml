@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        tools:context="com.example.gallery.ui.profile.ProfileFragment"
+
+    >
+    <data>
+        <import type="android.view.View" />
+        <variable
+            name="viewModel"
+            type="com.example.gallery.ui.profile.ProfileViewModel" />
+    </data>
+
+
+        <!-- TODO: Update blank fragment layout -->
+        <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="6dp">
+
+            <Button
+                android:id="@+id/btnAddFromDevice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Upload from device"
+                android:layout_marginBottom="6dp"
+                android:backgroundTint="#C6E2FF"
+                android:onClick="@{()->viewModel.addImageFromDevice()}"
+
+                />
+
+<!--            <Button-->
+<!--                android:id="@+id/btnAddFromCamera"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_below="@id/btnAddFromDevice"-->
+<!--                android:layout_marginTop="6dp"-->
+<!--                android:layout_marginBottom="16dp"-->
+<!--                android:text="Take a photo"-->
+
+<!--                android:backgroundTint="#C6E2FF"-->
+
+<!--                android:onClick="@{()->viewModel.addImageFromCamera()}"-->
+<!--                />-->
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Download Status: "
+                android:textSize="16dp"
+                android:layout_marginTop="6dp"
+                android:id="@+id/txtDownloadStatus"
+                android:layout_below="@id/btnAddFromDevice"
+                android:textColor="@color/teal_700"
+                />
+
+            <EditText
+                android:id="@+id/editTextImageUrl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter Image URL"
+                android:layout_below="@id/txtDownloadStatus"
+                android:layout_marginTop="6dp"
+                android:inputType="text"/>
+
+            <LinearLayout
+                android:id="@+id/linearLayoutAddFromLink"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_below="@id/editTextImageUrl"
+                >
+                <Button
+                    android:id="@+id/btnAddFromLink"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="Download"
+                    android:layout_marginTop="6dp"
+                    android:layout_weight="1"
+                    android:backgroundTint="#C6E2FF"
+
+                    android:onClick="@{()->viewModel.addImageFromLink()}"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    />
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="6dp"
+                    android:layout_weight="1"
+                    android:backgroundTint="#C6E2FF"
+
+
+                    android:onClick="@{()->viewModel.clearText()}"
+                    android:text="Clear "
+
+                    />
+
+            </LinearLayout>
+
+            <ImageView
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_below="@id/linearLayoutAddFromLink"
+                android:layout_marginTop="6dp"
+                android:id="@+id/imageViewDownloaded"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="6dp"
+                android:src="@drawable/ic_launcher_background"
+                android:visibility="gone"
+                />
+
+            <LinearLayout
+                android:id="@+id/LinearLayoutSyncAndBackup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_below="@id/imageViewDownloaded"
+                >
+
+
+                <Button
+                    android:id="@+id/btnBackup"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Backup"
+                    android:layout_marginTop="6dp"
+                    android:layout_marginBottom="6dp"
+                    android:backgroundTint="#C6E"
+                    android:layout_weight="1"
+
+                    android:onClick="@{()->viewModel.backup()}"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    />
+
+                <Button
+                    android:id="@+id/btnSyncToRemote"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Sync "
+                    android:layout_marginTop="6dp"
+                    android:layout_marginBottom="6dp"
+                    android:backgroundTint="#C6EF"
+                    android:layout_weight="1"
+
+                    android:onClick="@{()->viewModel.syncToCloudStorage()}"
+                    />
+
+
+
+            </LinearLayout>
+
+
+
+            <Button
+                android:id="@+id/btnLogout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Logout"
+                android:layout_below="@id/LinearLayoutSyncAndBackup"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:backgroundTint="#C6E2FF"
+
+                android:onClick="@{()->viewModel.logout()}"
+                />
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Your name: "
+                android:textSize="20sp"
+                android:layout_marginTop="6dp"
+                android:id="@+id/txtName"
+                android:layout_below="@id/btnLogout"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Your userId:  "
+                android:textSize="20sp"
+                android:layout_marginTop="6dp"
+                android:id="@+id/txtUserID"
+                android:layout_below="@id/txtName"
+
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Your Email:  "
+                android:textSize="20sp"
+                android:layout_marginTop="6dp"
+                android:id="@+id/txtEmail"
+                android:layout_below="@id/txtUserID"
+
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Number Images:  "
+                android:textSize="20sp"
+                android:layout_marginTop="6dp"
+                android:id="@+id/txtNumImg"
+                android:layout_below="@id/txtEmail"
+
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Number Albums:  "
+                android:textSize="20sp"
+                android:layout_marginTop="6dp"
+                android:id="@+id/txtNumAlbum"
+                android:layout_below="@id/txtNumImg"
+
+                />
+
+
+
+
+        </RelativeLayout>
+
+
+
+</layout>

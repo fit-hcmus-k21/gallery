@@ -16,10 +16,14 @@ public class AlbumRepository {
     private AlbumDao albumDao;
     private LiveData<List<Album>> allAlbums;
 
+
+
     public AlbumRepository() {
         albumDao = AppDatabase.getInstance().albumDao();
         allAlbums = albumDao.loadAll();
     }
+
+
 
     public void insert(Album alb) {
         Executors.newSingleThreadExecutor().execute(new Runnable() {

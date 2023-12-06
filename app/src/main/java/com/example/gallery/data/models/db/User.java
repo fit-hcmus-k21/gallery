@@ -1,6 +1,7 @@
 package com.example.gallery.data.models.db;
 
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
@@ -12,9 +13,11 @@ import androidx.room.PrimaryKey;
 
 @Entity(tableName = "users")
 public class User  {
-    @PrimaryKey(autoGenerate = true)
+
+    @PrimaryKey
     @ColumnInfo(name = "id")
-    private int id;
+    @NonNull
+    private String id;
 
     @ColumnInfo(name = "fullName")
     private String fullName;
@@ -46,7 +49,7 @@ public class User  {
 
     // Constructor
 
-    public User(int id, String fullName, String avatarURL, String username, String password, String email, String accessToken, String googleToken, String facebookToken, String fingerprintData) {
+    public User(String id, String fullName, String avatarURL, String username, String password, String email, String accessToken, String googleToken, String facebookToken, String fingerprintData) {
         this.id = id;
         this.fullName = fullName;
         this.avatarURL = avatarURL;
@@ -59,13 +62,16 @@ public class User  {
         this.fingerprintData = fingerprintData;
     }
 
+    public User( ) {
+
+    }
 
     // setters and getters
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

@@ -13,7 +13,7 @@ import com.example.gallery.R;
 import com.example.gallery.databinding.Slide03RegisterScreenBinding;
 import com.example.gallery.ui.base.BaseActivity;
 import com.example.gallery.ui.login.LoginActivity;
-import com.example.gallery.ui.main.MainActivity;
+import com.example.gallery.ui.main.doing.MainActivity;
 import com.example.gallery.utils.ValidateText;
 
 /**

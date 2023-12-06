@@ -9,7 +9,10 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Log;
 
+import com.example.gallery.App;
+import com.example.gallery.data.local.prefs.AppPreferencesHelper;
 import com.example.gallery.data.models.db.MediaItem;
+import com.example.gallery.data.repositories.models.ViewModel.UserViewModel;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -22,7 +25,7 @@ public class MediaItemFromExternalStorage {
         ArrayList<MediaItem> listMediaItems = new ArrayList<>();
        /*Data is
         private int id;
-    private int userID;
+    private String userID;
         private String name;
     private String tag;
         private String description; => ""
@@ -85,7 +88,7 @@ public class MediaItemFromExternalStorage {
 //                Log.e("====================================", "====================================");
 
                 int ID = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID));
-                int userID = 1;
+                String userID = AppPreferencesHelper.getInstance().getCurrentUserId();
                 String name = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME));
                 String tag = "";
 
@@ -170,7 +173,7 @@ public class MediaItemFromExternalStorage {
 //                Log.e("====================================", "====================================");
 
                 int ID = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID));
-                int userID = 1;
+                String userID = "";
                 String name = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DISPLAY_NAME));
                 String tag = "";
 

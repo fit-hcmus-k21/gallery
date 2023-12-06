@@ -1,6 +1,10 @@
 package com.example.gallery.data.models.db;
 
 
+import android.graphics.BitmapFactory;
+import android.provider.ContactsContract;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
@@ -8,7 +12,19 @@ import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 import androidx.room.ForeignKey;
 
+import com.drew.imaging.ImageMetadataReader;
+import com.drew.imaging.ImageProcessingException;
+import com.drew.lang.GeoLocation;
+import com.drew.metadata.Metadata;
+import com.drew.metadata.exif.ExifIFD0Directory;
+import com.drew.metadata.exif.GpsDirectory;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
+import java.util.Optional;
 
 
 /**
@@ -27,12 +43,12 @@ import java.io.Serializable;
                         entity = Album.class,
                         parentColumns = "name",
                         childColumns = "albumName",
-                        onDelete = ForeignKey.NO_ACTION // Thêm mới ở đây
+                        onDelete = ForeignKey.NO_ACTION // If delete album, mediaItem still exist
                 )
-        },
-        primaryKeys = {
-            "id", "userID"
         }
+//        primaryKeys = {
+//            "id", "userID"
+//        }
 )
 public class MediaItem implements Serializable {
     // This is used to represent for MediaItem in entites with the atribute typeDisplay which uses for recognize the type to display in recyclerview
@@ -41,11 +57,15 @@ public class MediaItem implements Serializable {
     public static final int TYPE_STAGGERED = 3;
 
 
+//    @ColumnInfo(name = "id", index = true)
+
+    @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
     private int id;
 
-    @ColumnInfo(name = "userID", index = true)
-    private int userID;
+    @ColumnInfo( name = "userID", index = true)
+    @NonNull
+    private String userID;
 
     @ColumnInfo(name = "name")
     private String name;
@@ -96,6 +116,9 @@ public class MediaItem implements Serializable {
     @ColumnInfo(name = "deletedTs") // Deleted timestamp
     private long deletedTs;
 
+    @ColumnInfo(name = "origin")
+    private String origin;
+
     // Add ignore attribute to display some work
 
     @Ignore
@@ -111,9 +134,11 @@ public class MediaItem implements Serializable {
 
 
     // Constructor
+    public MediaItem() {
+    }
 
 
-    public MediaItem(int id, int userID, String name, String tag, String description, String path,
+    public MediaItem(int id, String userID, String name, String tag, String description, String path,
                      int width, int height, long fileSize, String fileExtension, Long creationDate, String location,
                      String albumName, String url, boolean favorite, String parentPath, Long lastModified, long deletedTs) {
         this.id = id;
@@ -144,16 +169,17 @@ public class MediaItem implements Serializable {
         this.id = id;
     }
 
-    public int getUserID() {
+    public String getUserID() {
         return userID;
     }
 
-    public void setUserID(int userID) {
+    public void setUserID(String userID) {
         this.userID = userID;
     }
 
     public String getName() {
-        return name;
+
+        return name == null ? "" : name;
     }
 
     public void setName(String name) {
@@ -161,7 +187,7 @@ public class MediaItem implements Serializable {
     }
 
     public String getTag() {
-        return tag;
+        return tag == null ? "" : tag;
     }
 
     public void setTag(String tag) {
@@ -169,7 +195,8 @@ public class MediaItem implements Serializable {
     }
 
     public String getDescription() {
-        return description;
+
+        return description == null ?  "" : description;
     }
 
     public void setDescription(String description) {
@@ -185,32 +212,53 @@ public class MediaItem implements Serializable {
     }
 
     public int getWidth() {
+        if (width == 0) {
+            setInfo();
+        }
         return width;
     }
 
     public void setWidth(int width) {
+
         this.width = width;
     }
 
     public int getHeight() {
+        if (height == 0) {
+            setInfo();
+        }
         return height;
     }
 
     public void setHeight(int height) {
+
+
         this.height = height;
+
     }
 
     public long getFileSize() {
+
+        if (fileSize == 0){
+            setInfo();
+        }
         return fileSize;
     }
 
     public void setFileSize(long fileSize) {
+
         this.fileSize = fileSize;
     }
 
     public String getFileExtension() {
+        if (fileExtension == null){
+            setInfo();
+        }
+
         return fileExtension;
     }
+
+
 
     public void setFileExtension(String fileExtension) {
         this.fileExtension = fileExtension;
@@ -225,12 +273,57 @@ public class MediaItem implements Serializable {
     }
 
     public String getLocation() {
+        if (location == null || location.equals("")){
+            setLocation();
+        }
         return location;
     }
 
     public void setLocation(String location) {
         this.location = location;
     }
+
+    public void setLocation() {
+        InputStream inputStream = null;
+        String location = "";
+
+            try {
+                inputStream = getImageInputStream(getPath());
+
+                // Bạn có thể sử dụng inputStream ở đây để đọc dữ liệu từ ảnh
+                // Ví dụ: Đọc byte từ inputStream
+
+                // Đóng inputStream khi đã sử dụng xong
+                inputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        try {
+            Metadata metadata = ImageMetadataReader.readMetadata(inputStream);
+
+            // See whether it has GPS data
+            Iterable<GpsDirectory> gpsDirectories = metadata.getDirectoriesOfType(GpsDirectory.class);
+            for (GpsDirectory gpsDirectory : gpsDirectories) {
+                // Try to read out the location, making sure it's non-zero
+                GeoLocation geoLocation = gpsDirectory.getGeoLocation();
+                if (geoLocation != null && !geoLocation.isZero()) {
+                    location = geoLocation.toString();
+                    System.out.println("Location: " + location);
+                }
+            }
+        } catch (ImageProcessingException | IOException err ) {
+            // Handle exception case
+        }
+
+        this.location = location;
+    }
+
+    private static InputStream getImageInputStream(String imagePath) throws IOException {
+        File imageFile = new File(imagePath);
+        return new FileInputStream(imageFile);
+    }
+
+
 
     public String getAlbumName() {
         return albumName;
@@ -280,6 +373,15 @@ public class MediaItem implements Serializable {
         this.deletedTs = deletedTs;
     }
 
+    public void setOrigin(String url) {
+        this.origin = url;
+
+    }
+
+    public String getOrigin() {
+        return origin;
+    }
+
     @Override
     public boolean equals(@Nullable Object obj) {
         if(obj == null){
@@ -290,6 +392,63 @@ public class MediaItem implements Serializable {
         }
         MediaItem mediaItem = (MediaItem) obj;
         return mediaItem.getPath() == this.getPath();
+    }
+
+
+//    ------------------
+//    set info media item
+    public void setInfo() {
+        // set width, height, filesize, fileExtension, location
+
+        // Đường dẫn đến tập tin hình ảnh
+        String imagePath = getPath();
+        if (imagePath == null) {
+            System.out.println("MediaItem : setInfo | Please input image path");
+            return;
+        }
+
+        // Tạo đối tượng File từ đường dẫn
+        File imageFile = new File(imagePath);
+
+        fileExtension = getFileExtension(imageFile);
+        setFileExtension(fileExtension);
+
+        // Lấy thông tin file size
+        long fileSize = imageFile.length(); // Kích thước file trong bytes
+        setFileSize(fileSize);
+
+        // Hiển thị thông tin
+        System.out.println("File Extension: " + fileExtension);
+        System.out.println("File Size (Bytes): " + fileSize);
+
+        // Đọc ảnh để lấy thông tin chi tiết hơn
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(imagePath, options);
+
+        int imageWidth = options.outWidth;
+        int imageHeight = options.outHeight;
+
+        setHeight(imageHeight);
+        setWidth(imageWidth);
+
+        System.out.println("Image Width: " + imageWidth);
+        System.out.println("Image Height: " + imageHeight);
+
+//        // Lấy thông tin vị trí
+        setLocation();
+
+
+    }
+
+    // Hàm để lấy file extension từ một đối tượng File
+    public String getFileExtension(File file) {
+        String fileName = file.getName();
+        int lastDotIndex = fileName.lastIndexOf(".");
+        if (lastDotIndex != -1) {
+            return fileName.substring(lastDotIndex + 1);
+        }
+        return ""; // Trả về chuỗi trống nếu không tìm thấy đuôi file
     }
 }
 

@@ -1,0 +1,28 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/btnFlipAndRotate"
+        android:enabled="true"
+        android:icon="@drawable/baseline_crop_rotate_24"
+        android:title="Flip"/>
+    <item
+        android:id="@+id/btnDraw"
+        android:enabled="true"
+        android:icon="@drawable/baseline_draw_24"
+        android:title="Rotate"/>
+    <item
+        android:id="@+id/btnSharp"
+        android:enabled="true"
+        android:icon="@drawable/baseline_auto_awesome_24"
+        android:title="Sharp"/>
+    <item
+        android:id="@+id/btnFilter"
+        android:enabled="true"
+        android:icon="@drawable/baseline_join_right_24"
+        android:title="Filter"/>
+    <item
+        android:id="@+id/btnStraighten"
+        android:enabled="true"
+        android:icon="@drawable/baseline_straighten_24"
+        android:title="Straighten"/>
+
+</menu>

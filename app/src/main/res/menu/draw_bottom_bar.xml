@@ -1,0 +1,13 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/btnText"
+        android:enabled="true"
+        android:icon="@drawable/baseline_text_fields_24"
+        android:title="Text"/>
+    <item
+        android:id="@+id/btnPen"
+        android:enabled="true"
+        android:icon="@drawable/baseline_mode_edit_24"
+        android:title="Draw"/>
+
+</menu>

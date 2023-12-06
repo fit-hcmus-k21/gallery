@@ -27,17 +27,20 @@ public interface MediaItemDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(MediaItem mediaItem);
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertAll(List<MediaItem> mediaItems);
+//    @Insert(onConflict = OnConflictStrategy.REPLACE)
+//    void insertAll(List<MediaItem> mediaItems);
 
     @Delete
     void delete(List<MediaItem> mediaItem);
 
-    @Query("SELECT id, userID, name, tag, description, path, width, height, fileSize, fileExtension, creationDate, location, albumName, url, favorite, deletedTs, parentPath FROM media_items WHERE userID = :userID")
-    LiveData<List<MediaItem>> getAllMediaItemsByUserID(int userID);
+    @Query("SELECT COUNT(*) FROM media_items WHERE userID = :userID")
+    LiveData<Integer> getNumberOfMediaItems(String userID);
 
-    @Query("SELECT id, userID, name, tag, description, path, width, height, fileSize, fileExtension, creationDate, location, albumName, url, favorite, deletedTs, parentPath FROM media_items")
-    LiveData<List<MediaItem>> getAllMediaItems();
+    @Query("SELECT id, userID, name, tag, description, path, width, height, fileSize, fileExtension, creationDate, location, albumName, url, favorite, deletedTs, parentPath FROM media_items WHERE userID = :userID ")
+    LiveData<List<MediaItem>> getAllMediaItemsByUserID(String userID);
+
+    @Query("SELECT id, userID, name, tag, description, path, width, height, fileSize, fileExtension, creationDate, location, albumName, url, favorite, deletedTs, parentPath FROM media_items WHERE userID = :userID ")
+    LiveData<List<MediaItem>> getAllMediaItems(String userID);
 
     @Query("SELECT id, userID, name, tag, description, path, width, height, fileSize, fileExtension, creationDate, location, albumName, url, favorite, deletedTs, parentPath FROM media_items WHERE deletedTs = 0 AND path = :path  COLLATE NOCASE")
     LiveData<List<MediaItem>> getMediaFromPath(String path);

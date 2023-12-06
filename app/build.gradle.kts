@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.gallery"
-        minSdk = 28
+        minSdk = 29
         targetSdk = 33
         versionCode = 1
         versionName = "1.0"
@@ -133,4 +133,16 @@ dependencies {
     implementation ("androidx.media3:media3-exoplayer:1.2.0")
     implementation ("androidx.media3:media3-exoplayer-dash:1.2.0")
     implementation ("androidx.media3:media3-ui:1.2.0")
+
+    // biometric for fingerprint
+    implementation("androidx.biometric:biometric:1.1.0")
+
+    implementation("com.google.android.material:material:1.5.0")
+
+    // Add the dependency to recognize text from image
+    implementation("com.google.firebase:firebase-ml-vision:24.0.3")
+
+    // dependency for image metadata
+    implementation("com.drewnoakes:metadata-extractor:2.19.0")
+
 }

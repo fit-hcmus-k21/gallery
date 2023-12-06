@@ -28,10 +28,13 @@ public class MediaItemAdapter extends RecyclerView.Adapter<MediaItemAdapter.Medi
     private List<MediaItem> mediaItemList = new ArrayList<>();
     private OnItemClickListener listener;
     public void setData(List<MediaItem> mediaItemList){
+        System.out.println("MediaItemAdapter 001: setData: mediaItemList = " + mediaItemList);
         this.mediaItemList = mediaItemList;
         notifyDataSetChanged();
     }
     public List<MediaItem> getData(){
+        System.out.println("MediaItemAdapter 001: getData: mediaItemList = " + mediaItemList);
+
         return mediaItemList;
     }
     // In recyclerView that has a function that can get the type to display. watch below
@@ -39,19 +42,25 @@ public class MediaItemAdapter extends RecyclerView.Adapter<MediaItemAdapter.Medi
     @Override
     public int getItemViewType(int position) {
         if(mediaItemList != null && mediaItemList.size() > 0) {
-            if(mediaItemList.get(position).getFileExtension().equals("video/mp4")){
+            System.out.println("On get item view type 45 | MediaItem Adapter");
+
+            if(mediaItemList.get(position).getFileExtension() != null && mediaItemList.get(position).getFileExtension().equals("video/mp4")){
+                System.out.println("On get item view type 47 | MediaItem Adapter");
                 return TYPE_VIDEO;
             }
             else {
+                System.out.println("On get item view type 51 | MediaItem Adapter");
                 return TYPE_PHOTO;
             }
         }
+        System.out.println("On get item view type 53 | MediaItem Adapter");
         return super.getItemViewType(position);
     }
 
     @NonNull
     @Override
     public MediaItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+//        System.out.println("MediaItemAdapter 001: onCreateViewHolder: viewType = " + viewType);
 
         View view = null;
         // This switch case is used to check the viewType to inflate the layout for item correctly
@@ -72,11 +81,15 @@ public class MediaItemAdapter extends RecyclerView.Adapter<MediaItemAdapter.Medi
         if(mediaItem == null){
             return;
         }
+        System.out.println("MediaItemAdapter 001: onBindViewHolder: mediaItem = " + mediaItem);
         Glide.with(holder.itemView.getContext()).load(mediaItem.getPath()).into(holder.imageView);
         holder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                System.out.println("MediaItemAdapter | onBindViewHolder | onClick | mediaItem = " + mediaItem);
                 listener.onItemClick(mediaItem);
+                System.out.println("MediaItemAdapter | onBindViewHolder | onClick | after");
             }
         });
     }
@@ -95,13 +108,19 @@ public class MediaItemAdapter extends RecyclerView.Adapter<MediaItemAdapter.Medi
 
         public MediaItemViewHolder(@NonNull View itemView) {
             super(itemView);
+            System.out.println("MediaItemAdapter 001: MediaItemViewHolder: imageView = " + imageView);
 
             imageView = itemView.findViewById(R.id.img_media_item);
         }
     }
 
     public void setOnItemClickListener(OnItemClickListener listener){
+        System.out.println("MediaItemAdapter | Set on Item Click Listener | before | listener = " + listener);
+
         this.listener = listener;
+
+        System.out.println("MediaItemAdapter | Set on Item Click Listener | after | listener = " + listener);
+
     }
     public interface OnItemClickListener {
         void onItemClick(MediaItem mediaItem);
