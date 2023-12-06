@@ -344,16 +344,19 @@ public class SingleMediaActivity extends AppCompatActivity {
         alertDialog.show();
     }
     private void shareImageToInternet(MediaItem mediaItem){
-        System.out.println("Share image : 337");
+        System.out.println("Share image : 337 | mediaitem: " + mediaItem + " | path: " + mediaItem.getPath());
 
-        Uri uri = Uri.parse(mediaItem.getPath());
+        Uri uri = FileProvider.getUriForFile(this, getPackageName() + ".provider", new File(mediaItem.getPath()));
+
+//        Uri uri = Uri.parse(mediaItem.getPath());
+        System.out.print("Uri: "  + uri);
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("image/*");
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
         System.out.println("Share image : 342");
         intent.putExtra(Intent.EXTRA_STREAM, uri);
-        startActivity(Intent.createChooser(intent, "share image"));
+        startActivity(Intent.createChooser(intent, "Share this image with..."));
         System.out.println("Share image : 347");
 
     }
