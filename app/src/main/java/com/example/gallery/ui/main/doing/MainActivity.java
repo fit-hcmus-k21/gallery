@@ -1,5 +1,6 @@
 package com.example.gallery.ui.main.doing;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.MenuItem;
 
@@ -12,6 +13,7 @@ import com.example.gallery.R;
 
 import com.example.gallery.data.repositories.models.HelperFunction.RequestPermissionHelper;
 
+import com.example.gallery.data.repositories.models.Repository.MediaItemRepository;
 import com.example.gallery.ui.main.adapter.MyViewPager2Adapter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
@@ -29,14 +31,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.doing_main_activity);
         System.out.println("in oncreate main: 42");
 
-//        UserViewModel.getInstance().setUserId(AppPreferencesHelper.getInstance().getCurrentUserId());
-        System.out.println("in oncreate main: 45");
 
 
 
         //TODO kiêểm tra lại phần quyền truy cập
         if(RequestPermissionHelper.checkAndRequestPermission(this, 101)){
-//            fetchData();
+            fetchData();
+
         }
 //        else{
 //            Toast.makeText(this, "Permission is not granted", Toast.LENGTH_SHORT).show();
@@ -119,6 +120,10 @@ public class MainActivity extends AppCompatActivity {
 //                "user2@example.com", "", "", "", ""));
 
 // ******************************  Lấy dữ liệu từ external - Code tam thời ******************************
+
+//        MediaItemRepository.getInstance().fetchData( );
+
+
 
         // Ánh xạ các Widget
         viewPager2 = findViewById(R.id.viewPager2_main);

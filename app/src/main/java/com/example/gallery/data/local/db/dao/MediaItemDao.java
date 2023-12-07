@@ -27,8 +27,8 @@ public interface MediaItemDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(MediaItem mediaItem);
 
-//    @Insert(onConflict = OnConflictStrategy.REPLACE)
-//    void insertAll(List<MediaItem> mediaItems);
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertAll(List<MediaItem> mediaItems);
 
     @Delete
     void delete(List<MediaItem> mediaItem);

@@ -30,7 +30,7 @@ public class MainMediaItemAdapter extends RecyclerView.Adapter<MainMediaItemAdap
     private int currentType = MediaItem.TYPE_GRID;
     //
     public void setData(List<MediaItem> mediaItemListAll, HashMap<String, List<MediaItem>> groupMediaItemByDate, List<String> dateListString) {
-        System.out.println("MainMediaItemAdapter 001: setData: mediaItemListAll = " + mediaItemListAll.get(0).getPath());
+        System.out.println("MainMediaItemAdapter 001: setData: mediaItemListAll  ");
        this.mediaItemListAll = mediaItemListAll;
        System.out.println("line 35");
        this.groupMediaItemByDate = groupMediaItemByDate;

@@ -24,9 +24,8 @@ public class AlbumFromExternalStorage {
         private String description;
         private String creationDate;
         private String coverPhotoPath;
-        private String userID;
+        private String AppPreferencesHelper.getInstance().getCurrentUserId();
         private String path;*/
-    private static String userID = AppPreferencesHelper.getInstance().getCurrentUserId();
     public static ArrayList<Album> listAlbums(Application application) {
         ArrayList<Album> albums = new ArrayList<>();
 
@@ -68,7 +67,7 @@ public class AlbumFromExternalStorage {
                         String folderPathFav = coverPhotoPathFav.substring(0, coverPhotoPathFav.lastIndexOf(File.separator));
 
                         //TODO xem xét để hình ảnh là hình trái tym
-                        albums.add(new Album("Favorite", "",creationDateFav , coverPhotoPathFav, userID, "favoritePath", 0));
+                        albums.add(new Album("Favorite", "",creationDateFav , coverPhotoPathFav, AppPreferencesHelper.getInstance().getCurrentUserId(), "favoritePath", 0));
 
                         isFavoriteAlbumExist = true;
                     }
@@ -87,7 +86,7 @@ public class AlbumFromExternalStorage {
 
                     long creationDate = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_ADDED)) * 1000L; // convert to millisecond. Must multiply by 1000L
 
-                    albums.add(new Album(folderName, "", creationDate, coverPhotoPath, userID, folderPath, 0));
+                    albums.add(new Album(folderName, "", creationDate, coverPhotoPath, AppPreferencesHelper.getInstance().getCurrentUserId(), folderPath, 0));
                 }
             }while(cursor.moveToNext());
         }
@@ -121,7 +120,7 @@ public class AlbumFromExternalStorage {
 
                     long creationDate = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATE_ADDED)) * 1000L; // convert to millisecond. Must multiply by 1000L
 
-                    albums.add(new Album(folderName, "", creationDate, coverPhotoPath, userID, folderPath, 0));
+                    albums.add(new Album(folderName, "", creationDate, coverPhotoPath, AppPreferencesHelper.getInstance().getCurrentUserId(), folderPath, 0));
                 }
             }while(cursor.moveToNext());
         }

@@ -284,6 +284,11 @@ public class MediaItem implements Serializable {
     }
 
     public void setLocation() {
+        if (getPath() == null || getPath().equals("")){
+            System.out.println("MediaItem : setLocation | Please input image path");
+            return;
+        }
+
         InputStream inputStream = null;
         String location = "";
 

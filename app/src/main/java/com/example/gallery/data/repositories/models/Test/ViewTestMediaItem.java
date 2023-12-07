@@ -34,9 +34,7 @@ public class ViewTestMediaItem extends AppCompatActivity {
     private static final int REQUEST_PERMISSION_CODE = 101;
     TextView textView;
 
-    MediaItemViewModel mediaItemViewModel;
-    UserViewModel userViewModel;
-    AlbumViewModel albumViewModel;
+
     RecyclerView recyclerView;
     MediaItemAdapter_Test mediaItemAdapterTest;
 
@@ -47,9 +45,7 @@ public class ViewTestMediaItem extends AppCompatActivity {
 
         textView = (TextView) findViewById(R.id.textTestView);
         recyclerView = (RecyclerView) findViewById(R.id.recyclerViewTest);
-        userViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
-        albumViewModel = ViewModelProviders.of(this).get(AlbumViewModel.class);
-        mediaItemViewModel = ViewModelProviders.of(this).get(MediaItemViewModel.class);
+
 
         if(RequestPermissionHelper.checkAndRequestPermission(this, REQUEST_PERMISSION_CODE)){
             LoadDataAndUpdateUI();
@@ -61,24 +57,20 @@ public class ViewTestMediaItem extends AppCompatActivity {
     }
 
     private void LoadDataAndUpdateUI() {
-
-        userViewModel.insertUser(new User("", "User1", "", "user1", "123",
-                "user1@example.com", "", "", "", ""));
-        userViewModel.insertUser(new User("", "User2", "", "user2", "123",
-                "user2@example.com", "", "", "", ""));
-//        userViewModel.getAllUsers().observe(this, new Observer<List<User>>() {
-//            @Override
-//            public void onChanged(List<User> users) {
-//                if(users != null && !users.isEmpty()){
-//                    albumViewModel.fetchData();
-//                }
-//            }
-//        });
-        albumViewModel.getAllAlbums().observe(this, new Observer<List<Album>>() {
+        UserViewModel.getInstance().getAllUserData().observe(this, new Observer<User>() {
+            @Override
+            public void onChanged(User user) {
+                if(user != null ){
+                    System.out.println("on user change");
+                    AlbumViewModel.getInstance().fetchData();
+                }
+            }
+        });
+        AlbumViewModel.getInstance().getAllAlbums().observe(this, new Observer<List<Album>>() {
             @Override
             public void onChanged(List<Album> albums) {
                 if(albums != null && !albums.isEmpty()){
-                    mediaItemViewModel.fetchData();
+                    MediaItemViewModel.getInstance().fetchData( ViewTestMediaItem.this);
                 }
             }
         });
@@ -89,7 +81,7 @@ public class ViewTestMediaItem extends AppCompatActivity {
         recyclerView.setAdapter(mediaItemAdapterTest);
 
 
-        mediaItemViewModel.getAllMediaItems().observe(this, new Observer<List<MediaItem>>() {
+        MediaItemViewModel.getInstance().getAllMediaItems().observe(this, new Observer<List<MediaItem>>() {
             @Override
             public void onChanged(List<MediaItem> mediaItems) {
                 mediaItemAdapterTest.setData(mediaItems);
@@ -99,7 +91,7 @@ public class ViewTestMediaItem extends AppCompatActivity {
             @Override
             public void onItemClick(MediaItem mediaItem) {
                 Toast.makeText(ViewTestMediaItem.this, mediaItem.getPath(), Toast.LENGTH_SHORT).show();
-                mediaItemViewModel.updateDeletedTs(mediaItem.getId(), System.currentTimeMillis());
+                MediaItemViewModel.getInstance().updateDeletedTs(mediaItem.getId(), System.currentTimeMillis());
             }
         });
 

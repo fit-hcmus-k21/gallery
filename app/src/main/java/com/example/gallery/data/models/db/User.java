@@ -76,11 +76,13 @@ public class User  {
     }
 
     public String getFullName() {
+
         return fullName;
     }
 
     public void setFullName(String fullName) {
-        this.fullName = fullName;
+
+        this.fullName = fullName == null ? "" : fullName;
     }
 
     public String getAvatarURL() {

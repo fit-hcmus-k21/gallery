@@ -22,6 +22,7 @@ import java.util.List;
 
 public class MediaItemFromExternalStorage {
     public static ArrayList<MediaItem> listMediaItems(Application application) {
+        System.out.println("Media from external storage 25");
         ArrayList<MediaItem> listMediaItems = new ArrayList<>();
        /*Data is
         private int id;
@@ -40,6 +41,8 @@ public class MediaItemFromExternalStorage {
     private String url;??
 
         */
+        System.out.println("Media from external storage 45");
+
         Uri uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
         String[] projections = new String[]{
                 MediaStore.Images.Media._ID,
@@ -118,6 +121,8 @@ public class MediaItemFromExternalStorage {
 
                 // Get parentPath
                 String parentPath = path.substring(0, path.lastIndexOf("/"));
+
+                System.out.println("Media from external storage 126");
 
                 listMediaItems.add(new MediaItem(ID, userID, name, tag, discription,
                         path, width, height, fileSize, fileExtension, creationDate, "", albumName, url, false, parentPath, lastModified, 0));

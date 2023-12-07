@@ -4,6 +4,7 @@ import android.app.Application;
 import android.util.Log;
 
 import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -32,8 +33,8 @@ public class MediaItemViewModel extends AndroidViewModel {
         mediaItemRepository = MediaItemRepository.getInstance();
         allMediaItems = mediaItemRepository.getAllMediaItems();
     }
-    public void fetchData() {
-        mediaItemRepository.fetchData();
+    public void fetchData(LifecycleOwner lifecycleOwner) {
+        mediaItemRepository.fetchData(lifecycleOwner );
     }
     public LiveData<List<MediaItem>> getAllMediaItems() {
 

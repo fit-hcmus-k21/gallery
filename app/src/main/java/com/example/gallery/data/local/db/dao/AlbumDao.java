@@ -67,4 +67,5 @@ public interface AlbumDao {
     @Query("SELECT COUNT(*) FROM albums WHERE userID = :userID AND name = :name COLLATE NOCASE")
             LiveData<Integer> isExistAlbum(String userID, String name);
 
+
 }

@@ -28,6 +28,9 @@ public class AppDBHelper implements DBHelper {
         return sInstance;
     }
 
+
+
+
     @Override
     public LiveData<List<MediaItem>> getAllMediaItems() {
         return mAppDatabase.mediaItemDao().loadAll(); // handle later ***

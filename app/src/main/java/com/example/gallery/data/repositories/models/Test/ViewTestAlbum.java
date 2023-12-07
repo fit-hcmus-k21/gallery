@@ -16,6 +16,7 @@ import com.example.gallery.R;
 import com.example.gallery.data.local.prefs.AppPreferencesHelper;
 import com.example.gallery.data.models.db.Album;
 import com.example.gallery.data.models.db.User;
+import com.example.gallery.data.repositories.models.Repository.AlbumRepository;
 import com.example.gallery.data.repositories.models.ViewModel.AlbumViewModel;
 import com.example.gallery.data.repositories.models.ViewModel.UserViewModel;
 import com.example.gallery.data.repositories.models.HelperFunction.RequestPermissionHelper;
@@ -24,8 +25,6 @@ import java.util.List;
 
 public class ViewTestAlbum extends AppCompatActivity {
     private ListView albumListView;
-    private AlbumViewModel albumViewModel;
-    private UserViewModel userViewModel;
 
     private static String userID = AppPreferencesHelper.getInstance().getCurrentUserId();
     
@@ -68,12 +67,8 @@ public class ViewTestAlbum extends AppCompatActivity {
     }
 
     private void loadAndDisplayAlbum() {
-        albumViewModel = ViewModelProviders.of(this).get(AlbumViewModel.class);
-        userViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
-        userViewModel.insertUser(new User(userID, "User1", "", "user1", "123",
-                "user1@example.com", "", "", "", ""));
-        userViewModel.insertUser(new User(userID, "User2", "", "user2", "123",
-                "user2@example.com", "", "", "", ""));
+
+
 
 //        userViewModel.getAllUsers().observe(this, new Observer<List<User>>() {
 //            @Override
@@ -83,11 +78,11 @@ public class ViewTestAlbum extends AppCompatActivity {
 //                }
 //            }
 //        });
-        albumViewModel.fetchData();
+        AlbumRepository.getInstance().fetchData();
         AlbumAdapter_Test albumArrayAdapter = new AlbumAdapter_Test(ViewTestAlbum.this);
         albumListView.setAdapter(albumArrayAdapter);
 
-        albumViewModel.getAllAlbums().observe(this, new Observer<List<Album>>() {
+        AlbumRepository.getInstance().getAlbums().observe(this, new Observer<List<Album>>() {
             @Override
             public void onChanged(List<Album> albums) {
                 albumArrayAdapter.setData(albums);
@@ -97,7 +92,7 @@ public class ViewTestAlbum extends AppCompatActivity {
             @Override
             public void onItemClick(Album album) {
                 Toast.makeText(ViewTestAlbum.this, album.getPath(), Toast.LENGTH_SHORT).show();
-                albumViewModel.updateAlbumDeletedTs(album.getPath(), System.currentTimeMillis());
+                AlbumRepository.getInstance().updateAlbumDeletedTs(album.getPath(), System.currentTimeMillis());
             }
         });
     }

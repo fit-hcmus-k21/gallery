@@ -1,5 +1,8 @@
 package com.example.gallery.ui.register;
 
+import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
@@ -11,12 +14,15 @@ import com.example.gallery.App;
 import com.example.gallery.data.AppDataManager;
 import com.example.gallery.data.DataManager;
 import com.example.gallery.data.local.db.AppDBHelper;
+import com.example.gallery.data.local.db.AppDatabase;
 import com.example.gallery.data.models.api.RegisterRequest;
 import com.example.gallery.data.models.api.RegisterResponse;
 import com.example.gallery.data.models.db.Album;
 import com.example.gallery.data.models.db.MediaItem;
 import com.example.gallery.data.models.db.User;
 import com.example.gallery.data.remote.AppApiHelper;
+import com.example.gallery.data.repositories.models.Repository.AlbumRepository;
+import com.example.gallery.data.repositories.models.Repository.UserRepository;
 import com.example.gallery.data.repositories.models.ViewModel.AlbumViewModel;
 import com.example.gallery.data.repositories.models.ViewModel.UserViewModel;
 import com.example.gallery.ui.base.BaseViewModel;
@@ -30,6 +36,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Date;
+import java.util.concurrent.Executors;
 
 import retrofit2.Call;
 
@@ -89,9 +96,6 @@ public class RegisterViewModel extends BaseViewModel<RegisterNavigator> {
                                             public void onSuccess(Void aVoid) {
                                                 // Ghi dữ liệu thành công
                                                 System.out.println("Ghi dữ liệu creation_date thành công");
-
-
-
 
                                                 // Ghi trường "email" của người dùng hiện tại
                                                 currentUserRef.child("user_info").child("email").setValue(email)
@@ -190,11 +194,26 @@ public class RegisterViewModel extends BaseViewModel<RegisterNavigator> {
                 user.setId(mAuth.getCurrentUser().getUid());
                 user.setFullName(fullname);
                 user.setEmail(email);
-                AppDBHelper.getInstance().insertUser(user);
 
 
-                // insert default albums
-                insertDefaultAlbums(mAuth.getCurrentUser().getUid());
+
+                Executors.newSingleThreadExecutor().execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        // background work here
+
+                        UserRepository.getInstance().insertUser(user);
+                       // insert default albums
+                        insertDefaultAlbums(mAuth.getCurrentUser().getUid());
+
+                        new Handler(Looper.getMainLooper()).post(new Runnable() {
+                            @Override
+                            public void run() {
+                                // UI thread work here
+                            }
+                        });
+                    }
+                });
 
 
 
@@ -216,49 +235,49 @@ public class RegisterViewModel extends BaseViewModel<RegisterNavigator> {
         Album cameraAlbum = new Album();
         cameraAlbum.setAlbumName("Camera");
         cameraAlbum.setUserID(userID);
-        AppDBHelper.getInstance().insertAlbum(cameraAlbum);
+        AlbumRepository.getInstance().insert(cameraAlbum);
 
         // Facebook
         Album facebookAlbum = new Album();
         facebookAlbum.setAlbumName("Facebook");
         facebookAlbum.setUserID(userID);
-        AppDBHelper.getInstance().insertAlbum(facebookAlbum);
+        AlbumRepository.getInstance().insert(facebookAlbum);
 
         // Messenger
         Album messengerAlbum = new Album();
         messengerAlbum.setAlbumName("Messenger");
         messengerAlbum.setUserID(userID);
-        AppDBHelper.getInstance().insertAlbum(messengerAlbum);
+        AlbumRepository.getInstance().insert(messengerAlbum);
 
         // Instagram
         Album instagramAlbum = new Album();
         instagramAlbum.setAlbumName("Instagram");
         instagramAlbum.setUserID(userID);
-        AppDBHelper.getInstance().insertAlbum(instagramAlbum);
+        AlbumRepository.getInstance().insert(instagramAlbum);
 
         // Favorite
         Album favoriteAlbum = new Album();
         favoriteAlbum.setAlbumName("Favorite");
         favoriteAlbum.setUserID(userID);
-        AppDBHelper.getInstance().insertAlbum(favoriteAlbum);
+        AlbumRepository.getInstance().insert(favoriteAlbum);
 
         // Bin
         Album binAlbum = new Album();
         binAlbum.setAlbumName("Bin");
         binAlbum.setUserID(userID);
-        AppDBHelper.getInstance().insertAlbum(binAlbum);
+        AlbumRepository.getInstance().insert(binAlbum);
 
         // ScreenShot
         Album screenShotAlbum = new Album();
         screenShotAlbum.setAlbumName("ScreenShot");
         screenShotAlbum.setUserID(userID);
-        AppDBHelper.getInstance().insertAlbum(screenShotAlbum);
+        AlbumRepository.getInstance().insert(screenShotAlbum);
 
         // Download
         Album downloadAlbum = new Album();
         downloadAlbum.setAlbumName("Download");
         downloadAlbum.setUserID(userID);
-        AppDBHelper.getInstance().insertAlbum(downloadAlbum);
+        AlbumRepository.getInstance().insert(downloadAlbum);
     }
 
 

@@ -38,12 +38,25 @@ public class AlbumRepository {
         }
         return currentAlbumRepository;
     }
+
+
     public AlbumRepository(Application application){
         this.application = application;
         AppDatabase galleryDatabase = AppDatabase.getInstance();
         albumDao = galleryDatabase.albumDao();
         allAlbums = albumDao.getAllAlbums(AppPreferencesHelper.getInstance().getCurrentUserId());
+
+//        insertAllComplete.observe(, new Observer<Boolean>() {
+//            @Override
+//            public void onChanged(Boolean aBoolean) {
+//                if(aBoolean){
+//                    System.out.println("Alb Repos | insert all complete");
+//                    allAlbums = albumDao.getAllAlbums(AppPreferencesHelper.getInstance().getCurrentUserId());
+//                }
+//            }
+//        });
     }
+
 
     public LiveData<List<Album>> getAlbums(){
 
@@ -64,6 +77,90 @@ public class AlbumRepository {
         return false;
     }
 
+        private final MutableLiveData<Boolean> insertAllComplete = new MutableLiveData<>();
+
+        // ...
+
+
+
+        public LiveData<Boolean> getInsertAllComplete() {
+            return insertAllComplete;
+        }
+
+        public void _fetchData() {
+            allAlbums.observeForever(new Observer<List<Album>>() {
+                @Override
+                public void onChanged(List<Album> albumsDatabase) {
+                    allAlbums.removeObserver(this);
+
+                    ExecutorService executorService = Executors.newSingleThreadExecutor();
+                    Future<List<Album>> futureExternal = executorService.submit(new Callable<List<Album>>() {
+                        @Override
+                        public List<Album> call() throws Exception {
+                            System.out.println("Alb Repos | fetch data: listabums: " + AlbumFromExternalStorage.listAlbums(application).size());
+                            return AlbumFromExternalStorage.listAlbums(application);
+                        }
+                    });
+
+                    try {
+                        List<Album> albumsExternal = futureExternal.get();
+                        if (albumsDatabase != null && albumsExternal != null) {
+                            for (Album albumExternal : albumsExternal) {
+                                for (Album albumDatabase : albumsDatabase) {
+                                    if (albumExternal.getPath().equals(albumDatabase.getPath())) {
+                                        if (albumDatabase.getDeletedTs() != 0) {
+                                            albumExternal.setDeletedTs(albumDatabase.getDeletedTs());
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        if (albumsExternal != null) {
+                            insertAllAlbums(albumsExternal).observeForever(new Observer<Boolean>() {
+                                @Override
+                                public void onChanged(Boolean aBoolean) {
+                                    // Chèn xong hết, thông báo tới nơi cần
+                                    insertAllComplete.setValue(true);
+                                }
+                            });
+                        }
+                    } catch (ExecutionException e) {
+                        System.out.println("Error insert all album");
+                        throw new RuntimeException(e);
+                    } catch (InterruptedException e) {
+                        System.out.println("Error insert all album 2");
+                        throw new RuntimeException(e);
+                    }
+                }
+            });
+        }
+
+        public LiveData<Boolean> insertAllAlbums(List<Album> albums) {
+            MutableLiveData<Boolean> resultLiveData = new MutableLiveData<>();
+            ExecutorService executorService = Executors.newSingleThreadExecutor();
+
+            executorService.execute(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        // Sử dụng synchronized để đảm bảo đồng bộ hóa
+                        synchronized (this) {
+                            // Chèn tất cả album vào cơ sở dữ liệu
+                            // ...
+
+                            // Thông báo khi tất cả chèn đã hoàn thành
+                            resultLiveData.postValue(true);
+                        }
+                    } catch (Exception e) {
+                        resultLiveData.postValue(false);
+                    }
+                }
+            });
+
+            return resultLiveData;
+        }
+
+
     public void fetchData(){
         allAlbums.observeForever(new Observer<List<Album>>() {
             @Override
@@ -73,6 +170,7 @@ public class AlbumRepository {
                 Future<List<Album>> futureExternal = executorService.submit(new Callable<List<Album>>() {
                     @Override
                     public List<Album> call() throws Exception {
+                        System.out.println("Alb Repos | fetch data: listabums: " + AlbumFromExternalStorage.listAlbums(application).size());
                         List<Album> albums = AlbumFromExternalStorage.listAlbums(application);
                         return  albums;
                     }
@@ -118,7 +216,7 @@ public class AlbumRepository {
         executorService.execute(new Runnable() {
             @Override
             public void run() {
-//                albumDao.insertAll(album);
+                albumDao.insertAll(album);
             }
         });
     }
@@ -129,12 +227,7 @@ public class AlbumRepository {
         executorService.execute(new Runnable() {
             @Override
             public void run() {
-                AppDatabase.getInstance().runInTransaction(new Runnable() {
-                    @Override
-                    public void run() {
-                        albumDao.insert(album);
-                    }
-                });
+                albumDao.insert(album);
             }
         });
     }
