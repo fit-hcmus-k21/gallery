@@ -47,12 +47,12 @@ public class MyCustomView extends View {
         line.setStyle(Paint.Style.STROKE);
         line.setStrokeWidth(15);
         touch = new Path();
-//        Dtext = new TextPaint();
-//        Dtext.setColor(Color.WHITE);
-//        Dtext.setTextSize(30);
-//        Dtext.setAntiAlias(true);
-        textX = 660/2;
-        textY = 1466/2;
+        Dtext = new TextPaint();
+        Dtext.setColor(Color.WHITE);
+        Dtext.setTextSize(30);
+        Dtext.setAntiAlias(true);
+        textX = EditActivity.deviceWidth/2;
+        textY = 600/2;
         textBound = new Rect();
     }
     @SuppressLint("ResourceAsColor")
@@ -195,7 +195,8 @@ public class MyCustomView extends View {
                     if(check == true){
                         textX = eventX;
                         textY = eventY;
-                        invalidate();
+                        c.drawText(input,textX,textY,Dtext);
+//                        invalidate();
                     }
                     check = false;
                     break;
