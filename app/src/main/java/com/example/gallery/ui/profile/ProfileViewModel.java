@@ -125,6 +125,8 @@ public class ProfileViewModel extends BaseViewModel<ProfileNavigator> {
         getNavigator().openAddImageFromDeviceActivity();
     }
 
+
+
     public void addImageFromLink() {
 
         getNavigator().getmProfileBinding().txtDownloadStatus.setText("Downloaded Status: downloading");
@@ -213,9 +215,11 @@ public class ProfileViewModel extends BaseViewModel<ProfileNavigator> {
                     //  System.out.println("Insert media item success from profile view model");
 
 
+
                     // Get the number of rows in the database
 //                    //  System.out.println("Number of media items after download image: " + MediaItemViewModel.getInstance().getNumberOfMediaItems().getValue());
-                    getNavigator().getmProfileBinding().txtDownloadStatus.setText("Status: download a " + fileExtension + " successfully!");
+
+                    getNavigator().getmProfileBinding().txtDownloadStatus.setText("Status: download a " + fileExtension +" successfully!");
                     getNavigator().getmProfileBinding().txtDownloadStatus.setTextColor(Color.parseColor("#008000"));
                 }
             }

@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
 //        if(RequestPermissionHelper.checkAndRequestPermission(this, 101)){
 //            //
 //        }
+
         fetchData();
 
 
@@ -199,27 +200,28 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-//        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//              System.out.println("in onRequestPermissionsResult main: " + requestCode);
-//            // Sử dụng Executor
-//            Executor executor = Executors.newSingleThreadExecutor();
-//
-//            executor.execute(() -> {
-//                  System.out.println("in executor main: " + requestCode);
-//
-//                new Handler(Looper.getMainLooper()).post(() -> MediaItemRepository.getInstance().fetchData());
-//
-//
-//            });
-//        } else {
-//            System.out.println("else on result permission: " + requestCode);
-//            fetchData();
-//        }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-//    }
+        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+              System.out.println("in onRequestPermissionsResult main: " + requestCode);
+            // Sử dụng Executor
+            Executor executor = Executors.newSingleThreadExecutor();
+
+            executor.execute(() -> {
+                  System.out.println("in executor main: " + requestCode);
+
+                new Handler(Looper.getMainLooper()).post(() -> MediaItemRepository.getInstance().fetchData());
+
+
+            });
+        } else {
+            System.out.println("else on result permission: " + requestCode);
+            fetchData();
+        }
+
+    }
 
 }

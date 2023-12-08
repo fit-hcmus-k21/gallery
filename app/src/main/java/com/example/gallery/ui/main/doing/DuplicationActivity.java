@@ -167,7 +167,7 @@ public class DuplicationActivity extends AppCompatActivity implements View.OnCli
 
     // ----------------------------------------
     public List<MediaItem> find(List<MediaItem> photos){
-//        // tính giá trị finger
+
         List<MediaItem> temp = new ArrayList<>(photos);
         List<Long> fingerValues = CalculateFingerValue(photos);
         List<MediaItem> output = new ArrayList<>();                 // lưa danh sách ảnh trùng sau khi check
@@ -180,6 +180,7 @@ public class DuplicationActivity extends AppCompatActivity implements View.OnCli
                     dist = hamDist(fingerValues.get(i),fingerValues.get(j));
                 }catch (Exception e){
                     System.out.println("Bitmap 203 | Duplication | " + e);
+
                 }
                 if(dist < 10){
                     if(check == false){
@@ -199,34 +200,7 @@ public class DuplicationActivity extends AppCompatActivity implements View.OnCli
         }
         return output;
 //        --------------------------------------------
-        // tính giá trị finger
-//        List<MediaItem> temp = new ArrayList<>(photos);
-//        List<Long> fingerValues = CalculateFingerValue(photos);
-//        List<MediaItem> output = new ArrayList<>(); // lưa danh sách ảnh trùng sau khi check
-//
-//        for (int i = 0; i < temp.size() - 1; ++i) {
-//            boolean check = false;
-//
-//            for (int j = i + 1; j < temp.size(); ++j) {
-//                try {
-//                    int dist = hamDist(fingerValues.get(i), fingerValues.get(j));
-//
-//                    if (dist < 10) {
-//                        if (!check) {
-//                            output.add(temp.get(i));
-//                            check = true;
-//                        }
-//
-//                        output.add(temp.get(j));
-//                        System.out.println("Bitmap 229 | Duplication | " + temp.get(j));
-//                    }
-//                } catch (Exception e) {
-//                    System.out.println("Bitmap 232 | Duplication | " + e);
-//                }
-//            }
-//        }
-//
-//        return output;
+
     }
     public List<Long> CalculateFingerValue(List<MediaItem> photos){
 

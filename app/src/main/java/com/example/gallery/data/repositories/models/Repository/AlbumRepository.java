@@ -163,6 +163,7 @@ public class AlbumRepository {
     public void fetchData(){
 //            LiveData<List<Album>> liveData = allAlbums;
         allAlbums.observeForever(new Observer<List<Album>>() {
+
             @Override
             public void onChanged(List<Album> albumsDatabase) {
                 allAlbums.removeObserver(this); // Cái dòng này quan trong vãi cả nồi @@ không có nó thì hiệu suất giảm đáng kể
