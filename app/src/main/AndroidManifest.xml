@@ -33,9 +33,6 @@
         android:requestLegacyExternalStorage="true"
         >
 
-
-
-
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"
@@ -95,6 +92,9 @@
         <activity android:name=".ui.resetPassword.ResetPasswordActivity" />
 
 
+        <activity
+            android:name=".ui.custom.AddImageFromDevice"
+            android:parentActivityName=".ui.main.doing.MainActivity" />
 
 
 <!--        settings for fb     -->

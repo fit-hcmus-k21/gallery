@@ -1,35 +1,28 @@
 package com.example.gallery.ui.profile;
 
+
 import android.content.Intent;
 
 import androidx.annotation.NonNull;
 
 import android.os.Bundle;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 
-import androidx.databinding.DataBindingUtil;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
+
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.gallery.App;
 import com.example.gallery.BR;
 import com.example.gallery.R;
-import com.example.gallery.data.local.prefs.AppPreferencesHelper;
-import com.example.gallery.data.models.db.Album;
-import com.example.gallery.data.models.db.MediaItem;
-import com.example.gallery.data.repositories.models.Repository.MediaItemRepository;
-import com.example.gallery.data.repositories.models.Repository.UserRepository;
-import com.example.gallery.data.repositories.models.ViewModel.AlbumViewModel;
-import com.example.gallery.data.repositories.models.ViewModel.UserViewModel;
+
 import com.example.gallery.databinding.ProfileBinding;
 import com.example.gallery.ui.base.BaseFragment;
+import com.example.gallery.ui.custom.AddImageFromDevice;
 import com.example.gallery.ui.login.LoginActivity;
 
-import java.util.List;
 
 import javax.annotation.Nullable;
 
@@ -151,7 +144,13 @@ public class ProfileFragment extends BaseFragment<ProfileBinding, ProfileViewMod
 
 //---------------------------
 
+    @Override
+    public void openAddImageFromDeviceActivity() {
+        System.out.println("openAddImageFromDeviceActivity");
+        Intent intent = new Intent(getActivity(), AddImageFromDevice.class);
+        startActivity(intent);
 
+    }
 
 }
 

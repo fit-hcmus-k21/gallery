@@ -38,13 +38,14 @@ import java.util.Optional;
                     parentColumns = "id",
                     childColumns = "userID",
                     onDelete = ForeignKey.CASCADE
-            ),
-            @ForeignKey(
-                        entity = Album.class,
-                        parentColumns = "name",
-                        childColumns = "albumName",
-                        onDelete = ForeignKey.NO_ACTION // If delete album, mediaItem still exist
-                )
+            )
+//                ,
+//            @ForeignKey(
+//                        entity = Album.class,
+//                        parentColumns = "name",
+//                        childColumns = "albumName",
+//                        onDelete = ForeignKey.NO_ACTION // If delete album, mediaItem still exist
+//                )
         }
 //        primaryKeys = {
 //            "id", "userID"
