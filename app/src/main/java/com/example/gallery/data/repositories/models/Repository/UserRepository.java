@@ -48,9 +48,15 @@ public class UserRepository {
     }
 
 
-
-    public void insertUser(User user) {
-        new InsertUserTask().execute(user);
+    public void insertUser(User user){
+        //  System.out.println("UserRepository insertUser");
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                userDao.insert(user);
+            }
+        });
     }
 
     private class InsertUserTask extends AsyncTask<User, Void, Void> {

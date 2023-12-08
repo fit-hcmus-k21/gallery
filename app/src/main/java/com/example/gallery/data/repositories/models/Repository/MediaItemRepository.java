@@ -108,13 +108,15 @@ public class MediaItemRepository {
 
     public void fetchData() {
 
-        allMediaItem.observeForever(new Observer<List<MediaItem>>() {
+        LiveData<List<MediaItem>> liveData = allMediaItem;
+
+        liveData.observeForever(new Observer<List<MediaItem>>() {
             @Override
             public void onChanged(List<MediaItem> mediaItems) {
                 // Dữ liệu đã được truy vấn và có sẵn trong allMediaItem
                 Log.d("Mytask", "Checking mediaItemDb: " + mediaItems.size());
                 // Gỡ bỏ observer sau khi đã kiểm tra dữ liệu
-                allMediaItem.removeObserver(this);
+                liveData.removeObserver(this);
 
                 ExecutorService executorService = Executors.newFixedThreadPool(2);
                 Future<List<MediaItem>> futureExternal = executorService.submit(new Callable<List<MediaItem>>() {

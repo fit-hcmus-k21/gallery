@@ -382,7 +382,7 @@ public class MediaItemFragment extends Fragment {
                 break;
         }
     }
-    
+
 
     private void showStatisticDialog(){
         List<MediaItem> list =  MediaItemRepository.getInstance().getAllMediaItems().getValue();

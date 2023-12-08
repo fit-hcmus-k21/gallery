@@ -78,7 +78,9 @@ public class RegisterViewModel extends BaseViewModel<RegisterNavigator> {
                 DatabaseReference usersRef = database.getReference("users");
 
 // Ghi trường "fullName" của người dùng hiện tại vào child "user_info"
-                usersRef.child(mAuth.getCurrentUser().getUid()).child("user_info").child("fullName").setValue(fullname)
+
+
+                usersRef.child(mAuth.getCurrentUser().getUid() ).child("user_info").child("fullName").setValue(fullname)
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
@@ -135,53 +137,6 @@ public class RegisterViewModel extends BaseViewModel<RegisterNavigator> {
                         });
 
 
-// Đường dẫn đến nút "albums" của người dùng hiện tại
-                DatabaseReference currentUserRef = usersRef.child(mAuth.getCurrentUser().getUid());
-
-                DatabaseReference albumsRef = currentUserRef.child("user_data").child("albums");
-
-                // Ghi dữ liệu vào nút "albums"
-                Album album = new Album();
-                album.setUserID(mAuth.getCurrentUser().getUid());
-                album.setAlbumName("Default");
-                albumsRef.child("default").setValue(album)
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                // Ghi dữ liệu thành công
-                                //  System.out.println("Ghi dữ liệu vào albums thành công");
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                // Xử lý lỗi
-                                //  System.out.println("Xử lý lỗi khi ghi dữ liệu vào albums" + e.toString());
-                            }
-                        });
-
-                // Đường dẫn đến nút "media_items" của người dùng hiện tại
-                DatabaseReference imagesRef = currentUserRef.child("user_data").child("media_items");
-
-                // Ghi dữ liệu vào nút "images"
-                MediaItem mediaItem = new MediaItem();
-                mediaItem.setAlbumName("default");
-                mediaItem.setUserID(mAuth.getCurrentUser().getUid());
-                imagesRef.child("default").setValue(mediaItem)
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                // Ghi dữ liệu thành công
-                                //  System.out.println("Ghi dữ liệu vào images thành công");
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                // Xử lý lỗi
-                                //  System.out.println("Xử lý lỗi khi ghi dữ liệu vào images" + e.toString());
-                            }
-                        });
 
 //                set logged in mode in prefs, userID
                 getDataManager().setCurrentUserId(mAuth.getCurrentUser().getUid());
@@ -204,7 +159,7 @@ public class RegisterViewModel extends BaseViewModel<RegisterNavigator> {
 
                         UserRepository.getInstance().insertUser(user);
                        // insert default albums
-                        insertDefaultAlbums(mAuth.getCurrentUser().getUid());
+//                        insertDefaultAlbums(mAuth.getCurrentUser().getUid());
 
                         new Handler(Looper.getMainLooper()).post(new Runnable() {
                             @Override
