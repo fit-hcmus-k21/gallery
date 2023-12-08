@@ -60,7 +60,7 @@ public class LoginViewModel extends BaseViewModel<LoginNavigator> {
             FirebaseAuth mAuth = FirebaseAuth.getInstance();
             mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
-                    System.out.println("in login 60");
+                    //  System.out.println("in login 60");
                     Toast.makeText(App.getInstance(), "Login success", Toast.LENGTH_SHORT).show();
 
                     // set login mode to LoggedInMode.LOGGED_IN_MODE_SERVER
@@ -70,7 +70,7 @@ public class LoginViewModel extends BaseViewModel<LoginNavigator> {
                     getDataManager().setCurrentUserEmail(mAuth.getCurrentUser().getEmail());
                     getDataManager().setCurrentUserName(mAuth.getCurrentUser().getDisplayName());
 
-                    System.out.println("in login 69");
+                    //  System.out.println("in login 69");
 
 
 
@@ -90,9 +90,9 @@ public class LoginViewModel extends BaseViewModel<LoginNavigator> {
     public void startSeeding() {
         // check if not have data in local db, then fetch data from server
         if (AppDBHelper.getInstance().isUserExist(getDataManager().getCurrentUserId())) {
-            System.out.println("User" + getDataManager().getCurrentUserId() + " exist");
+            //  System.out.println("User" + getDataManager().getCurrentUserId() + " exist");
         } else {
-            System.out.println("User not exist");
+            //  System.out.println("User not exist");
             // fetch data from server
 
         }
@@ -118,10 +118,10 @@ public class LoginViewModel extends BaseViewModel<LoginNavigator> {
                     public void onSuccess(LoginResult loginResult) {
 
 
-                        System.out.println("On Success");
+                        //  System.out.println("On Success");
 
                         AccessToken accessToken = loginResult.getAccessToken();
-                        System.out.println("accessToken: " + accessToken.toString());
+                        //  System.out.println("accessToken: " + accessToken.toString());
 
                         handleFacebookAccessToken(accessToken);
                         getNavigator().openMainActivity();
@@ -133,13 +133,13 @@ public class LoginViewModel extends BaseViewModel<LoginNavigator> {
                     @Override
                     public void onCancel() {
                         setIsLoading(false); // Move setIsLoading(false) inside onCancel
-                        System.out.println("On Cancel");
+                        //  System.out.println("On Cancel");
                     }
 
                     @Override
                     public void onError(FacebookException error) {
                         setIsLoading(false); // Move setIsLoading(false) inside onError
-                        System.out.println( "On Error");
+                        //  System.out.println( "On Error");
                     }
 
 
@@ -163,12 +163,12 @@ public class LoginViewModel extends BaseViewModel<LoginNavigator> {
             public void onCompleted(JSONObject json, GraphResponse response) {
                 if (response.getError() != null) {
                     // handle error
-                    System.out.println("ERROR");
+                    //  System.out.println("ERROR");
                 } else {
-                    System.out.println("Success");
+                    //  System.out.println("Success");
                     try {
                         String jsonResult = String.valueOf(json);
-                        System.out.println("JSON Result" + jsonResult);
+                        //  System.out.println("JSON Result" + jsonResult);
 
                         String strEmail = json.getString("email");
                         String strId = json.getString("id");
@@ -177,7 +177,7 @@ public class LoginViewModel extends BaseViewModel<LoginNavigator> {
 
                         // Now you can use strEmail, strId, strFirstName, and strLastName as needed
                         // For example, you can pass these values to your server or update UI elements
-                        System.out.println( "ID: " + strId + ", Email: " + strEmail + ", FirstName: " + strFirstName + ", LastName: " + strLastName);
+                        //  System.out.println( "ID: " + strId + ", Email: " + strEmail + ", FirstName: " + strFirstName + ", LastName: " + strLastName);
 
                     } catch (JSONException e) {
                         e.printStackTrace();

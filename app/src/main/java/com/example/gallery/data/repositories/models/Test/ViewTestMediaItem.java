@@ -61,7 +61,7 @@ public class ViewTestMediaItem extends AppCompatActivity {
             @Override
             public void onChanged(User user) {
                 if(user != null ){
-                    System.out.println("on user change");
+                    //  System.out.println("on user change");
                     AlbumViewModel.getInstance().fetchData();
                 }
             }

@@ -50,7 +50,7 @@ public class AlbumRepository {
 //            @Override
 //            public void onChanged(Boolean aBoolean) {
 //                if(aBoolean){
-//                    System.out.println("Alb Repos | insert all complete");
+//                    //  System.out.println("Alb Repos | insert all complete");
 //                    allAlbums = albumDao.getAllAlbums(AppPreferencesHelper.getInstance().getCurrentUserId());
 //                }
 //            }
@@ -97,7 +97,7 @@ public class AlbumRepository {
                     Future<List<Album>> futureExternal = executorService.submit(new Callable<List<Album>>() {
                         @Override
                         public List<Album> call() throws Exception {
-                            System.out.println("Alb Repos | fetch data: listabums: " + AlbumFromExternalStorage.listAlbums(application).size());
+                            //  System.out.println("Alb Repos | fetch data: listabums: " + AlbumFromExternalStorage.listAlbums(application).size());
                             return AlbumFromExternalStorage.listAlbums(application);
                         }
                     });
@@ -125,10 +125,10 @@ public class AlbumRepository {
                             });
                         }
                     } catch (ExecutionException e) {
-                        System.out.println("Error insert all album");
+                        //  System.out.println("Error insert all album");
                         throw new RuntimeException(e);
                     } catch (InterruptedException e) {
-                        System.out.println("Error insert all album 2");
+                        //  System.out.println("Error insert all album 2");
                         throw new RuntimeException(e);
                     }
                 }
@@ -160,17 +160,17 @@ public class AlbumRepository {
             return resultLiveData;
         }
 
-
     public void fetchData(){
-        allAlbums.observeForever(new Observer<List<Album>>() {
+            LiveData<List<Album>> liveData = allAlbums;
+        liveData.observeForever(new Observer<List<Album>>() {
             @Override
             public void onChanged(List<Album> albumsDatabase) {
-                allAlbums.removeObserver(this); // Cái dòng này quan trong vãi cả nồi @@ không có nó thì hiệu suất giảm đáng kể
+                liveData.removeObserver(this); // Cái dòng này quan trong vãi cả nồi @@ không có nó thì hiệu suất giảm đáng kể
                 ExecutorService executorService = Executors.newSingleThreadExecutor();
                 Future<List<Album>> futureExternal = executorService.submit(new Callable<List<Album>>() {
                     @Override
                     public List<Album> call() throws Exception {
-                        System.out.println("Alb Repos | fetch data: listabums: " + AlbumFromExternalStorage.listAlbums(application).size());
+                        //  System.out.println("Alb Repos | fetch data: listabums: " + AlbumFromExternalStorage.listAlbums(application).size());
                         List<Album> albums = AlbumFromExternalStorage.listAlbums(application);
                         return  albums;
                     }
@@ -192,13 +192,14 @@ public class AlbumRepository {
                         }
                     }
                     if(albumsExternal != null){
+                        //  System.out.println("Insert all albums in external storage");
                         insertAll(albumsExternal);
                     }
                 } catch (ExecutionException e) {
-                    System.out.println("Error insert all album");
+                    //  System.out.println("Error insert all album");
                     throw new RuntimeException(e);
                 } catch (InterruptedException e) {
-                    System.out.println("Error insert all album 2");
+                    //  System.out.println("Error insert all album 2");
 
                     throw new RuntimeException(e);
                 }
@@ -227,7 +228,12 @@ public class AlbumRepository {
         executorService.execute(new Runnable() {
             @Override
             public void run() {
-                albumDao.insert(album);
+                try {
+                    albumDao.insert(album);
+                }
+                catch (Exception e){
+                    //  System.out.println("Error insert album: " + e.getMessage());
+                }
             }
         });
     }

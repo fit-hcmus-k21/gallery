@@ -34,7 +34,7 @@ public class ViewPagerSingleMediaAdapter extends RecyclerView.Adapter<ViewPagerS
     private OnVideoPreparedListener listener;
 
     public void setData(List<MediaItem> mediaItemList){
-        System.out.println("View Pager Single Media Adapter 001: setData: mediaItemList = " + mediaItemList);
+        // //  System.out.println("View Pager Single Media Adapter 001: setData: mediaItemList = " + mediaItemList);
 
         this.mediaItemList = mediaItemList;
         notifyDataSetChanged();
@@ -46,7 +46,7 @@ public class ViewPagerSingleMediaAdapter extends RecyclerView.Adapter<ViewPagerS
     @Override
     public int getItemViewType(int position) {
         if(mediaItemList != null && mediaItemList.size() > 0) {
-            System.out.println("On get item view type 47 | View Pager Single Media Adapter");
+            //  System.out.println("On get item view type 47 | View Pager Single Media Adapter");
             if(mediaItemList.get(position).getFileExtension() != null  && mediaItemList.get(position).getFileExtension().equals("video/mp4")){
                 return TYPE_VIDEO;
             }
@@ -74,7 +74,7 @@ public class ViewPagerSingleMediaAdapter extends RecyclerView.Adapter<ViewPagerS
 
 
     public ViewPagerSingleMediaViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        System.out.println("View Pager Single Media Adapter |Begin | onCreateViewHolder: viewType = " + viewType);
+        //  System.out.println("View Pager Single Media Adapter |Begin | onCreateViewHolder: viewType = " + viewType);
         View view = null;
 
         if(viewType == TYPE_PHOTO){
@@ -84,13 +84,13 @@ public class ViewPagerSingleMediaAdapter extends RecyclerView.Adapter<ViewPagerS
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_single_video, parent, false);
         }
         assert view != null;
-        System.out.println("View Pager Single Media Adapter | End | onCreateViewHolder: view = " + view);
+        //  System.out.println("View Pager Single Media Adapter | End | onCreateViewHolder: view = " + view);
         return new ViewPagerSingleMediaViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewPagerSingleMediaViewHolder holder, int position) {
-        System.out.println("View Pager Single Media Adapter start: onBindViewHolder: position = " + position);
+        //  System.out.println("View Pager Single Media Adapter start: onBindViewHolder: position = " + position);
         MediaItem mediaItem = mediaItemList.get(position);
 
 //        if(holder instanceof ImageViewHolder){
@@ -117,7 +117,7 @@ public class ViewPagerSingleMediaAdapter extends RecyclerView.Adapter<ViewPagerS
             exoPlayer.prepare();
             exoPlayer.setPlayWhenReady(true);
         }
-        System.out.println("View Pager Single Media Adapter end: onBindViewHolder: position = " + position);
+        //  System.out.println("View Pager Single Media Adapter end: onBindViewHolder: position = " + position);
 
 
     }
@@ -222,7 +222,7 @@ public class ViewPagerSingleMediaAdapter extends RecyclerView.Adapter<ViewPagerS
             super(itemView);
             int viewType = getItemViewType();
 
-            System.out.println("View Pager Single Media Adapter | start | ViewPagerSingleMediaViewHolder: itemView = " + itemView);
+            //  System.out.println("View Pager Single Media Adapter | start | ViewPagerSingleMediaViewHolder: itemView = " + itemView);
 
 
             imageView = itemView.findViewById(R.id.single_media_view);

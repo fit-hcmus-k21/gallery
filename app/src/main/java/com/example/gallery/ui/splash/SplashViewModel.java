@@ -31,18 +31,18 @@ public class SplashViewModel extends BaseViewModel<SplashNavigator> {
 
         // check pref if exist
 
-        System.out.println("CurrentUserId() : " + getDataManager().getCurrentUserId());
-        System.out.println("CurrentUserLoggedInMode(): " + getDataManager().getCurrentUserLoggedInMode());
+        //  System.out.println("CurrentUserId() : " + getDataManager().getCurrentUserId());
+        //  System.out.println("CurrentUserLoggedInMode(): " + getDataManager().getCurrentUserLoggedInMode());
 
 
         if (getDataManager().getCurrentUserLoggedInMode() == DataManager.LoggedInMode.LOGGED_IN_MODE_LOGGED_OUT.getType()) {
-            System.out.println("Open login activity from splash");
+            //  System.out.println("Open login activity from splash");
             getNavigator().openLoginActivity();
         } else {
-            System.out.println("Start seeding from splash");
+            //  System.out.println("Start seeding from splash");
 
             startSeeding();
-            System.out.println("Open main activity from splash");
+            //  System.out.println("Open main activity from splash");
 
             getNavigator().openMainActivity();
         }

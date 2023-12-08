@@ -128,7 +128,7 @@ public class MediaItemFragment extends Fragment {
                 }
 
                 for(MediaItem mediaItem : mediaItems){
-                    System.out.println("MediaItemFragment 001: onViewCreated: getAllMediaItems: onChanged: in loop");
+                    // //  System.out.println("MediaItemFragment 001: onViewCreated: getAllMediaItems: onChanged: in loop");
 
                     mediaItem.setTypeDisplay(mCurrentType);
                 }
@@ -139,16 +139,16 @@ public class MediaItemFragment extends Fragment {
 
 
                 mainMediaItemAdapter.setData(mediaItemsLíst, mediaItemGroupByDate, dateListString); // trong adapter có hàm setData và có notifydatasetchanged
-                System.out.println("on observe : " + mediaItems.size() + " before set hash map");
+                //  System.out.println("on observe : " + mediaItems.size() + " before set hash map");
 
                 HashMap<String, List<MediaItem>> mediaItemGroupByDate = setMediaItemGroupByDate(mediaItems);
 
-                System.out.println("on observe : after set hash map , before set data");
+                //  System.out.println("on observe : after set hash map , before set data");
 
 
                 mainMediaItemAdapter.setData(mediaItems, mediaItemGroupByDate, dateListString); // trong adapter có hàm setData và có notifydatasetchanged
 
-                System.out.println("on observe : after set hash map , after set data");
+                //  System.out.println("on observe : after set hash map , after set data");
 
 
 

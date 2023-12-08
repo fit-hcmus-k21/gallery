@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".ui.main.fragment.MediaItemFragment"
-    android:orientation="vertical">
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             tools:context=".ui.main.fragment.MediaItemFragment"
+             android:orientation="vertical">
+
+   <!-- Your existing layout -->
 
    <com.google.android.material.appbar.AppBarLayout
        android:layout_width="match_parent"
        android:layout_height="wrap_content"
        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-       android:paddingBottom="10dp"
-       >
+       android:paddingBottom="10dp">
 
       <androidx.appcompat.widget.Toolbar
           android:id="@+id/toolbar_media_item"
           android:layout_width="match_parent"
           android:layout_height="?attr/actionBarSize"
           android:background="@color/purple_700"
-          app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+          android:theme="@style/ThemeOverlay.AppCompat.Light"
           />
    </com.google.android.material.appbar.AppBarLayout>
 
@@ -28,7 +28,14 @@
        android:layout_width="match_parent"
        android:layout_height="wrap_content"
        android:layout_marginStart="10dp"
-       android:layout_marginBottom="10dp"/>
+       android:layout_marginBottom="10dp" />
 
-
-</LinearLayout>
+   <!-- Progress bar to show loading indicator, initially invisible -->
+   <ProgressBar
+       android:id="@+id/fragment_main_progressBar"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_gravity="center"
+       android:visibility="gone"
+       style="?android:attr/progressBarStyle" />
+</FrameLayout>

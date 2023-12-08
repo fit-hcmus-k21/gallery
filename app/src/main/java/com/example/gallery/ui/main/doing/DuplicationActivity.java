@@ -50,7 +50,7 @@ public class DuplicationActivity extends AppCompatActivity  {
     @SuppressLint("MissingInflatedId")
     @Override
     public void onCreate(Bundle saveInstanceState){
-        System.out.println("DuplicationActivity 001: onCreate");
+        //  System.out.println("DuplicationActivity 001: onCreate");
         super.onCreate(saveInstanceState);
         setContentView(R.layout.duplicate_screen);
 
@@ -109,9 +109,9 @@ public class DuplicationActivity extends AppCompatActivity  {
 
                 //get similar photos
                 for(int i = 0 ; i < mediaItemGroupToSort.size(); ++i){
-                    System.out.println("Bitmap 112 | Duplication | " + i);
+                    //  System.out.println("Bitmap 112 | Duplication | " + i);
                     newList.add(find(mediaItemGroupToSort.get(dateListString.get(i))));
-                    System.out.println("Bitmap 114 | Duplication | " + i);
+                    //  System.out.println("Bitmap 114 | Duplication | " + i);
 
                 }
 
@@ -120,7 +120,7 @@ public class DuplicationActivity extends AppCompatActivity  {
                 //after get all similar photo
                 int run = 0;
                 for(int i = 0; i < newList.size(); ++i,++run){
-                    System.out.println(run +"---" + i);
+                    //  System.out.println(run +"---" + i);
 
                     if(newList.get(i).isEmpty()){
                         mediaItemGroupToSort.remove(dateListString.get(run));
@@ -187,7 +187,7 @@ public class DuplicationActivity extends AppCompatActivity  {
 //                try {
 //                dist = hamDist(fingerValues.get(i),fingerValues.get(j));
 //                }catch (Exception e){
-//                    System.out.println("Bitmap 203 | Duplication | " + e);
+//                    //  System.out.println("Bitmap 203 | Duplication | " + e);
 //                }
 //                if(dist < 10){
 //                    if(check == false){
@@ -195,11 +195,11 @@ public class DuplicationActivity extends AppCompatActivity  {
 //                        check = true;
 //                    }
 //                    output.add(temp.get(j));
-//                    System.out.println("Bitmap 196 | Duplication | " + temp.get(j));
+//                    //  System.out.println("Bitmap 196 | Duplication | " + temp.get(j));
 //                    temp.remove(j);
-//                    System.out.println("Bitmap 196 | Duplication | " + temp.size());
+//                    //  System.out.println("Bitmap 196 | Duplication | " + temp.size());
 //                    fingerValues.remove(j);
-//                    System.out.println("Bitmap 197 | Duplication | " + temp.size());
+//                    //  System.out.println("Bitmap 197 | Duplication | " + temp.size());
 //                    --j;
 //                }
 //                ++j;
@@ -226,10 +226,10 @@ public class DuplicationActivity extends AppCompatActivity  {
                         }
 
                         output.add(temp.get(j));
-                        System.out.println("Bitmap 229 | Duplication | " + temp.get(j));
+                        //  System.out.println("Bitmap 229 | Duplication | " + temp.get(j));
                     }
                 } catch (Exception e) {
-                    System.out.println("Bitmap 232 | Duplication | " + e);
+                    //  System.out.println("Bitmap 232 | Duplication | " + e);
                 }
             }
         }
@@ -240,7 +240,7 @@ public class DuplicationActivity extends AppCompatActivity  {
 
         List<Long> finger = new ArrayList<>();
         float scaleW, scaleH;
-        System.out.println("Bitmap 203 | Duplication | " + photos.size());
+        //  System.out.println("Bitmap 203 | Duplication | " + photos.size());
         for(int i = 0 ; i < photos.size(); ++i){
             MediaItem photo = photos.get(i);
 //            Bitmap bitmap = MediaStore.Images.Thumbnails.getThumbnail(DuplicationActivity.this.getContentResolver(),photo.getId(),MediaStore.Images.Thumbnails.MICRO_KIND,null);
@@ -253,7 +253,7 @@ public class DuplicationActivity extends AppCompatActivity  {
 
             // Kiểm tra xem Bitmap có được tạo thành công không
             if (bitmap != null) {
-                System.out.println("Bitmap 204 | Duplication | " + bitmap);
+                //  System.out.println("Bitmap 204 | Duplication | " + bitmap);
 
                 scaleW = 8.0f/bitmap.getWidth();
                 scaleH = 8.0f/bitmap.getHeight();
@@ -266,7 +266,7 @@ public class DuplicationActivity extends AppCompatActivity  {
             } else {
                 // Xử lý trường hợp không thể tạo Bitmap từ đường dẫn
                 Log.e("Error", "Unable to create Bitmap from the specified path");
-                System.out.println("Bitmap 219 | Duplication | " + bitmap);
+                //  System.out.println("Bitmap 219 | Duplication | " + bitmap);
             }
 
 

@@ -54,7 +54,7 @@ public class DuplicateParentAdapter extends RecyclerView.Adapter<DuplicateParent
 
     @Override
     public void onBindViewHolder(@NonNull DuplicateParentAdapter.ParentViewHolder holder, int position) {
-        System.out.println("DuplicateParentAdapter 001: onBindViewHolder: position = " + position);
+        //  System.out.println("DuplicateParentAdapter 001: onBindViewHolder: position = " + position);
         String date = dateListString.get(position);
         //chuyển về format dd/mm/yyyy
         SimpleDateFormat oldFormat = new SimpleDateFormat("yyyy/MM/dd") ;

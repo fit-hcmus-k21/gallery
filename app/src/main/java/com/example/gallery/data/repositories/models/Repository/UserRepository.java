@@ -27,7 +27,7 @@ public class UserRepository {
 
     public static UserRepository getInstance(){
         if(currentUserInstance == null){
-            System.out.println("get Instance of UserRepository");
+            //  System.out.println("get Instance of UserRepository");
             currentUserInstance = new UserRepository(App.getInstance());
         }
         return currentUserInstance;
@@ -35,11 +35,11 @@ public class UserRepository {
 
     public UserRepository(Application application){
         this.application = application;
-        System.out.println("UserRepository constructor");
+        //  System.out.println("UserRepository constructor");
         AppDatabase galleryDatabase = AppDatabase.getInstance();
-        System.out.println("galleryDatabase : " + galleryDatabase);
+        //  System.out.println("galleryDatabase : " + galleryDatabase);
         userDao = galleryDatabase.userDao();
-        System.out.println("userDao from UserRepos: " + userDao);
+        //  System.out.println("userDao from UserRepos: " + userDao);
 //        users = userDao.getAllUsers();
 
     }
@@ -48,7 +48,7 @@ public class UserRepository {
 //        return users;
 //    }
     public void insertUser(User user){
-        System.out.println("UserRepository insertUser");
+        //  System.out.println("UserRepository insertUser");
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         executorService.execute(new Runnable() {
             @Override

@@ -75,14 +75,14 @@ public class ProfileFragment extends BaseFragment<ProfileBinding, ProfileViewMod
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        System.out.println("On created view : " + mProfileBinding);
+        //  System.out.println("On created view : " + mProfileBinding);
 
 //        ------------------------------
-        System.out.println("mViewModel: " + mViewModel);
+        //  System.out.println("mViewModel: " + mViewModel);
         mViewModel.getNumberOfImages().observe(getViewLifecycleOwner(), new androidx.lifecycle.Observer<Integer>() {
             @Override
             public void onChanged(Integer integer) {
-                System.out.println("ProfileFragment 86: " + integer);
+                //  System.out.println("ProfileFragment 86: " + integer);
                 mProfileBinding.txtNumImg.setText("Number of images: " + integer);
             }
         });
@@ -90,7 +90,7 @@ public class ProfileFragment extends BaseFragment<ProfileBinding, ProfileViewMod
         mViewModel.getNumberOfAlbums().observe(getViewLifecycleOwner(), new androidx.lifecycle.Observer<Integer>() {
             @Override
             public void onChanged(Integer integer) {
-                System.out.println("ProfileFragment 86: " + integer);
+                //  System.out.println("ProfileFragment 86: " + integer);
                 mProfileBinding.txtNumAlbum.setText("Number of albums: " + integer);
             }
         });
@@ -111,23 +111,23 @@ public class ProfileFragment extends BaseFragment<ProfileBinding, ProfileViewMod
 
         super.onCreateView(inflater, container, savedInstanceState);
         mProfileBinding = getViewDataBinding();
-        System.out.println("ProfileBinding 57: " + mProfileBinding);
+        //  System.out.println("ProfileBinding 57: " + mProfileBinding);
 
 
         // Inside ProfileActivity
         mViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
 
         if (mViewModel != null) {
-            System.out.println("ProfileActivity: " +  "mViewModel is not null: " + mViewModel);
+            //  System.out.println("ProfileActivity: " +  "mViewModel is not null: " + mViewModel);
             mViewModel.setNavigator(this);
 
         } else {
             // print to log
-            System.out.println("ProfileActivity:" + " mViewModel is null");
+            //  System.out.println("ProfileActivity:" + " mViewModel is null");
 
         }
 
-        System.out.println("ProfileBinding: " + mProfileBinding);
+        //  System.out.println("ProfileBinding: " + mProfileBinding);
 
         mProfileBinding.setViewModel(mViewModel);
 
