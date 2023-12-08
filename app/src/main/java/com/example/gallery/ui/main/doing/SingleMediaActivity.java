@@ -84,7 +84,7 @@ public class SingleMediaActivity extends AppCompatActivity  {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        System.out.println("SingleMediaActivity | OnCreate");
+        //  System.out.println("SingleMediaActivity | OnCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.single_photo_screen);
 
@@ -131,7 +131,7 @@ public class SingleMediaActivity extends AppCompatActivity  {
         MediaItemRepository.getInstance().getAllMediaItems().observe(this, new Observer<List<MediaItem>>() {
             @Override
             public void onChanged(List<MediaItem> mediaItems) {
-                System.out.println("SingleMediaActivity | OnCreate | onChanged all media items");
+                //  System.out.println("SingleMediaActivity | OnCreate | onChanged all media items");
 
                 mediaItemsList = mediaItems;
 
@@ -141,15 +141,15 @@ public class SingleMediaActivity extends AppCompatActivity  {
                 if (!isMoveToCurrentItem[0] && index >= 0 && index < mediaItems.size()) {
                     // Lấy dữ liệu của MediaItem đang được chọn tra về LiveData
                     mediaItemLiveData.setValue(mediaItems.get(index));
-                    System.out.println("SingleMediaActivity | OnCreate | onChanged all media items | 101");
-                    System.out.println("SingleMediaActivity | mediaItemLiveData = " + mediaItemLiveData.getValue());
+                    //  System.out.println("SingleMediaActivity | OnCreate | onChanged all media items | 101");
+                    //  System.out.println("SingleMediaActivity | mediaItemLiveData = " + mediaItemLiveData.getValue());
 
                     if (!isMoveToCurrentItem[0]) {
                         Log.e("MyTag", "onChanged: " + index);
-                        System.out.println("SingleMediaActivity | OnCreate | onChanged all media items | 105");
+                        //  System.out.println("SingleMediaActivity | OnCreate | onChanged all media items | 105");
 
                         viewPager2.setCurrentItem(index, false);
-                        System.out.println("SingleMediaActivity | OnCreate | onChanged all media items | 108");
+                        //  System.out.println("SingleMediaActivity | OnCreate | onChanged all media items | 108");
                         isMoveToCurrentItem[0] = true;
 
                     }
@@ -173,13 +173,13 @@ public class SingleMediaActivity extends AppCompatActivity  {
         viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                System.out.println("Single media activity | on page scrolled 137 | position : " + position);
+                //  System.out.println("Single media activity | on page scrolled 137 | position : " + position);
                 super.onPageScrolled(position, positionOffset, positionOffsetPixels);
             }
 
             @Override
             public void onPageSelected(int position) {
-                System.out.println("Single media activity | on page selected 143 | position : " + position);
+                //  System.out.println("Single media activity | on page selected 143 | position : " + position);
                 mediaItemLiveData.setValue(mediaItemsList.get(position));
 
                 currentIndex = position;
@@ -200,7 +200,7 @@ public class SingleMediaActivity extends AppCompatActivity  {
 
                 //  update và remove comment sau *********
 //                if(mediaItemsList.get(position).getFileExtension() != null && mediaItemsList.get(position).getFileExtension().equals("image/jpeg")){
-//                    System.out.println("SingleMediaActivity | File extension = " + mediaItemsList.get(position).getFileExtension() + " | position = " + position);
+//                    //  System.out.println("SingleMediaActivity | File extension = " + mediaItemsList.get(position).getFileExtension() + " | position = " + position);
 //                    editImageView.setEnabled(true);
 //                    editImageView.setClickable(true);
 //                }
@@ -231,7 +231,7 @@ public class SingleMediaActivity extends AppCompatActivity  {
                 favoriteImageView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        System.out.println("SingleMediaActivity | OnCreate | onClick | update favorite");
+                        //  System.out.println("SingleMediaActivity | OnCreate | onClick | update favorite");
 
                         // Đây chỉ mới là việc thay đổi dữ liêu của Favorite trong database tự định nghĩa
                         // Chúng ta phải tiêến hành cập nhật trong MediaStore.Images.Media/MediaStores.Video.Media trường Favorite nữa
@@ -277,12 +277,12 @@ public class SingleMediaActivity extends AppCompatActivity  {
 
             @Override
             public void onPageScrollStateChanged(int state) {
-                System.out.println("SingleMediaActivity | OnCreate | onPageScrollStateChanged");
+                //  System.out.println("SingleMediaActivity | OnCreate | onPageScrollStateChanged");
                 super.onPageScrollStateChanged(state);
             }
         });
 
-        System.out.println("SingleMediaActivity | OnCreate | End");
+        //  System.out.println("SingleMediaActivity | OnCreate | End");
 
     }
 
@@ -290,7 +290,7 @@ public class SingleMediaActivity extends AppCompatActivity  {
     // Nhưng không hiểu vì sao lại lỗi, không hiêển thị được icon nên dùng cách này
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        System.out.println("SingleMediaActivity | onCreateOptionsMenu");
+        //  System.out.println("SingleMediaActivity | onCreateOptionsMenu");
         getMenuInflater().inflate(R.menu.top_appbar_media_item_menu, menu);
         mMenu = menu;
         return super.onCreateOptionsMenu(menu);
@@ -301,7 +301,7 @@ public class SingleMediaActivity extends AppCompatActivity  {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        System.out.println("SingleMediaActivity | onOptionsItemSelected");
+        //  System.out.println("SingleMediaActivity | onOptionsItemSelected");
         int id = item.getItemId();
 
         if(id == android.R.id.home ){
@@ -315,7 +315,7 @@ public class SingleMediaActivity extends AppCompatActivity  {
 //            mediaItemLiveData.observe(this, new Observer<MediaItem>() {
 //                @Override
 //                public void onChanged(MediaItem mediaItem) {
-//                    System.out.println("Single Media Activity | On changed 239 " + mediaItem);
+//                    //  System.out.println("Single Media Activity | On changed 239 " + mediaItem);
 //                    DisPlayInforMationAlerDialog(mediaItem);
 //                }
 //            });
@@ -346,7 +346,7 @@ public class SingleMediaActivity extends AppCompatActivity  {
 //                @Override
 //                public void onChanged(MediaItem mediaItem) {
 ////                    showOCRResultDialog(mediaItem.getPath());
-//                    System.out.println("Single Media Activity | On changed 260 " + mediaItem );
+//                    //  System.out.println("Single Media Activity | On changed 260 " + mediaItem );
 //                    textRecognition(mediaItem);
 //
 //                }
@@ -467,7 +467,7 @@ public class SingleMediaActivity extends AppCompatActivity  {
     }
 
     private void DisPlayInforMationAlerDialog(MediaItem mediaItem) {
-        System.out.println("SingleMediaActivity | DisPlayInforMationAlerDialog");
+        //  System.out.println("SingleMediaActivity | DisPlayInforMationAlerDialog");
 
         // Định dạng bạn muốn chuyển đổi sang (đối với ngày/tháng/năm)
         String desiredFormat = "dd/MM/yyyy";
@@ -496,7 +496,6 @@ public class SingleMediaActivity extends AppCompatActivity  {
                 .setMessage("* Tên: " + mediaItem.getName() + "\n" +
                         "* Đường dẫn: " + mediaItem.getPath() + "\n" +
                         "* Kích thước: " + formatFileSize(mediaItem.getFileSize()) + " MB" + "\n" +
-                        "* Ngày tạo: " + creationDate + "\n" +
                         "* Ngày sửa: " + lastModified + "\n" +
                         "* Định dạng: " + mediaItem.getFileExtension() + "\n" +
                         "* Độ phân giải: " + mediaItem.getWidth() + "x" + mediaItem.getHeight() + "\n" +
@@ -549,32 +548,32 @@ public class SingleMediaActivity extends AppCompatActivity  {
             String path ;
             Toast.makeText(SingleMediaActivity.this,result,Toast.LENGTH_SHORT).show();
             if(result.equals("SAVE")){
-                System.out.println("SingleMediaActivity | onActivityResult | result = SAVE");
+                //  System.out.println("SingleMediaActivity | onActivityResult | result = SAVE");
                 path = receive.getStringExtra("afterEdit");         // đường dẫn chứa hình ảnh sau khi đã edit
 //                MediaItem item = (MediaItem) data.getSerializable("received");
-                System.out.println("Before: 555");
+                //  System.out.println("Before: 555");
                 MediaItem item = mediaItemsList.get(currentIndex);
-                System.out.println("Before: 558");
+                //  System.out.println("Before: 558");
 
                 //lưu hình ảnh vào database
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inJustDecodeBounds = true;
                 BitmapFactory.decodeFile(path,options);
-                System.out.println("Before: 563");
+                //  System.out.println("Before: 563");
 
 
                 item.setPath(path);
                 item.setUserID(AppPreferencesHelper.getInstance().getCurrentUserId());
 
-                System.out.println("Before: 570");
+                //  System.out.println("Before: 570");
 
                 // create album if not exist
                 String albumName = "Edited";
                 item.setAlbumName(albumName);
 
-                System.out.println("album name: " + albumName + " | " + AlbumRepository.getInstance().isExistAlbum(albumName));
+                //  System.out.println("album name: " + albumName + " | " + AlbumRepository.getInstance().isExistAlbum(albumName));
                 if (AlbumRepository.getInstance().isExistAlbum(albumName) == false) {
-                    System.out.println("SingleMediaActivity | onActivityResult | result = SAVE | album not exist");
+                    //  System.out.println("SingleMediaActivity | onActivityResult | result = SAVE | album not exist");
                     Album alb = new Album();
                     alb.setName(albumName);
                     alb.setUserID(AppPreferencesHelper.getInstance().getCurrentUserId());
@@ -600,7 +599,7 @@ public class SingleMediaActivity extends AppCompatActivity  {
 
                 MediaItemRepository.getInstance().insert(item);
 
-                System.out.println("Image saved ");
+                //  System.out.println("Image saved ");
                 Toast.makeText(SingleMediaActivity.this,"Image saved",Toast.LENGTH_SHORT).show();
 
             }
@@ -609,7 +608,7 @@ public class SingleMediaActivity extends AppCompatActivity  {
 
 
     private void textRecognition(MediaItem mediaItem){
-        System.out.println("SingleMediaActivity | textRecognition | mediaitem: " + mediaItem);
+        //  System.out.println("SingleMediaActivity | textRecognition | mediaitem: " + mediaItem);
         FirebaseVisionImage image;
         try{
 //            image = FirebaseVisionImage.fromFilePath(this,Uri.parse(mediaItem.getPath()));
@@ -622,7 +621,7 @@ public class SingleMediaActivity extends AppCompatActivity  {
                                 @Override
                                 public void onSuccess(FirebaseVisionText firebaseVisionText) {
                                     String result = firebaseVisionText.getText();
-                                    System.out.println("SingleMediaActivity | textRecognition | onSuccess | result = " + result);
+                                    //  System.out.println("SingleMediaActivity | textRecognition | onSuccess | result = " + result);
                                     showOCRResultDialog(result);
                                 }
                             })
@@ -658,20 +657,20 @@ public class SingleMediaActivity extends AppCompatActivity  {
         alertDialog.show();
     }
     private void shareImageToInternet(MediaItem mediaItem){
-        System.out.println("Share image : 337 | mediaitem: " + mediaItem + " | path: " + mediaItem.getPath());
+        //  System.out.println("Share image : 337 | mediaitem: " + mediaItem + " | path: " + mediaItem.getPath());
 
         Uri uri = FileProvider.getUriForFile(this, getPackageName() + ".provider", new File(mediaItem.getPath()));
 
 //        Uri uri = Uri.parse(mediaItem.getPath());
-        System.out.print("Uri: "  + uri);
+        //  System.out.print("Uri: "  + uri);
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("image/*");
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
-        System.out.println("Share image : 342");
+        //  System.out.println("Share image : 342");
         intent.putExtra(Intent.EXTRA_STREAM, uri);
         startActivity(Intent.createChooser(intent, "Share this image with..."));
-        System.out.println("Share image : 347");
+        //  System.out.println("Share image : 347");
 
     }
 }

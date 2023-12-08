@@ -2,17 +2,23 @@ package com.example.gallery.ui.main.fragment;
 
 import static androidx.browser.customtabs.CustomTabsClient.getPackageName;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.graphics.Bitmap;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -43,22 +49,20 @@ import com.example.gallery.ui.main.adapter.MainMediaItemAdapter;
 import com.example.gallery.utils.BytesToStringConverter;
 import com.example.gallery.ui.main.doing.DuplicationActivity;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Random;
 
 public class MediaItemFragment extends Fragment {
 
     public static final int REQUEST_TAKE_PHOTO = 256;
     public static final int REQUEST_SIMILAR_PHOTO = 123;
+    private static final int MY_CAMERA_PERMISSION_CODE = 10001;
 
     View mView;
     private RecyclerView recyclerView;
@@ -75,6 +79,8 @@ public class MediaItemFragment extends Fragment {
     List<String> dateListString;
     HashMap<String, List<MediaItem>> mediaItemGroupByDate;
     List<MediaItem> mediaItemsLíst;
+    private ActivityResultLauncher<String[]> requestPermissionLauncher;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -144,7 +150,7 @@ public class MediaItemFragment extends Fragment {
                 }
 
                 for(MediaItem mediaItem : mediaItems){
-                    System.out.println("MediaItemFragment 001: onViewCreated: getAllMediaItems: onChanged: in loop");
+                    // //  System.out.println("MediaItemFragment 001: onViewCreated: getAllMediaItems: onChanged: in loop");
 
                     mediaItem.setTypeDisplay(mCurrentType);
                 }
@@ -155,19 +161,31 @@ public class MediaItemFragment extends Fragment {
 
 
                 mainMediaItemAdapter.setData(mediaItemsLíst, mediaItemGroupByDate, dateListString); // trong adapter có hàm setData và có notifydatasetchanged
-                System.out.println("on observe : " + mediaItems.size() + " before set hash map");
+                //  System.out.println("on observe : " + mediaItems.size() + " before set hash map");
 
                 HashMap<String, List<MediaItem>> mediaItemGroupByDate = setMediaItemGroupByDate(mediaItems);
 
-                System.out.println("on observe : after set hash map , before set data");
+                //  System.out.println("on observe : after set hash map , before set data");
 
 
                 mainMediaItemAdapter.setData(mediaItems, mediaItemGroupByDate, dateListString); // trong adapter có hàm setData và có notifydatasetchanged
 
-                System.out.println("on observe : after set hash map , after set data");
+                //  System.out.println("on observe : after set hash map , after set data");
 
 
 
+            }
+        });
+
+        // Khởi tạo ActivityResultLauncher cho yêu cầu quyền
+        requestPermissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), isGranted -> {
+            // Xử lý khi quyền được cấp hoặc không được cấp
+            if (isGranted.getOrDefault(Manifest.permission.CAMERA, false)) {
+                // Quyền CAMERA được cấp, thực hiện các thao tác liên quan
+                getPictureFromCamera();
+            } else {
+                // Quyền CAMERA không được cấp, hiển thị thông báo hoặc thực hiện các xử lý khác
+                Toast.makeText(getContext(), "Quyền CAMERA không được cấp", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -227,7 +245,8 @@ public class MediaItemFragment extends Fragment {
             onClickChangeTypeDisplay();
         }
         else if(id == R.id.camera_item){
-            takeAPicture();
+            requestCameraPermissionAndTakePhoto();
+
         }else if(id == R.id.similarPhoto){
             Intent intent = new Intent(getContext(), DuplicationActivity.class);
             startActivityForResult(intent,REQUEST_SIMILAR_PHOTO);
@@ -240,35 +259,27 @@ public class MediaItemFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-    private void _takeAPicture() {
-        // Gọi intent để chụp ảnh
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        // Kiểm tra có đủ điều kiện để chụp ảnh hay không về mặt phần cứng
-        if(takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null){
-            // Gọi startActivityForResult để nhận kết quả trả về
-            System.out.println("MediaItemFragment 244: takeAPicture: before");
-            startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
-            System.out.println("MediaItemFragment 244: takeAPicture: after");
 
-            // lấy dữ liệu ảnh mới được chụp
-            Bundle bundle = takePictureIntent.getExtras();
-            Bitmap bitmap = (Bitmap) bundle.get("data");
-
-            // lấy đường dẫn của ảnh
-            String uri = "";
-
-            System.out.println("MediaItemFragment 244: takeAPicture: uri: " + uri);
-
-
-
-        }
-
-    }
 
     private String currentPhotoPath;
 
-    // Gọi hàm này để chụp ảnh
-    private void takeAPicture() {
+
+
+    private void requestCameraPermissionAndTakePhoto() {
+
+        if (ContextCompat.checkSelfPermission(App.getInstance(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            // Yêu cầu quyền CAMERA nếu chưa có
+            requestPermissionLauncher.launch(new String[]{Manifest.permission.CAMERA});
+        } else {
+            // Quyền đã được cấp, thực hiện các thao tác liên quan
+            getPictureFromCamera();
+        }
+    }
+
+
+    protected void getPictureFromCamera() {
+
+
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
             File photoFile = null;
@@ -281,15 +292,28 @@ public class MediaItemFragment extends Fragment {
             if (photoFile != null) {
                 Uri uri = FileProvider.getUriForFile(App.getInstance(), App.getProcessName() + ".provider", new File(photoFile.getPath()));
 
-
+                System.out.println("MediaItemFragment : takeAPicture: uri: " + uri);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-                startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+                System.out.println("MediaItemFragment : before startActivityForResult: ");
+
+                    startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+
+
+
+                System.out.println("MediaItemFragment : after startActivityForResult: ");
+
             }
         }
     }
 
+
+
+
+
+
     // Hàm này tạo một file để lưu ảnh
     private File createImageFile() throws IOException {
+        System.out.println("MediaItemFragment : createImageFile: ");
         String timeStamp = new SimpleDateFormat("yyyyMMdd", Locale.getDefault()).format(new Date());
 
         String imageFileName = "JPEG_" + timeStamp + "_";
@@ -308,6 +332,7 @@ public class MediaItemFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        System.out.println("MediaItemFragment : onActivityResult: ");
 
         if (requestCode == REQUEST_TAKE_PHOTO && resultCode == Activity.RESULT_OK) {
             // Ảnh đã được chụp thành công
@@ -357,23 +382,7 @@ public class MediaItemFragment extends Fragment {
                 break;
         }
     }
-
-//    @Override
-//    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//        if(requestCode == REQUEST_TAKE_PHOTO && resultCode == getActivity().RESULT_OK){
-//            Toast.makeText(getContext(), "Take a picture success", Toast.LENGTH_SHORT).show();
-//            // Lấy dữ liệu trả về từ intent cho việc take a picture
-//            Bundle bundle = data.getExtras();
-//            // Lấy ảnh từ bundle có thể dưới dạng bitmap hoặc uri nhưng sẽ lấy uri để tiện cho việc lưu xuống
-//            Uri uri = data.getData();
-//
-//            List<Uri> uriList = new ArrayList<>();
-//            uriList.add(Uri.withAppendedPath(Uri, ));
-//
-//            // Lưu ảnh vào MediaStore.Images.Media
-//
-//    }
+    
 
     private void showStatisticDialog(){
         List<MediaItem> list =  MediaItemRepository.getInstance().getAllMediaItems().getValue();
