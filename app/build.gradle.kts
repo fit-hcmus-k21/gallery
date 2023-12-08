@@ -145,6 +145,9 @@ dependencies {
     // dependency for image metadata
     implementation("com.drewnoakes:metadata-extractor:2.19.0")
 
+    implementation("com.google.firebase:firebase-storage:latest")
+
+
 
 
 }

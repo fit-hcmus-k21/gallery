@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
@@ -17,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LiveData;
@@ -33,6 +35,7 @@ import com.bumptech.glide.request.transition.Transition;
 import com.example.gallery.App;
 import com.example.gallery.data.DataManager;
 import com.example.gallery.data.local.db.AppDBHelper;
+import com.example.gallery.data.local.prefs.AppPreferencesHelper;
 import com.example.gallery.data.models.db.Album;
 import com.example.gallery.data.models.db.MediaItem;
 import com.example.gallery.data.repositories.models.Repository.AlbumRepository;
@@ -54,11 +57,18 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -70,11 +80,16 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -97,8 +112,6 @@ public class ProfileViewModel extends BaseViewModel<ProfileNavigator> {
     public LiveData<Integer> getNumberOfAlbums() {
         return AlbumRepository.getInstance().getNumberOfAlbums();
     }
-
-
 
 
     // define methods in ProfileViewModel
@@ -200,10 +213,9 @@ public class ProfileViewModel extends BaseViewModel<ProfileNavigator> {
                     //  System.out.println("Insert media item success from profile view model");
 
 
-
                     // Get the number of rows in the database
 //                    //  System.out.println("Number of media items after download image: " + MediaItemViewModel.getInstance().getNumberOfMediaItems().getValue());
-                    getNavigator().getmProfileBinding().txtDownloadStatus.setText("Status: download a " + fileExtension +" successfully!");
+                    getNavigator().getmProfileBinding().txtDownloadStatus.setText("Status: download a " + fileExtension + " successfully!");
                     getNavigator().getmProfileBinding().txtDownloadStatus.setTextColor(Color.parseColor("#008000"));
                 }
             }
@@ -222,11 +234,10 @@ public class ProfileViewModel extends BaseViewModel<ProfileNavigator> {
     public void displayImageDownloaded(String imgPath) {
         Bitmap bitmap = BitmapFactory.decodeFile(imgPath);
 
-    // Set the bitmap to the ImageView
+        // Set the bitmap to the ImageView
         ImageView imageView = getNavigator().getmProfileBinding().imageViewDownloaded;
         imageView.setImageBitmap(bitmap);
         getNavigator().getmProfileBinding().imageViewDownloaded.setVisibility(View.VISIBLE);
-
 
 
     }
@@ -237,6 +248,7 @@ public class ProfileViewModel extends BaseViewModel<ProfileNavigator> {
         // You can customize this method based on the specific image types you want to support
         return contentType != null && contentType.startsWith("image/");
     }
+
     private boolean isValidUrl(String urlString) {
         try {
             new URL(urlString);
@@ -245,12 +257,14 @@ public class ProfileViewModel extends BaseViewModel<ProfileNavigator> {
             return false;
         }
     }
+
     private static String getFileExtension(String contentType) {
         if (contentType != null && contentType.contains("/")) {
             return "." + contentType.substring(contentType.lastIndexOf("/") + 1);
         }
         return "";
     }
+
     private void fetchImageContentType(String imageUrl) {
         OkHttpClient client = new OkHttpClient();
 
@@ -295,17 +309,112 @@ public class ProfileViewModel extends BaseViewModel<ProfileNavigator> {
         int randomNumber = random.nextInt(1000); // Adjust the range as needed
 
         // Append the random number to the filename
-        return  randomNumber + "_" +  fileName ;
+        return randomNumber + "_" + fileName;
     }
 
 
     public void backup() {
+        // TODO: backup all images to local storage
 
     }
 
     public void syncToCloudStorage() {
+        // TODO: upload all images to cloud storage
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference();
 
+        // get reference to 'images' node
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference usersRef = database.getReference("users").child(AppPreferencesHelper.getInstance().getCurrentUserId()).child("user_data");
+        DatabaseReference albumRef = usersRef.child("albums");
+        DatabaseReference imagesRef = albumRef.child("images");
+
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                List<Album> listAlbums = AlbumRepository.getInstance().getAlbums().getValue();
+                if (listAlbums == null) {
+                    return;
+                }
+                for (Album album : listAlbums) {
+                    albumRef.child(album.getName()).setValue(album)
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    // Ghi dữ liệu thành công
+                                    System.out.println("đồng bộ và ghi dữ liệu thành công | album");
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    // Xử lý lỗi
+                                    System.out.println("Có lỗi khi đồng bộ và ghi dữ liệu | album " + e.toString());
+                                }
+                            });
+                }
+                System.out.println("Đã đồng bộ và ghi dữ liệu xong | album");
+            }
+        });
+
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                List<MediaItem> listItems = MediaItemRepository.getInstance().getAllMediaItems().getValue();
+                if (listItems == null) {
+                    return;
+                }
+
+
+                String userIdStr = AppPreferencesHelper.getInstance().getCurrentUserId();
+
+                for (MediaItem item : listItems) {
+                    String id = userIdStr + "/images" + "/" + item.getId() + "_" + new SimpleDateFormat("yyyyMMdd", Locale.getDefault()).format(new Date());
+                    StorageReference imageRef = storageRef.child(id);
+                    Uri fileUri = Uri.fromFile(new File(item.getPath()));
+                    UploadTask uploadTask = imageRef.putFile(fileUri);  // Tải lên ảnh lên Cloud Storage
+                    uploadTask.addOnSuccessListener(taskSnapshot -> {
+                        // Ảnh đã được tải lên thành công
+                        // Lấy URL của ảnh trong Cloud Storage
+                        imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                            String imageUrl = uri.toString();
+                            item.setUrl(imageUrl);
+                            //  lưu đường dẫn URL này trong cơ sở dữ liệu hoặc thực hiện các thao tác khác.
+
+                            imagesRef.child(item.getId() + "").setValue(item)
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            // Ghi dữ liệu thành công
+                                            System.out.println("đồng bộ và ghi dữ liệu thành công | mediaItems");
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            // Xử lý lỗi
+                                            System.out.println("Có lỗi khi đồng bộ và ghi dữ liệu | mediaItems " + e.toString());
+                                        }
+                                    });
+
+
+                        });
+                    }).addOnFailureListener(exception -> {
+                        // Xử lý lỗi khi tải ảnh lên
+                        System.out.println("Error when upload image to cloud storage " + exception.getMessage());
+                    });
+                }
+                System.out.println("Đã đồng bộ và ghi dữ liệu xong | images");
+            }
+        });
     }
+
+
+
+
+// Để chạy task:
 
     public void clearText() {
 
