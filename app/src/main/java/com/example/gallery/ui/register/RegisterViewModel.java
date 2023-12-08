@@ -58,7 +58,7 @@ public class RegisterViewModel extends BaseViewModel<RegisterNavigator> {
             if (task.isSuccessful()) {
                 Toast.makeText(App.getInstance(), "Registration successful", Toast.LENGTH_SHORT).show();
 
-                System.out.println("Register: 52");
+                //  System.out.println("Register: 52");
                 FirebaseUser currentUser = mAuth.getCurrentUser();
                 if (currentUser != null) {
                     // Update user profile
@@ -73,7 +73,7 @@ public class RegisterViewModel extends BaseViewModel<RegisterNavigator> {
                 // Write a message to the database
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
 
-                System.out.println("Register: 64");
+                //  System.out.println("Register: 64");
 
                 DatabaseReference usersRef = database.getReference("users");
 
@@ -83,7 +83,7 @@ public class RegisterViewModel extends BaseViewModel<RegisterNavigator> {
                             @Override
                             public void onSuccess(Void aVoid) {
                                 // Ghi dữ liệu thành công
-                                System.out.println("Ghi dữ liệu fullName thành công");
+                                //  System.out.println("Ghi dữ liệu fullName thành công");
 
                                 // Đường dẫn đến người dùng hiện tại
                                 DatabaseReference currentUserRef = usersRef.child(mAuth.getCurrentUser().getUid());
@@ -95,7 +95,7 @@ public class RegisterViewModel extends BaseViewModel<RegisterNavigator> {
                                             @Override
                                             public void onSuccess(Void aVoid) {
                                                 // Ghi dữ liệu thành công
-                                                System.out.println("Ghi dữ liệu creation_date thành công");
+                                                //  System.out.println("Ghi dữ liệu creation_date thành công");
 
                                                 // Ghi trường "email" của người dùng hiện tại
                                                 currentUserRef.child("user_info").child("email").setValue(email)
@@ -103,7 +103,7 @@ public class RegisterViewModel extends BaseViewModel<RegisterNavigator> {
                                                             @Override
                                                             public void onSuccess(Void aVoid) {
                                                                 // Ghi dữ liệu thành công
-                                                                System.out.println("Ghi dữ liệu email thành công");
+                                                                //  System.out.println("Ghi dữ liệu email thành công");
 
                                                             }
                                                         })
@@ -111,7 +111,7 @@ public class RegisterViewModel extends BaseViewModel<RegisterNavigator> {
                                                             @Override
                                                             public void onFailure(@NonNull Exception e) {
                                                                 // Xử lý lỗi
-                                                                System.out.println("Xử lý lỗi khi ghi dữ liệu email" + e.toString());
+                                                                //  System.out.println("Xử lý lỗi khi ghi dữ liệu email" + e.toString());
                                                             }
                                                         });
 
@@ -121,7 +121,7 @@ public class RegisterViewModel extends BaseViewModel<RegisterNavigator> {
                                             @Override
                                             public void onFailure(@NonNull Exception e) {
                                                 // Xử lý lỗi
-                                                System.out.println("Xử lý lỗi khi ghi dữ liệu creationDate" + e.toString());
+                                                //  System.out.println("Xử lý lỗi khi ghi dữ liệu creationDate" + e.toString());
                                             }
                                         });
                             }
@@ -130,7 +130,7 @@ public class RegisterViewModel extends BaseViewModel<RegisterNavigator> {
                             @Override
                             public void onFailure(@NonNull Exception e) {
                                 // Xử lý lỗi
-                                System.out.println("Xử lý lỗi khi ghi dữ liệu fullName" + e.toString());
+                                //  System.out.println("Xử lý lỗi khi ghi dữ liệu fullName" + e.toString());
                             }
                         });
 
@@ -149,14 +149,14 @@ public class RegisterViewModel extends BaseViewModel<RegisterNavigator> {
                             @Override
                             public void onSuccess(Void aVoid) {
                                 // Ghi dữ liệu thành công
-                                System.out.println("Ghi dữ liệu vào albums thành công");
+                                //  System.out.println("Ghi dữ liệu vào albums thành công");
                             }
                         })
                         .addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
                                 // Xử lý lỗi
-                                System.out.println("Xử lý lỗi khi ghi dữ liệu vào albums" + e.toString());
+                                //  System.out.println("Xử lý lỗi khi ghi dữ liệu vào albums" + e.toString());
                             }
                         });
 
@@ -172,14 +172,14 @@ public class RegisterViewModel extends BaseViewModel<RegisterNavigator> {
                             @Override
                             public void onSuccess(Void aVoid) {
                                 // Ghi dữ liệu thành công
-                                System.out.println("Ghi dữ liệu vào images thành công");
+                                //  System.out.println("Ghi dữ liệu vào images thành công");
                             }
                         })
                         .addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
                                 // Xử lý lỗi
-                                System.out.println("Xử lý lỗi khi ghi dữ liệu vào images" + e.toString());
+                                //  System.out.println("Xử lý lỗi khi ghi dữ liệu vào images" + e.toString());
                             }
                         });
 

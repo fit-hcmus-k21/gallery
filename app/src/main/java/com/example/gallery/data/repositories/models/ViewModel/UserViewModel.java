@@ -39,7 +39,7 @@ public class UserViewModel extends AndroidViewModel {
         if(currentUserViewModel == null){
             currentUserViewModel = new UserViewModel(App.getInstance());
         }
-        System.out.println("get Instance of UserViewModel:" + currentUserViewModel);
+        //  System.out.println("get Instance of UserViewModel:" + currentUserViewModel);
 
         return currentUserViewModel;
     }
@@ -47,12 +47,12 @@ public class UserViewModel extends AndroidViewModel {
     public UserViewModel(@NonNull Application application) {
         super(application);
         userRepository = UserRepository.getInstance();
-        System.out.println("on user view model constr: 48");
+        //  System.out.println("on user view model constr: 48");
         allMediaItems = MediaItemRepository.getInstance().getAllMediaItems();
-        System.out.println("on user view model constr: 50");
+        //  System.out.println("on user view model constr: 50");
 
         allAlbums = AlbumRepository.getInstance().getAlbums();
-        System.out.println("on user view model constr: 53");
+        //  System.out.println("on user view model constr: 53");
         setUserId(AppPreferencesHelper.getInstance().getCurrentUserId());
     }
 

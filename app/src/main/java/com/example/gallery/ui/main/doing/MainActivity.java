@@ -1,8 +1,12 @@
 package com.example.gallery.ui.main.doing;
 
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.MenuItem;
+import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -13,10 +17,14 @@ import com.example.gallery.R;
 
 import com.example.gallery.data.repositories.models.HelperFunction.RequestPermissionHelper;
 
+import com.example.gallery.data.repositories.models.Repository.AlbumRepository;
 import com.example.gallery.data.repositories.models.Repository.MediaItemRepository;
 import com.example.gallery.ui.main.adapter.MyViewPager2Adapter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
+
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -29,20 +37,17 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.doing_main_activity);
-        System.out.println("in oncreate main: 42");
+        //  System.out.println("in oncreate main: 42");
 
 
 
 
         //TODO kiêểm tra lại phần quyền truy cập
-        if(RequestPermissionHelper.checkAndRequestPermission(this, 101)){
-            fetchData();
+//        if(RequestPermissionHelper.checkAndRequestPermission(this, 101)){
+//            //
+//        }
+        fetchData();
 
-        }
-//        else{
-//            Toast.makeText(this, "Permission is not granted", Toast.LENGTH_SHORT).show();
-//        }
-//        }
 
         // ****************************** End code tạm thời ******************************
 
@@ -121,7 +126,9 @@ public class MainActivity extends AppCompatActivity {
 
 // ******************************  Lấy dữ liệu từ external - Code tam thời ******************************
 
-//        MediaItemRepository.getInstance().fetchData( );
+
+
+
 
 
 
@@ -192,13 +199,27 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (grantResults.length > 0) {
-            fetchData();
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        }
-    }
+//        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//              System.out.println("in onRequestPermissionsResult main: " + requestCode);
+//            // Sử dụng Executor
+//            Executor executor = Executors.newSingleThreadExecutor();
+//
+//            executor.execute(() -> {
+//                  System.out.println("in executor main: " + requestCode);
+//
+//                new Handler(Looper.getMainLooper()).post(() -> MediaItemRepository.getInstance().fetchData());
+//
+//
+//            });
+//        } else {
+//            System.out.println("else on result permission: " + requestCode);
+//            fetchData();
+//        }
+
+//    }
 
 }

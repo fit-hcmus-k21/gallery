@@ -12,6 +12,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -25,12 +27,13 @@ import com.example.gallery.ui.main.adapter.DuplicateParentAdapter;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-public class DuplicationActivity extends AppCompatActivity  {
+public class DuplicationActivity extends AppCompatActivity implements View.OnClickListener {
     public static TextView overalInfo;
     public static Button  btnDelete;
     Button btnReturn;
@@ -50,7 +53,7 @@ public class DuplicationActivity extends AppCompatActivity  {
     @SuppressLint("MissingInflatedId")
     @Override
     public void onCreate(Bundle saveInstanceState){
-        System.out.println("DuplicationActivity 001: onCreate");
+        //  System.out.println("DuplicationActivity 001: onCreate");
         super.onCreate(saveInstanceState);
         setContentView(R.layout.duplicate_screen);
 
@@ -61,19 +64,8 @@ public class DuplicationActivity extends AppCompatActivity  {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
 
 
-        btnReturn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                btnDelete.setEnabled(false);
-                btnDelete.setClickable(false);
-                count = 0;
-                countDel = 0;
-                size = 0;
-                sizeDel = 0;
-                duplicateParentAdapter.notifyDataSetChanged();
-                finish();
-            }
-        });
+        btnDelete.setOnClickListener(this);
+        btnReturn.setOnClickListener(this);
 
         MediaItemRepository.getInstance().getAllMediaItems().observe(this, new Observer<List<MediaItem>>() {
             @Override
@@ -87,10 +79,10 @@ public class DuplicationActivity extends AppCompatActivity  {
 
                 // get Image in album Camera
                 for(MediaItem iterator : mediaItems){
-//                    if(iterator.getAlbumName().equals("Camera") && iterator.getFileExtension().equals("image/jpeg")) {
+                    if(!iterator.getFileExtension().equals("video/mp4") && !iterator.getAlbumName().equals("Edited") && !iterator.getAlbumName().equals("Bin")) {
                         firstData.add(iterator);
                         date.add(new SimpleDateFormat("yyyy/MM/dd").format(iterator.getCreationDate()));
-//                    }
+                    }
                 }
 
                 //get date list and sort
@@ -109,9 +101,9 @@ public class DuplicationActivity extends AppCompatActivity  {
 
                 //get similar photos
                 for(int i = 0 ; i < mediaItemGroupToSort.size(); ++i){
-                    System.out.println("Bitmap 112 | Duplication | " + i);
+                    //  System.out.println("Bitmap 112 | Duplication | " + i);
                     newList.add(find(mediaItemGroupToSort.get(dateListString.get(i))));
-                    System.out.println("Bitmap 114 | Duplication | " + i);
+                    //  System.out.println("Bitmap 114 | Duplication | " + i);
 
                 }
 
@@ -120,7 +112,7 @@ public class DuplicationActivity extends AppCompatActivity  {
                 //after get all similar photo
                 int run = 0;
                 for(int i = 0; i < newList.size(); ++i,++run){
-                    System.out.println(run +"---" + i);
+                    //  System.out.println(run +"---" + i);
 
                     if(newList.get(i).isEmpty()){
                         mediaItemGroupToSort.remove(dateListString.get(run));
@@ -176,71 +168,71 @@ public class DuplicationActivity extends AppCompatActivity  {
     // ----------------------------------------
     public List<MediaItem> find(List<MediaItem> photos){
 //        // tính giá trị finger
-//        List<MediaItem> temp = new ArrayList<>(photos);
-//        List<Long> fingerValues = CalculateFingerValue(photos);
-//        List<MediaItem> output = new ArrayList<>();                 // lưa danh sách ảnh trùng sau khi check
-//        for(int i = 0; i < temp.size()-1; ++i){
-//            boolean check = false;
-//            int j = i + 1;
-//            while(j < temp.size()){
-//                int dist = 0;
-//                try {
-//                dist = hamDist(fingerValues.get(i),fingerValues.get(j));
-//                }catch (Exception e){
-//                    System.out.println("Bitmap 203 | Duplication | " + e);
-//                }
-//                if(dist < 10){
-//                    if(check == false){
-//                        output.add(temp.get(i));
-//                        check = true;
-//                    }
-//                    output.add(temp.get(j));
-//                    System.out.println("Bitmap 196 | Duplication | " + temp.get(j));
-//                    temp.remove(j);
-//                    System.out.println("Bitmap 196 | Duplication | " + temp.size());
-//                    fingerValues.remove(j);
-//                    System.out.println("Bitmap 197 | Duplication | " + temp.size());
-//                    --j;
-//                }
-//                ++j;
-//            }
-//        }
-//        return output;
-//        --------------------------------------------
-        // tính giá trị finger
         List<MediaItem> temp = new ArrayList<>(photos);
         List<Long> fingerValues = CalculateFingerValue(photos);
-        List<MediaItem> output = new ArrayList<>(); // lưa danh sách ảnh trùng sau khi check
-
-        for (int i = 0; i < temp.size() - 1; ++i) {
+        List<MediaItem> output = new ArrayList<>();                 // lưa danh sách ảnh trùng sau khi check
+        for(int i = 0; i < temp.size()-1; ++i){
             boolean check = false;
-
-            for (int j = i + 1; j < temp.size(); ++j) {
+            int j = i + 1;
+            while(j < temp.size()){
+                int dist = 0;
                 try {
-                    int dist = hamDist(fingerValues.get(i), fingerValues.get(j));
-
-                    if (dist < 10) {
-                        if (!check) {
-                            output.add(temp.get(i));
-                            check = true;
-                        }
-
-                        output.add(temp.get(j));
-                        System.out.println("Bitmap 229 | Duplication | " + temp.get(j));
-                    }
-                } catch (Exception e) {
-                    System.out.println("Bitmap 232 | Duplication | " + e);
+                    dist = hamDist(fingerValues.get(i),fingerValues.get(j));
+                }catch (Exception e){
+                    System.out.println("Bitmap 203 | Duplication | " + e);
                 }
+                if(dist < 10){
+                    if(check == false){
+                        output.add(temp.get(i));
+                        check = true;
+                    }
+                    output.add(temp.get(j));
+                    System.out.println("Bitmap 196 | Duplication | " + temp.get(j));
+                    temp.remove(j);
+                    System.out.println("Bitmap 196 | Duplication | " + temp.size());
+                    fingerValues.remove(j);
+                    System.out.println("Bitmap 197 | Duplication | " + temp.size());
+                    --j;
+                }
+                ++j;
             }
         }
-
         return output;
+//        --------------------------------------------
+        // tính giá trị finger
+//        List<MediaItem> temp = new ArrayList<>(photos);
+//        List<Long> fingerValues = CalculateFingerValue(photos);
+//        List<MediaItem> output = new ArrayList<>(); // lưa danh sách ảnh trùng sau khi check
+//
+//        for (int i = 0; i < temp.size() - 1; ++i) {
+//            boolean check = false;
+//
+//            for (int j = i + 1; j < temp.size(); ++j) {
+//                try {
+//                    int dist = hamDist(fingerValues.get(i), fingerValues.get(j));
+//
+//                    if (dist < 10) {
+//                        if (!check) {
+//                            output.add(temp.get(i));
+//                            check = true;
+//                        }
+//
+//                        output.add(temp.get(j));
+//                        System.out.println("Bitmap 229 | Duplication | " + temp.get(j));
+//                    }
+//                } catch (Exception e) {
+//                    System.out.println("Bitmap 232 | Duplication | " + e);
+//                }
+//            }
+//        }
+//
+//        return output;
     }
     public List<Long> CalculateFingerValue(List<MediaItem> photos){
 
         List<Long> finger = new ArrayList<>();
         float scaleW, scaleH;
-        System.out.println("Bitmap 203 | Duplication | " + photos.size());
+        //  System.out.println("Bitmap 203 | Duplication | " + photos.size());
         for(int i = 0 ; i < photos.size(); ++i){
             MediaItem photo = photos.get(i);
 //            Bitmap bitmap = MediaStore.Images.Thumbnails.getThumbnail(DuplicationActivity.this.getContentResolver(),photo.getId(),MediaStore.Images.Thumbnails.MICRO_KIND,null);
@@ -253,7 +245,7 @@ public class DuplicationActivity extends AppCompatActivity  {
 
             // Kiểm tra xem Bitmap có được tạo thành công không
             if (bitmap != null) {
-                System.out.println("Bitmap 204 | Duplication | " + bitmap);
+                //  System.out.println("Bitmap 204 | Duplication | " + bitmap);
 
                 scaleW = 8.0f/bitmap.getWidth();
                 scaleH = 8.0f/bitmap.getHeight();
@@ -266,7 +258,7 @@ public class DuplicationActivity extends AppCompatActivity  {
             } else {
                 // Xử lý trường hợp không thể tạo Bitmap từ đường dẫn
                 Log.e("Error", "Unable to create Bitmap from the specified path");
-                System.out.println("Bitmap 219 | Duplication | " + bitmap);
+                //  System.out.println("Bitmap 219 | Duplication | " + bitmap);
             }
 
 
@@ -362,6 +354,57 @@ public class DuplicationActivity extends AppCompatActivity  {
         finish();
     }
 
+    @Override
+    public void onClick(View v) {
+        if(v.getId() == R.id.btnReturn){
+            btnDelete.setEnabled(false);
+            btnDelete.setClickable(false);
+            count = 0;
+            countDel = 0;
+            size = 0;
+            sizeDel = 0;
+            duplicateParentAdapter.notifyDataSetChanged();
+            finish();
+        }
+        if(v.getId() == R.id.btnDeleteSimilar){
+            int tempCount = 0;
+            for(String iterator : dateListString){
+                for(int j = 0; j < checkstate.get(iterator).size(); ++j){
+                    if(checkstate.get(iterator).get(j) == true){
+                        //delete
+                        MediaItem deleteItem = mediaItemGroupToSort.get(iterator).get(j);
+                        mediaItemGroupToSort.get(iterator).remove(j);
+                        checkstate.get(iterator).remove(j);
+                        //trường hợp sau khi xóa nếu chỉ còn <= 1 ảnh thì xóa luôn item đó trong checkstate, mediaItemGroupToSort
+                        //remove trong firstdata
+                        int pos = firstData.lastIndexOf(deleteItem);
+                        firstData.remove(pos);
+                        //xóa trong database(đưa vào thùng rác) ****
+                        deleteItem.setAlbumName("Bin");
+                        //set deletetime  ****
+                        Calendar calendar = Calendar.getInstance();
+                        long currentDate = calendar.getTimeInMillis();
+                        deleteItem.setDeletedTs(currentDate);
+                        --j;
+                    }
+                }
+            }
+            count -= countDel;
+            size -= sizeDel;
+            Toast.makeText(DuplicationActivity.this,String.valueOf(tempCount),Toast.LENGTH_SHORT).show();
+            duplicateParentAdapter.notifyDataSetChanged();
+
+            DecimalFormat decimalFormat = new DecimalFormat("#.##");
+            String roundedValue = decimalFormat.format((double)size/(1024*1024));
+            overalInfo.setText(count + " similar photo(s) in total, using " + roundedValue + "MB");
+            countDel = 0;
+            sizeDel = 0;
+            btnDelete.setClickable(false);
+            btnDelete.setEnabled(false);
+            btnDelete.setText("Delete");
+            btnDelete.setBackgroundColor(getResources().getColor(R.color.grey));
+        }
+    }
 }
 
 

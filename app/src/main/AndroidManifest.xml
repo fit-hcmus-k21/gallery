@@ -92,6 +92,9 @@
         <activity android:name=".ui.resetPassword.ResetPasswordActivity" />
 
 
+        <activity
+            android:name=".ui.custom.AddImageFromDevice"
+            android:parentActivityName=".ui.main.doing.MainActivity" />
 
 
 <!--        settings for fb     -->

@@ -86,7 +86,7 @@
 //
 //        super.onCreateView(inflater, container, savedInstanceState);
 //        mFragmentMediaItemBinding = getViewDataBinding();
-//        System.out.println("Fragment Media Item  108: " + mFragmentMediaItemBinding);
+//        //  System.out.println("Fragment Media Item  108: " + mFragmentMediaItemBinding);
 //
 //
 //
@@ -94,16 +94,16 @@
 //        mViewModel = new ViewModelProvider(this).get(MediaItemViewModel.class);
 //
 //        if (mViewModel != null) {
-//            System.out.println("Fragment Media Item 115: " +  "mViewModel is not null: " + mViewModel);
+//            //  System.out.println("Fragment Media Item 115: " +  "mViewModel is not null: " + mViewModel);
 //            mViewModel.setNavigator(this);
 //
 //        } else {
 //            // print to log
-//            System.out.println("Fragment Media Item:" + " mViewModel is null");
+//            //  System.out.println("Fragment Media Item:" + " mViewModel is null");
 //
 //        }
 //
-//        System.out.println("Fragment Media Item: " + mFragmentMediaItemBinding);
+//        //  System.out.println("Fragment Media Item: " + mFragmentMediaItemBinding);
 //
 //        mFragmentMediaItemBinding.setViewModel(mViewModel);
 //
@@ -126,9 +126,9 @@
 //
 //
 //        super.onViewCreated(view, savedInstanceState);
-//        System.out.println("On created view : " + mFragmentMediaItemBinding);
+//        //  System.out.println("On created view : " + mFragmentMediaItemBinding);
 //
-//        System.out.println("mViewModel: " + mViewModel);
+//        //  System.out.println("mViewModel: " + mViewModel);
 //
 //
 //

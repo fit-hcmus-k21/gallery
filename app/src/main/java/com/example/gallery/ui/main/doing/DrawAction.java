@@ -34,7 +34,7 @@ public class DrawAction extends AppCompatActivity implements View.OnClickListene
     BottomNavigationView drawNavigation;
     Bitmap savedrew;
     Button btnSave, btnNotSave;
-    String kind = null;
+    String kind = "Curve";
 
     @Override
     public void onCreate(Bundle saveInstanceState){

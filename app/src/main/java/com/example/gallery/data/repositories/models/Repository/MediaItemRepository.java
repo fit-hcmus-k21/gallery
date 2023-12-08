@@ -48,10 +48,10 @@ public class MediaItemRepository {
     public MediaItemRepository(Application application) {
         this.application = application;
         mediaItemDao = AppDatabase.getInstance().mediaItemDao();
-        System.out.println("on media repos 48");
+        //  System.out.println("on media repos 48");
         allMediaItem = mediaItemDao.getAllMediaItems(AppPreferencesHelper.getInstance().getCurrentUserId());
         totalMediaItems = mediaItemDao.getNumberOfMediaItems(AppPreferencesHelper.getInstance().getCurrentUserId());
-        System.out.println("on media repos 52");
+        //  System.out.println("on media repos 52");
 
 
 
@@ -180,16 +180,16 @@ public class MediaItemRepository {
         }
 
         // Media item can be inserted without waiting for the album insertion
-        System.out.println("MediaItemRepository: insert: " + mediaItem.getId() + " " + mediaItem.getUserID() + " " + albumName);
+//        //  System.out.println("MediaItemRepository: insert: " + mediaItem.getId() + " " + mediaItem.getUserID() + " " + albumName);
 
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         executorService.execute(() -> {
             // Use synchronized block to ensure proper order of insertions
             synchronized (this) {
                 // Show id, userID, album name
-                System.out.println("MediaItemRepository: insert on run: 121" + mediaItem.getPath());
+                //  System.out.println("MediaItemRepository: insert on run: 121" + mediaItem.getPath());
                 mediaItemDao.insert(mediaItem);
-                System.out.println("after insert in Media Repos: 123");
+                //  System.out.println("after insert in Media Repos: 123");
             }
             executorService.shutdown();
         });
@@ -202,18 +202,42 @@ public class MediaItemRepository {
             @Override
             public void run() {
 
-                for (MediaItem item : mediaItems) {
-                    String albName = item.getAlbumName();
-                    if (!AlbumRepository.getInstance().isExistAlbum(albName)) {
-                        Album alb = new Album();
-                        alb.setUserID(AppPreferencesHelper.getInstance().getCurrentUserId());
-                        alb.setName(albName);
+//                mediaItemDao.insertAll(mediaItems);
+                for (MediaItem mediaItem : mediaItems) {
+                    // Check if album name exists
+//                    String albumName = mediaItem.getAlbumName();
+//                    boolean albumExists = AlbumRepository.getInstance().isExistAlbum(albumName);
+//
+//                    if (!albumExists) {
+//                        // Album does not exist, create and insert
+//                        Album album = new Album();
+//                        album.setUserID(AppPreferencesHelper.getInstance().getCurrentUserId());
+//                        album.setName(albumName);
+//
+//                        AlbumRepository.getInstance().insert(album);
+//                    }
 
-                        AlbumRepository.getInstance().insert(alb);
-                    }
-                    mediaItemDao.insert(item);
+                    // Media item can be inserted without waiting for the album insertion
+//                    //  System.out.println("MediaItemRepository: insert: " + mediaItem.getId() + " " + mediaItem.getUserID() + " " + albumName);
+
+                    ExecutorService executorService = Executors.newSingleThreadExecutor();
+                    executorService.execute(() -> {
+                        // Use synchronized block to ensure proper order of insertions
+                        synchronized (this) {
+                            // Show id, userID, album name
+                            //  System.out.println("MediaItemRepository: insert on run: 121" + mediaItem.getPath());
+                            try {
+                                mediaItemDao.insert(mediaItem);
+
+                            }
+                            catch (Exception e){
+                                  System.out.println("MediaItemRepository: insert on run:  "+ e.getMessage());
+                            }
+                            //  System.out.println("after insert in Media Repos: 123");
+                        }
+                        executorService.shutdown();
+                    });
                 }
-                executorService.shutdown();
             }
 
         });
@@ -230,15 +254,15 @@ public class MediaItemRepository {
             AlbumRepository.getInstance().insert(alb);
 
         }
-            System.out.println("MediaItemRepository: insert: " + mediaItem.getId() + " " + mediaItem.getUserID() + " " + mediaItem.getAlbumName());
+//            //  System.out.println("MediaItemRepository: insert: " + mediaItem.getId() + " " + mediaItem.getUserID() + " " + mediaItem.getAlbumName());
             ExecutorService executorService = Executors.newSingleThreadExecutor();
             executorService.execute(new Runnable() {
                 @Override
                 public void run() {
                     // show id, userID, album name
-                    System.out.println("MediaItemRepository: insert on run: 121" + mediaItem.getPath());
+                    //  System.out.println("MediaItemRepository: insert on run: 121" + mediaItem.getPath());
                     mediaItemDao.insert(mediaItem);
-                    System.out.println("after insert in Media Repos: 123");
+                    //  System.out.println("after insert in Media Repos: 123");
                 }
             });
 

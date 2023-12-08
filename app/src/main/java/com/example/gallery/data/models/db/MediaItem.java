@@ -38,13 +38,14 @@ import java.util.Optional;
                     parentColumns = "id",
                     childColumns = "userID",
                     onDelete = ForeignKey.CASCADE
-            ),
-            @ForeignKey(
-                        entity = Album.class,
-                        parentColumns = "name",
-                        childColumns = "albumName",
-                        onDelete = ForeignKey.NO_ACTION // If delete album, mediaItem still exist
-                )
+            )
+//                ,
+//            @ForeignKey(
+//                        entity = Album.class,
+//                        parentColumns = "name",
+//                        childColumns = "albumName",
+//                        onDelete = ForeignKey.NO_ACTION // If delete album, mediaItem still exist
+//                )
         }
 //        primaryKeys = {
 //            "id", "userID"
@@ -98,7 +99,8 @@ public class MediaItem implements Serializable {
     private String location;
 
 
-    @ColumnInfo(name = "albumName", index = true)
+//    @ColumnInfo(name = "albumName", index = true)
+    @ColumnInfo(name = "albumName")
     private String albumName;
 
     @ColumnInfo(name = "url")
@@ -285,7 +287,7 @@ public class MediaItem implements Serializable {
 
     public void setLocation() {
         if (getPath() == null || getPath().equals("")){
-            System.out.println("MediaItem : setLocation | Please input image path");
+            //  System.out.println("MediaItem : setLocation | Please input image path");
             return;
         }
 
@@ -313,7 +315,7 @@ public class MediaItem implements Serializable {
                 GeoLocation geoLocation = gpsDirectory.getGeoLocation();
                 if (geoLocation != null && !geoLocation.isZero()) {
                     location = geoLocation.toString();
-                    System.out.println("Location: " + location);
+                    //  System.out.println("Location: " + location);
                 }
             }
         } catch (ImageProcessingException | IOException err ) {
@@ -408,7 +410,7 @@ public class MediaItem implements Serializable {
         // Đường dẫn đến tập tin hình ảnh
         String imagePath = getPath();
         if (imagePath == null) {
-            System.out.println("MediaItem : setInfo | Please input image path");
+            //  System.out.println("MediaItem : setInfo | Please input image path");
             return;
         }
 
@@ -423,8 +425,8 @@ public class MediaItem implements Serializable {
         setFileSize(fileSize);
 
         // Hiển thị thông tin
-        System.out.println("File Extension: " + fileExtension);
-        System.out.println("File Size (Bytes): " + fileSize);
+        //  System.out.println("File Extension: " + fileExtension);
+        //  System.out.println("File Size (Bytes): " + fileSize);
 
         // Đọc ảnh để lấy thông tin chi tiết hơn
         BitmapFactory.Options options = new BitmapFactory.Options();
@@ -437,8 +439,8 @@ public class MediaItem implements Serializable {
         setHeight(imageHeight);
         setWidth(imageWidth);
 
-        System.out.println("Image Width: " + imageWidth);
-        System.out.println("Image Height: " + imageHeight);
+        //  System.out.println("Image Width: " + imageWidth);
+        //  System.out.println("Image Height: " + imageHeight);
 
 //        // Lấy thông tin vị trí
         setLocation();

@@ -38,7 +38,7 @@ public class InnerAlbumScreen extends AppCompatActivity {
     MaterialToolbar topAppBar;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        System.out.println("InnerAlbumScreen  27: onCreate: ");
+        //  System.out.println("InnerAlbumScreen  27: onCreate: ");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.inner_album_layout);
         topAppBar = findViewById(R.id.topAppBar);
@@ -69,16 +69,16 @@ public class InnerAlbumScreen extends AppCompatActivity {
 
                 List<MediaItem> mediaItemList = getMediaItemsOfAlbum(mediaItems, albumName);
 //                Log.e("Mytag", "onChanged: " + mediaItemList.size());
-                System.out.println("InnerAlbumScreen  53: onChanged before set data: mediaItemList = " + mediaItems);
+                //  System.out.println("InnerAlbumScreen  53: onChanged before set data: mediaItemList = " + mediaItems);
                 mediaItemAdapter.setData(mediaItemList);
-                System.out.println("InnerAlbumScreen  55: onChanged: after set data  " );
+                //  System.out.println("InnerAlbumScreen  55: onChanged: after set data  " );
             }
         });
 
         mediaItemAdapter.setOnItemClickListener(new MediaItemAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(MediaItem mediaItem) {
-                System.out.println("On Item Click | Inner Album Screen before");
+                //  System.out.println("On Item Click | Inner Album Screen before");
 
                 Intent intent = new Intent(InnerAlbumScreen.this, SingleMediaActivity.class);
 
@@ -88,7 +88,7 @@ public class InnerAlbumScreen extends AppCompatActivity {
                 intent.putExtras(bundle);
 
                 startActivity(intent);
-                System.out.println("On Item Click | Inner Album Screen after");
+                //  System.out.println("On Item Click | Inner Album Screen after");
             }
         });
         materialToolbar.setOnMenuItemClickListener(item -> {

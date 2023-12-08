@@ -66,9 +66,9 @@ public class AppPreferencesHelper implements PreferencesHelper {
 
     @Override
     public void setCurrentUserLoggedInMode(DataManager.LoggedInMode mode) {
-        System.out.println("SharedPreferences: " + "Setting user mode. Before: " + mode.getType());
+        //  System.out.println("SharedPreferences: " + "Setting user mode. Before: " + mode.getType());
         mPrefs.edit().putInt(PREF_KEY_USER_LOGGED_IN_MODE, mode.getType()).apply();
-        System.out.println("SharedPreferences: " + "Setting user mode. After: " + mPrefs.getInt(PREF_KEY_USER_LOGGED_IN_MODE, -1));
+        //  System.out.println("SharedPreferences: " + "Setting user mode. After: " + mPrefs.getInt(PREF_KEY_USER_LOGGED_IN_MODE, -1));
     }
 
     @Override

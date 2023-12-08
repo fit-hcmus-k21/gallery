@@ -73,12 +73,12 @@ public abstract class BaseFragment<T extends ViewDataBinding, V extends BaseView
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        System.out.println("BaseFragment: onCreateView");
+        //  System.out.println("BaseFragment: onCreateView");
 
         mViewDataBinding = DataBindingUtil.inflate(inflater, getLayoutId(), container, false);
 
 
-        System.out.println("BaseFragment: onCreateView: mViewDataBinding: " + mViewDataBinding);
+        //  System.out.println("BaseFragment: onCreateView: mViewDataBinding: " + mViewDataBinding);
         mRootView = mViewDataBinding.getRoot();
         return mRootView;
     }
@@ -87,14 +87,14 @@ public abstract class BaseFragment<T extends ViewDataBinding, V extends BaseView
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
-        System.out.println("BaseFragment: onViewCreated");
+        //  System.out.println("BaseFragment: onViewCreated");
 
         super.onViewCreated(view, savedInstanceState);
         mViewDataBinding.setVariable(getBindingVariable(), mViewModel);
         mViewDataBinding.setLifecycleOwner(this);
         mViewDataBinding.executePendingBindings();
 
-        System.out.println("BaseFragment: onViewCreated: mViewDataBinding: " + mViewDataBinding);
+        //  System.out.println("BaseFragment: onViewCreated: mViewDataBinding: " + mViewDataBinding);
     }
 
     public T getViewDataBinding() {

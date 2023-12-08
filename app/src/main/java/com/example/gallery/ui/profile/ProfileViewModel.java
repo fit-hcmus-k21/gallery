@@ -1,6 +1,8 @@
 package com.example.gallery.ui.profile;
 
 
+import static androidx.core.app.ActivityCompat.startActivityForResult;
+
 import android.app.Activity;
 import android.content.Intent;
 
@@ -8,6 +10,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -15,6 +18,7 @@ import android.widget.Toast;
 
 
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -99,98 +103,13 @@ public class ProfileViewModel extends BaseViewModel<ProfileNavigator> {
 
     // define methods in ProfileViewModel
     public void logout() {
-        System.out.println("logout");
+        //  System.out.println("logout");
         getDataManager().clearPreferences();
         getNavigator().openLoginActivity();
     }
 
     public void addImageFromDevice() {
-//        getNavigator().openAddImageFromDeviceActivity();
-    }
-
-    public void addImageFromCamera() {
-//        getNavigator().openAddImageFromCameraActivity();
-    }
-
-    public void addImageFromLink_Ignore() {
-        String imageUrl = getNavigator().getmProfileBinding().editTextImageUrl.getText().toString();
-        System.out.println("Image Url: " + imageUrl);
-        Glide.with(App.getInstance())
-                .asBitmap()
-                .load(imageUrl)
-                .listener(new RequestListener<Bitmap>() {
-                    @Override
-                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Bitmap> target, boolean isFirstResource) {
-                        // Xử lý khi tải ảnh thất bại
-                        // Ví dụ: Hiển thị một hình ảnh mặc định hoặc thông báo lỗi
-                        System.out.println("Have something wrong ");
-                        return false; // Trả về false để để Glide xử lý lỗi tiếp theo (nếu có)
-                    }
-
-                    @Override
-                    public boolean onResourceReady(Bitmap resource, Object model, Target<Bitmap> target, DataSource dataSource, boolean isFirstResource) {
-                        // Lưu bitmap vào cơ sở dữ liệu và hiển thị trong RecyclerView
-                        System.out.println("Success load image with url");
-//                        saveImageToDatabase(resource);
-
-                        File appDirectory = new File(App.getInstance().getExternalFilesDir(null), "Images/FromUrls");
-                        if (!appDirectory.exists()) {
-                            appDirectory.mkdirs();
-                        }
-
-                        System.out.println("Resource: " + resource);
-                        System.out.println("Model: " + model);
-                        System.out.println("Target: " + target);
-                        System.out.println("DataSource: " + dataSource);
-                        System.out.println("isFirstResource: " + isFirstResource);
-
-                        fetchImageContentType(imageUrl);
-                        String fileExtension = resource.toString().substring(resource.toString().lastIndexOf("."));
-                        String fileName = getFileNameFromUrl(imageUrl) + fileExtension;
-                        System.out.println("File name: " + fileName);
-                        File imageFile = new File(appDirectory, fileName);
-
-                        // Save bitmap to folder
-
-                        try (OutputStream stream = new FileOutputStream(imageFile)) {
-                            resource.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-
-                        // get image path
-                        String imgPath = imageFile.getAbsolutePath();
-
-                        // save mediaitem inf to database
-                        MediaItem item = new MediaItem();
-                        item.setPath(imgPath);
-                        item.setOrigin(imageUrl);
-                        item.setCreationDate(Date.parse(new Date().toString()));
-                        item.setId(MediaItemViewModel.getInstance().getNumberOfMediaItems().getValue() + 1);
-                        item.setUserID(getDataManager().getCurrentUserId());
-                        item.setAlbumName("From Urls");
-
-                        getDataManager().insertMediaItem(item);
-
-//                        get number rows in database
-                        System.out.println("Number of media items after insert : " + MediaItemViewModel.getInstance().getNumberOfMediaItems());
-
-
-
-
-
-
-                        return false; // Trả về false để để Glide xử lý sự kiện tiếp theo (nếu có)
-                    }
-                })
-                .into(new SimpleTarget<Bitmap>() {
-                    @Override
-                    public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
-                        // Không cần thực hiện gì ở đây vì đã xử lý trong onResourceReady của RequestListener
-                    }
-                });
-
-
+        getNavigator().openAddImageFromDeviceActivity();
     }
 
     public void addImageFromLink() {
@@ -200,7 +119,7 @@ public class ProfileViewModel extends BaseViewModel<ProfileNavigator> {
 
         String imageUrl = getNavigator().getmProfileBinding().editTextImageUrl.getText().toString();
 
-        System.out.println("Image Url: " + imageUrl);
+        //  System.out.println("Image Url: " + imageUrl);
         if (!isValidUrl(imageUrl)) {
             getNavigator().getmProfileBinding().txtDownloadStatus.setText("Error: Invalid URL");
             getNavigator().getmProfileBinding().txtDownloadStatus.setTextColor(Color.parseColor("#FF0000"));
@@ -220,7 +139,7 @@ public class ProfileViewModel extends BaseViewModel<ProfileNavigator> {
             public void onFailure(Call call, IOException e) {
                 e.printStackTrace();
                 // Handle OkHttp failure...
-                System.out.println("Have something wrong ");
+                //  System.out.println("Have something wrong ");
                 getNavigator().getmProfileBinding().txtDownloadStatus.setText("Downloaded Status: failed");
                 getNavigator().getmProfileBinding().txtDownloadStatus.setTextColor(Color.parseColor("#FF0000"));
 
@@ -240,11 +159,11 @@ public class ProfileViewModel extends BaseViewModel<ProfileNavigator> {
                         return;
                     }
 
-                    System.out.println("Content Type: " + contentType);
+                    //  System.out.println("Content Type: " + contentType);
 
                     // Get the file name from the URL
                     String fileName = addRandomNumberToFileName(getFileNameFromUrl(imageUrl)) + fileExtension;
-                    System.out.println("File name from url: " + fileName);
+                    //  System.out.println("File name from url: " + fileName);
 
                     // Save the image to a file
                     File appDirectory = new File(App.getInstance().getExternalFilesDir(null), "Images/FromUrls");
@@ -262,7 +181,7 @@ public class ProfileViewModel extends BaseViewModel<ProfileNavigator> {
 
                     // Get image path
                     String imgPath = imageFile.getAbsolutePath();
-                    System.out.println("Image path: " + imgPath);
+                    //  System.out.println("Image path: " + imgPath);
 
 
                     // Save media item info to database
@@ -278,12 +197,12 @@ public class ProfileViewModel extends BaseViewModel<ProfileNavigator> {
 
                     MediaItemViewModel.getInstance().insert(item);
 //                    Toast.makeText(App.getInstance(), "Insert successfully", Toast.LENGTH_SHORT).show();
-                    System.out.println("Insert media item success from profile view model");
+                    //  System.out.println("Insert media item success from profile view model");
 
 
 
                     // Get the number of rows in the database
-//                    System.out.println("Number of media items after download image: " + MediaItemViewModel.getInstance().getNumberOfMediaItems().getValue());
+//                    //  System.out.println("Number of media items after download image: " + MediaItemViewModel.getInstance().getNumberOfMediaItems().getValue());
                     getNavigator().getmProfileBinding().txtDownloadStatus.setText("Status: download a " + fileExtension +" successfully!");
                     getNavigator().getmProfileBinding().txtDownloadStatus.setTextColor(Color.parseColor("#008000"));
                 }
@@ -350,7 +269,7 @@ public class ProfileViewModel extends BaseViewModel<ProfileNavigator> {
             public void onResponse(Call call, Response response) {
                 // Get content type from the response headers
                 String contentType = response.header("Content-Type");
-                System.out.println("Content Type: " + contentType);
+                //  System.out.println("Content Type: " + contentType);
                 // Handle the content type as needed
             }
         });

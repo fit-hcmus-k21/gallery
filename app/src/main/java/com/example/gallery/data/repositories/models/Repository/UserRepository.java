@@ -1,6 +1,7 @@
 package com.example.gallery.data.repositories.models.Repository;
 
 import android.app.Application;
+import android.os.AsyncTask;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
@@ -18,6 +19,8 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import kotlinx.coroutines.CoroutineScope;
+
 public class UserRepository {
     private UserDao userDao;
 //    private LiveData<List<User>> users;
@@ -27,7 +30,7 @@ public class UserRepository {
 
     public static UserRepository getInstance(){
         if(currentUserInstance == null){
-            System.out.println("get Instance of UserRepository");
+            //  System.out.println("get Instance of UserRepository");
             currentUserInstance = new UserRepository(App.getInstance());
         }
         return currentUserInstance;
@@ -35,28 +38,29 @@ public class UserRepository {
 
     public UserRepository(Application application){
         this.application = application;
-        System.out.println("UserRepository constructor");
+        //  System.out.println("UserRepository constructor");
         AppDatabase galleryDatabase = AppDatabase.getInstance();
-        System.out.println("galleryDatabase : " + galleryDatabase);
+        //  System.out.println("galleryDatabase : " + galleryDatabase);
         userDao = galleryDatabase.userDao();
-        System.out.println("userDao from UserRepos: " + userDao);
+        //  System.out.println("userDao from UserRepos: " + userDao);
 //        users = userDao.getAllUsers();
 
     }
 
-//    public LiveData<List<User>> getUsers() {
-//        return users;
-//    }
-    public void insertUser(User user){
-        System.out.println("UserRepository insertUser");
-        ExecutorService executorService = Executors.newSingleThreadExecutor();
-        executorService.execute(new Runnable() {
-            @Override
-            public void run() {
-                userDao.insert(user);
-            }
-        });
+
+
+    public void insertUser(User user) {
+        new InsertUserTask().execute(user);
     }
+
+    private class InsertUserTask extends AsyncTask<User, Void, Void> {
+        @Override
+        protected Void doInBackground(User... users) {
+            userDao.insert(users[0]);
+            return null;
+        }
+    }
+
     public void deleteUser(User user){
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         executorService.execute(new Runnable() {
