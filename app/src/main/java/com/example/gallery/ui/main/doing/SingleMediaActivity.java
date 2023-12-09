@@ -249,6 +249,7 @@ public class SingleMediaActivity extends AppCompatActivity  {
                                 InnerAlbumScreen.mediaItemAdapter.notifyDataSetChanged();
                                 dialog.dismiss();
                                 finish();
+
                             }
                         });
                         dialog.show();
