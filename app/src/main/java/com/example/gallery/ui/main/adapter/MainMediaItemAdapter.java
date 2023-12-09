@@ -30,7 +30,8 @@ public class MainMediaItemAdapter extends RecyclerView.Adapter<MainMediaItemAdap
     private int currentType = MediaItem.TYPE_GRID;
     //
     public void setData(List<MediaItem> mediaItemListAll, HashMap<String, List<MediaItem>> groupMediaItemByDate, List<String> dateListString) {
-        //  System.out.println("MainMediaItemAdapter 001: setData: mediaItemListAll  ");
+        // sort groupMediaItemByDate with id desc to show newest first
+
        this.mediaItemListAll = mediaItemListAll;
        //  System.out.println("line 35");
        this.groupMediaItemByDate = groupMediaItemByDate;
@@ -68,6 +69,17 @@ public class MainMediaItemAdapter extends RecyclerView.Adapter<MainMediaItemAdap
         holder.headingTextView.setText(date);
 
         List<MediaItem> mediaItemList = groupMediaItemByDate.get(date);
+
+        // sort mediaItemList with id desc to show newest first
+        for (int i = 0; i < mediaItemList.size() - 1; i++) {
+            for (int j = i + 1; j < mediaItemList.size(); j++) {
+                if (mediaItemList.get(i).getId() < mediaItemList.get(j).getId()) {
+                    MediaItem temp = mediaItemList.get(i);
+                    mediaItemList.set(i, mediaItemList.get(j));
+                    mediaItemList.set(j, temp);
+                }
+            }
+        }
 
         // Tao 2 Layout manager cho viec chuyen doi qua lai khi click vao menu chuyen doi
         GridLayoutManager gridLayoutManager = new GridLayoutManager(holder.itemView.getContext(), 3);

@@ -206,7 +206,7 @@ public class InnerAlbumScreen extends AppCompatActivity {
         int videoCnt = 0;
         for(int i = 0 ; i < list.size();i++){
             folderSize += list.get(i).getFileSize();
-            if(list.get(i).getFileExtension().equals("video/mp4"))
+            if(list.get(i).getFileExtension().equals("mp4"))
                 videoCnt++;
             else imageCnt++;
         }

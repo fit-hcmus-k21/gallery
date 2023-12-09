@@ -36,7 +36,7 @@ public class MediaItemAdapter extends RecyclerView.Adapter<MediaItemAdapter.Medi
     @Override
     public int getItemViewType(int position) {
         if(mediaItemList != null && mediaItemList.size() > 0) {
-            if(mediaItemList.get(position).getFileExtension().equals("video/mp4")){
+            if(mediaItemList.get(position).getFileExtension().equals("mp4")){
                 return TYPE_VIDEO;
             }
             else {

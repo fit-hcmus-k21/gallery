@@ -36,6 +36,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.gallery.App;
@@ -44,10 +45,12 @@ import com.example.gallery.data.local.prefs.AppPreferencesHelper;
 import com.example.gallery.data.models.db.MediaItem;
 
 import com.example.gallery.data.repositories.models.Repository.MediaItemRepository;
+import com.example.gallery.ui.custom.AddImageFromDevice;
 import com.example.gallery.ui.main.adapter.MainMediaItemAdapter;
 
 import com.example.gallery.utils.BytesToStringConverter;
 import com.example.gallery.ui.main.doing.DuplicationActivity;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.File;
 import java.io.IOException;
@@ -63,6 +66,8 @@ public class MediaItemFragment extends Fragment {
     public static final int REQUEST_TAKE_PHOTO = 256;
     public static final int REQUEST_SIMILAR_PHOTO = 123;
     private static final int MY_CAMERA_PERMISSION_CODE = 10001;
+
+    private static final int REQUEST_IMAGE_PICK = 1;
 
     View mView;
     private RecyclerView recyclerView;
@@ -81,6 +86,8 @@ public class MediaItemFragment extends Fragment {
     List<MediaItem> filterData;
     List<MediaItem> mediaItemsLíst;
     private ActivityResultLauncher<String[]> requestPermissionLauncher;
+
+    private FloatingActionButton btnPickFiles;
 
 
     @Override
@@ -110,6 +117,31 @@ public class MediaItemFragment extends Fragment {
         // Ánh xạ các biến
         recyclerView = view.findViewById(R.id.rcv_media_item);
         toolbar = view.findViewById(R.id.toolbar_media_item);
+        btnPickFiles = view.findViewById(R.id.floating_pick_from_device_button);
+
+        // add event for button
+        btnPickFiles.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                System.out.println("openAddImageFromDeviceActivity");
+                Intent intent = new Intent(getActivity(), AddImageFromDevice.class);
+                startActivityForResult(intent, REQUEST_IMAGE_PICK);
+
+            }
+        });
+
+        // add event scroll for recyclerview
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull @org.jetbrains.annotations.NotNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if(newState == RecyclerView.SCROLL_STATE_IDLE){
+                    btnPickFiles.show();
+                }else{
+                    btnPickFiles.hide();
+                }
+            }
+        });
 
 
 
@@ -212,7 +244,9 @@ public class MediaItemFragment extends Fragment {
 
                 List<MediaItem> mediaItemList = new ArrayList<>();
                 mediaItemList.add(mediaItem);
+
                 result.put(date, mediaItemList);
+
             }
         }
 
@@ -399,7 +433,7 @@ public class MediaItemFragment extends Fragment {
 
         for(int i = 0 ; i < list.size();i++){
             folderSize += list.get(i).getFileSize();
-            if(list.get(i).getFileExtension().equals("video/mp4"))
+            if(list.get(i).getFileExtension().equals("mp4"))
                 videoCnt++;
             else imageCnt++;
         }
