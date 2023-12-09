@@ -203,15 +203,18 @@ public class SingleMediaActivity extends AppCompatActivity  {
                 }
 
                 //  update và remove comment sau *********
-//                if(mediaItemsList.get(position).getFileExtension() != null && mediaItemsList.get(position).getFileExtension().equals("image/jpeg")){
-//                    //  System.out.println("SingleMediaActivity | File extension = " + mediaItemsList.get(position).getFileExtension() + " | position = " + position);
-//                    editImageView.setEnabled(true);
-//                    editImageView.setClickable(true);
-//                }
-//                else{
-//                    editImageView.setEnabled(false);
-//                    editImageView.setClickable(false);
-//                }
+                if(mediaItemsList.get(position).getFileExtension() != null && !mediaItemsList.get(position).getFileExtension().equals("mp4")){
+                    //  System.out.println("SingleMediaActivity | File extension = " + mediaItemsList.get(position).getFileExtension() + " | position = " + position);
+
+                    editImageView.setVisibility(View.VISIBLE);
+                    editImageView.setEnabled(true);
+                    editImageView.setClickable(true);
+                }
+                else{
+                    editImageView.setVisibility(View.GONE);
+                    editImageView.setEnabled(false);
+                    editImageView.setClickable(false);
+                }
 
 
 

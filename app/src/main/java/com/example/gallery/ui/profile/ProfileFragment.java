@@ -76,7 +76,7 @@ public class ProfileFragment extends BaseFragment<ProfileBinding, ProfileViewMod
             @Override
             public void onChanged(Integer integer) {
                 //  System.out.println("ProfileFragment 86: " + integer);
-                mProfileBinding.txtNumImg.setText("Number of images: " + integer);
+                mProfileBinding.txtNumImg.setText("Number of media items: " + integer);
             }
         });
 
@@ -99,8 +99,8 @@ public class ProfileFragment extends BaseFragment<ProfileBinding, ProfileViewMod
 
 //        ------------------------------
 
-        mProfileBinding.txtUserID.setText("Your userId: " + mViewModel.getDataManager().getCurrentUserId() + " ");
-        mProfileBinding.txtEmail.setText("Your email: " + mViewModel.getDataManager().getCurrentUserEmail());
+//        mProfileBinding.txtUserID.setText("Your userId: " + mViewModel.getDataManager().getCurrentUserId() + " ");
+        mProfileBinding.txtEmail.setText("Email: " + mViewModel.getDataManager().getCurrentUserEmail());
         mProfileBinding.txtName.setText("Hello, " + mViewModel.getDataManager().getCurrentUserName());
 //        mProfileBinding.txtNumImg.setText("Number of images: " + UserViewModel.getInstance().getNumberOfItems().getValue()); // loi failed to open file '/data/data/com.example.gallery/code_cache
 

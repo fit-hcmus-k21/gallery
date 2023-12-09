@@ -47,7 +47,7 @@ public class ViewPagerSingleMediaAdapter extends RecyclerView.Adapter<ViewPagerS
     public int getItemViewType(int position) {
         if(mediaItemList != null && mediaItemList.size() > 0) {
             //  System.out.println("On get item view type 47 | View Pager Single Media Adapter");
-            if(mediaItemList.get(position).getFileExtension() != null  && mediaItemList.get(position).getFileExtension().equals("video/mp4")){
+            if(mediaItemList.get(position).getFileExtension() != null  && mediaItemList.get(position).getFileExtension().equals("mp4")){
                 return TYPE_VIDEO;
             }
             else {

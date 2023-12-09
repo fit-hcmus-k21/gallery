@@ -44,7 +44,7 @@ public class MediaItemAdapter extends RecyclerView.Adapter<MediaItemAdapter.Medi
         if(mediaItemList != null && mediaItemList.size() > 0) {
 //            //  System.out.println("On get item view type 45 | MediaItem Adapter");
 
-            if(mediaItemList.get(position).getFileExtension() != null && mediaItemList.get(position).getFileExtension().equals("video/mp4")){
+            if(mediaItemList.get(position).getFileExtension() != null && mediaItemList.get(position).getFileExtension().equals("mp4")){
 //                //  System.out.println("On get item view type 47 | MediaItem Adapter");
                 return TYPE_VIDEO;
             }

@@ -79,7 +79,7 @@ public class DuplicationActivity extends AppCompatActivity implements View.OnCli
 
                 // get Image in album Camera
                 for(MediaItem iterator : mediaItems){
-                    if(!iterator.getFileExtension().equals("video/mp4") && !iterator.getAlbumName().equals("Edited") && !iterator.getAlbumName().equals("Bin")) {
+                    if(!iterator.getFileExtension().equals("mp4") && !iterator.getAlbumName().equals("Edited") && !iterator.getAlbumName().equals("Bin")) {
                         firstData.add(iterator);
                         date.add(new SimpleDateFormat("yyyy/MM/dd").format(iterator.getCreationDate()));
                     }
