@@ -39,10 +39,10 @@ public interface MediaItemDao {
     @Query("SELECT id, userID, name, tag, description, path, width, height, fileSize, fileExtension, creationDate, location, albumName, url, favorite, deletedTs, parentPath FROM media_items WHERE userID = :userID ")
     LiveData<List<MediaItem>> getAllMediaItemsByUserID(String userID);
 
-    @Query("SELECT id, userID, name, tag, description, path, width, height, fileSize, fileExtension, creationDate, location, albumName, url, favorite, deletedTs, parentPath FROM media_items WHERE userID = :userID ")
+    @Query("SELECT id, userID, name, tag, description, path, width, height, fileSize, fileExtension, creationDate, location, albumName, url, favorite, deletedTs, parentPath,previousAlbum FROM media_items WHERE userID = :userID ")
     LiveData<List<MediaItem>> getAllMediaItems(String userID);
 
-    @Query("SELECT id, userID, name, tag, description, path, width, height, fileSize, fileExtension, creationDate, location, albumName, url, favorite, deletedTs, parentPath FROM media_items WHERE deletedTs = 0 AND path = :path  COLLATE NOCASE")
+    @Query("SELECT id, userID, name, tag, description, path, width, height, fileSize, fileExtension, creationDate, location, albumName, url, favorite, deletedTs, parentPath,previousAlbum FROM media_items WHERE deletedTs = 0 AND path = :path  COLLATE NOCASE")
     LiveData<List<MediaItem>> getMediaFromPath(String path);
 
     @Query("SELECT id, userID, name, tag, description, path, width, height, fileSize, fileExtension, creationDate, location, albumName, url, favorite, deletedTs, parentPath FROM media_items WHERE deletedTs = 0 AND favorite = 1")
@@ -51,12 +51,26 @@ public interface MediaItemDao {
     @Query("SELECT COUNT(id) FROM media_items WHERE deletedTs = 0 AND favorite = 1")
     LiveData<Integer> getFavoritesCount();
 
-    @Query("SELECT id, userID, name, tag, description, path, width, height, fileSize, fileExtension, creationDate, location, albumName, url, favorite, deletedTs, parentPath FROM media_items WHERE deletedTs < :timestamp AND deletedTs != 0")
+    @Query("SELECT id, userID, name, tag, description, path, width, height, fileSize, fileExtension, creationDate, location, albumName, url, favorite, deletedTs, parentPath,previousAlbum FROM media_items WHERE deletedTs < :timestamp AND deletedTs != 0")
     LiveData<List<MediaItem>> getOldRecycleBinMediaItems(Long timestamp);
+
 
     @Query("DELETE FROM media_items WHERE path = :path COLLATE NOCASE")
     void deleteMediaItemPath(String path);
 
+    //--------------
+    @Query("DELETE FROM media_items WHERE id = :id COLLATE NONCASE")
+    void deleteMediaItemId(int id);
+
+    @Query("UPDATE OR REPLACE media_items SET albumName = :newAlbumName WHERE id = :id COLLATE NONCASE")
+    void updateMediaItemAlbum(int id, String newAlbumName);
+
+    @Query("UPDATE OR REPLACE media_items SET deletedTs = :newTime WHERE id = :id COLLATE NONCASE")
+    void updateMediaItemDeleteTs(int id, long newTime);
+
+    @Query("UPDATE OR REPLACE media_items SET previousAlbum = :previous WHERE id = :id COLLATE NONCASE")
+    void updateMediaPreviousAlbum(int id, String previous);
+    //--------
     @Query("UPDATE OR REPLACE media_items SET name = :newFileName, path = :newPath, parentPath = :newParentPath WHERE id = :id COLLATE NOCASE")
     void updateMediaItem(int id, String newFileName, String newPath, String newParentPath);
 
@@ -72,13 +86,13 @@ public interface MediaItemDao {
     @Query("DELETE FROM media_items WHERE deletedTs != 0 AND id = :id")
     void clearRecycleBinItemWithId(int id);
 
-    @Query("SELECT id, userID, name, tag, description, path, width, height, fileSize, fileExtension, creationDate, location, albumName, url, favorite, deletedTs, parentPath FROM media_items WHERE albumName = :albumName")
+    @Query("SELECT id, userID, name, tag, description, path, width, height, fileSize, fileExtension, creationDate, location, albumName, url, favorite, deletedTs, parentPath,previousAlbum FROM media_items WHERE albumName = :albumName")
     LiveData<List<MediaItem>> getMediaFromAlbum(String albumName);
 
     @Query("UPDATE OR REPLACE media_items SET deletedTs = :deletedTs WHERE id = :id")
     void updatedDeletedTs(int id, long deletedTs);
 
-    @Query("SELECT id, userID, name, tag, description, path, width, height, fileSize, fileExtension, creationDate, location, albumName, url, favorite, deletedTs, parentPath FROM media_items WHERE deletedTs = 0 AND fileExtension = :fileExtension")
+    @Query("SELECT id, userID, name, tag, description, path, width, height, fileSize, fileExtension, creationDate, location, albumName, url, favorite, deletedTs, parentPath,previousAlbum FROM media_items WHERE deletedTs = 0 AND fileExtension = :fileExtension")
     LiveData<List<MediaItem>> getMediaFromExtension(String fileExtension);
 
     @Query("UPDATE media_items SET tag = :tag WHERE id = :id")

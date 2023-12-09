@@ -1,4 +1,7 @@
-package com.example.gallery.data.repositories.models;
+package com.example.gallery.bin;
+
+import com.example.gallery.bin.DataSyncService;
+import com.example.gallery.bin.MediaItem;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,7 +12,7 @@ import java.util.HashMap;
 public class MediaManager {
     // attributes
     private ArrayList<MediaItem> listMedia;
-    private AlbumManager albumManager;
+    private com.example.gallery.data.repositories.models.AlbumManager albumManager;
     private DataSyncService synchronizer;
     private PhotoEditor editor;
 

@@ -9,7 +9,8 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.widget.Toast;
 
-import com.example.gallery.data.repositories.models.MediaItem;
+
+import com.example.gallery.bin.MediaItem;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;

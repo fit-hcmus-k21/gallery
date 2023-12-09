@@ -1,6 +1,7 @@
-package com.example.gallery.data.repositories.models;
+package com.example.gallery.bin;
 
 
+import com.example.gallery.data.models.db.MediaItem;
 import com.google.api.services.drive.Drive;
 
 import java.util.ArrayList;

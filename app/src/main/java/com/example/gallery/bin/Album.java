@@ -1,5 +1,6 @@
 package com.example.gallery.data.repositories.models;
 
+import com.example.gallery.data.models.db.MediaItem;
 import com.example.gallery.utils.Date;
 
 import java.util.ArrayList;

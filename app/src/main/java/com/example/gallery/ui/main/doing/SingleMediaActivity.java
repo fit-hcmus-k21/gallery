@@ -21,6 +21,7 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -63,6 +64,7 @@ import java.io.File;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
 
@@ -74,7 +76,7 @@ public class SingleMediaActivity extends AppCompatActivity  {
     ViewPagerSingleMediaAdapter viewPagerSingleMediaAdapter;
 
     ImageView favoriteImageView, editImageView;
-    ImageView shareImageView;
+    ImageView shareImageView, deleteImageView;
     List<MediaItem> mediaItemsList; // Biến thành viên để lưu trữ danh sách các MediaItem
     MutableLiveData<MediaItem> mediaItemLiveData = new MutableLiveData<>();
     LinearLayout customappbar;
@@ -95,6 +97,7 @@ public class SingleMediaActivity extends AppCompatActivity  {
         shareImageView = findViewById(R.id.media_share_icon);
         customappbar = findViewById(R.id.custom_bottom_appbar);
         editImageView = findViewById(R.id.media_edit_icon);
+        deleteImageView = findViewById(R.id.media_trash_icon);
 
 
 
@@ -134,6 +137,7 @@ public class SingleMediaActivity extends AppCompatActivity  {
                 System.out.println("SingleMediaActivity | OnCreate | onChanged all media items");
 
                 mediaItemsList = mediaItems;
+
 
                 viewPagerSingleMediaAdapter.setData(mediaItems);
                 int index = GetInDexOfHelper.getIndexOf(mediaItems, mediaItemIntent);
@@ -209,6 +213,47 @@ public class SingleMediaActivity extends AppCompatActivity  {
 //                    editImageView.setClickable(false);
 //                }
 
+
+
+                deleteImageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Dialog dialog = new Dialog(SingleMediaActivity.this);
+                        dialog.setContentView(R.layout.delete_dialog);
+
+                        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                        dialog.setCancelable(true);
+
+                        Button btnDelete = dialog.findViewById(R.id.btnDelete);
+                        Button btnCancel = dialog.findViewById(R.id.btnCancel);
+                        btnCancel.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                dialog.dismiss();
+                            }
+                        });
+                        btnDelete.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                //move to bin
+                                MediaItemRepository.getInstance().updateMediaPreviousAlbum(mediaItemsList.get(position).getId(),mediaItemsList.get(position).getAlbumName());
+                                MediaItemRepository.getInstance().updateMediaItemAlbum(mediaItemsList.get(position).getId(),"Bin");
+                                mediaItemsList.get(position).setPreviousAlbum(mediaItemsList.get(position).getAlbumName());
+                                mediaItemsList.get(position).setAlbumName("Bin");
+                                //get current day
+                                Calendar calendar = Calendar.getInstance();
+                                long currentDate = calendar.getTimeInMillis();
+                                MediaItemRepository.getInstance().updateMediaItemDeleteTs(mediaItemsList.get(position).getId(),currentDate);
+                                mediaItemsList.get(position).setDeletedTs(currentDate);
+                                viewPagerSingleMediaAdapter.notifyDataSetChanged();
+                                InnerAlbumScreen.mediaItemAdapter.notifyDataSetChanged();
+                                dialog.dismiss();
+                                finish();
+                            }
+                        });
+                        dialog.show();
+                    }
+                });
 
                 editImageView.setOnClickListener(new View.OnClickListener() {
                     @Override

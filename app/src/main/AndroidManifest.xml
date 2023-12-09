@@ -70,6 +70,8 @@
         <activity android:name=".ui.main.doing.DuplicationActivity"/>
 
         <activity android:name=".ui.main.doing.ArrangementAction"/>
+        <activity android:name=".ui.main.doing.DeleteActivity"/>
+        <activity android:name=".ui.main.doing.SingleMediaDeleteActivity"/>
 
         <activity android:name=".data.repositories.models.Test.ViewTestMediaItem" >
         </activity>

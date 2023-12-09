@@ -170,6 +170,7 @@ public class ProfileViewModel extends BaseViewModel<ProfileNavigator> {
                         item.setUserID(getDataManager().getCurrentUserId());
                         item.setAlbumName("From Urls");
 
+
                         getDataManager().insertMediaItem(item);
 
 //                        get number rows in database

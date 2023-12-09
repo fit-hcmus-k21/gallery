@@ -1,7 +1,10 @@
-package com.example.gallery.data.repositories.models;
+package com.example.gallery.bin;
 
 
+import com.example.gallery.bin.MediaManager;
 import com.example.gallery.data.DataManager;
+import com.example.gallery.data.repositories.models.Account;
+import com.example.gallery.data.repositories.models.Avatar;
 
 /**
  * Created on 28/10/2023
@@ -11,8 +14,8 @@ public class User {
 
     // attributes
     private String fullName;
-    private Account account;
-    private Avatar avatar;
+    private com.example.gallery.data.repositories.models.Account account;
+    private com.example.gallery.data.repositories.models.Avatar avatar;
     private boolean hasFingerprint ;
     private MediaManager dataManager;
 

@@ -1,4 +1,6 @@
-package com.example.gallery.data.repositories.models;
+package com.example.gallery.bin;
+
+import com.example.gallery.data.repositories.models.Metadata;
 
 /**
  * Created on 28/10/2023

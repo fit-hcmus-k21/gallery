@@ -35,7 +35,6 @@ public class MyViewPager2Adapter extends FragmentStateAdapter {
                 return new MemoryFragment();
             case 4:
                 return new ProfileFragment();
-
             default:
                 return new MediaItemFragment();
         }
