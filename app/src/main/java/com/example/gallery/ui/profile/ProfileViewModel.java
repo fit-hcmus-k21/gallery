@@ -38,13 +38,17 @@ import com.example.gallery.data.local.db.AppDBHelper;
 import com.example.gallery.data.local.prefs.AppPreferencesHelper;
 import com.example.gallery.data.models.db.Album;
 import com.example.gallery.data.models.db.MediaItem;
+import com.example.gallery.data.models.db.User;
 import com.example.gallery.data.repositories.models.Repository.AlbumRepository;
 import com.example.gallery.data.repositories.models.Repository.MediaItemRepository;
+import com.example.gallery.data.repositories.models.Repository.UserRepository;
 import com.example.gallery.data.repositories.models.ViewModel.AlbumViewModel;
 import com.example.gallery.data.repositories.models.ViewModel.MediaItemViewModel;
+import com.example.gallery.ui.backup.BackupManager;
 import com.example.gallery.ui.base.BaseViewModel;
 
 import com.example.gallery.utils.BitmapUtils;
+import com.example.gallery.utils.Utils;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -111,6 +115,10 @@ public class ProfileViewModel extends BaseViewModel<ProfileNavigator> {
 
     public LiveData<Integer> getNumberOfAlbums() {
         return AlbumRepository.getInstance().getNumberOfAlbums();
+    }
+
+    public LiveData<User> getUser() {
+        return UserRepository.getInstance().getAllUserData();
     }
 
 
@@ -318,22 +326,51 @@ public class ProfileViewModel extends BaseViewModel<ProfileNavigator> {
 
 
     public void backup() {
-        // TODO: backup all images to local storage
+        // TODO: backup all user data to local storage
+        BackupManager.RestoreCloudToLocal();
 
     }
 
+
+    private MutableLiveData<User> currentUser = new MutableLiveData<>();
     public void syncToCloudStorage() {
-        // TODO: upload all images to cloud storage
+        // TODO: upload all images, albums and user info to cloud storage
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReference();
 
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+
+
         // get reference to 'images' node
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference usersRef = database.getReference("users").child(AppPreferencesHelper.getInstance().getCurrentUserId()).child("user_data");
-        DatabaseReference albumRef = usersRef.child("albums");
-        DatabaseReference imagesRef = albumRef.child("images");
+        DatabaseReference usersRef = database.getReference("users").child(AppPreferencesHelper.getInstance().getCurrentUserId());
 
-        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        if (getUser().getValue() == null) {
+            System.out.println("user is null  " + AppPreferencesHelper.getInstance().getCurrentUserId() );
+            return;
+        }
+
+        usersRef.child("user_info").setValue(getUser().getValue())
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        // Ghi dữ liệu thành công
+                        System.out.println("Đã đồng bộ và ghi dữ liệu xong | user_info");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // Xử lý lỗi
+                        System.out.println("Có lỗi khi đồng bộ và ghi dữ liệu | user_info " + e.toString());
+                    }
+                });
+
+
+
+        DatabaseReference albumRef = usersRef.child("user_data").child("albums");
+        DatabaseReference imagesRef = usersRef.child("user_data").child("media_items");
+
 
         executorService.execute(new Runnable() {
             @Override
@@ -375,14 +412,14 @@ public class ProfileViewModel extends BaseViewModel<ProfileNavigator> {
                 String userIdStr = AppPreferencesHelper.getInstance().getCurrentUserId();
 
                 for (MediaItem item : listItems) {
-                    String id = userIdStr + "/images" + "/" + item.getId() + "_" + new SimpleDateFormat("yyyyMMdd", Locale.getDefault()).format(new Date());
-                    StorageReference imageRef = storageRef.child(id);
+                    String id = Utils.getStoragePathFile(item.getId() + "", item.getCreationDate(), item.getFileExtension());
+                    StorageReference fileRef = storageRef.child(id);
                     Uri fileUri = Uri.fromFile(new File(item.getPath()));
-                    UploadTask uploadTask = imageRef.putFile(fileUri);  // Tải lên ảnh lên Cloud Storage
+                    UploadTask uploadTask = fileRef.putFile(fileUri);  // Tải lên ảnh lên Cloud Storage
                     uploadTask.addOnSuccessListener(taskSnapshot -> {
                         // Ảnh đã được tải lên thành công
                         // Lấy URL của ảnh trong Cloud Storage
-                        imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                        fileRef.getDownloadUrl().addOnSuccessListener(uri -> {
                             String imageUrl = uri.toString();
                             item.setUrl(imageUrl);
                             //  lưu đường dẫn URL này trong cơ sở dữ liệu hoặc thực hiện các thao tác khác.
@@ -413,6 +450,9 @@ public class ProfileViewModel extends BaseViewModel<ProfileNavigator> {
                 System.out.println("Đã đồng bộ và ghi dữ liệu xong | images");
             }
         });
+
+        // TODO: ghi dữ liệu avatarURL của User và coverPhotoURL của Album lên database, nếu có
+
     }
 
 

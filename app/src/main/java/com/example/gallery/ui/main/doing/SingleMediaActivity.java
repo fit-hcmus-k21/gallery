@@ -591,7 +591,7 @@ public class SingleMediaActivity extends AppCompatActivity  {
                 item.setWidth(width);
                 item.setHeight(height);
                 item.setFileSize(size);
-                item.setCreationDate(date);
+                item.setLastModified(date);
 
 //                remove id of item
                 item.setId(0);

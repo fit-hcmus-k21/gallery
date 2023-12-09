@@ -29,7 +29,7 @@ public interface UserDao {
     void update(User user);
 
 
-    @Query("SELECT id, fullName, avatarURL, email FROM users WHERE id = :id")
+    @Query("SELECT * FROM users WHERE id = :id")
     LiveData<User> getAllUserData(String id);
 
     @Query("SELECT COUNT(*) FROM users WHERE id = :id")

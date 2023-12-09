@@ -36,6 +36,8 @@ public class UserRepository {
         return currentUserInstance;
     }
 
+    LiveData<User> userLiveData = new MutableLiveData<>();
+
     public UserRepository(Application application){
         this.application = application;
         //  System.out.println("UserRepository constructor");
@@ -44,6 +46,7 @@ public class UserRepository {
         userDao = galleryDatabase.userDao();
         //  System.out.println("userDao from UserRepos: " + userDao);
 //        users = userDao.getAllUsers();
+        userLiveData = userDao.getAllUserData(AppPreferencesHelper.getInstance().getCurrentUserId());
 
     }
 
@@ -78,6 +81,16 @@ public class UserRepository {
     }
 
     public LiveData<User> getAllUserData() {
-        return userDao.getAllUserData(AppPreferencesHelper.getInstance().getCurrentUserId());
+        return userLiveData;
+    }
+
+    public void update(User user){
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                userDao.update(user);
+            }
+        });
     }
 }

@@ -25,15 +25,20 @@ public class User  {
     @ColumnInfo(name = "avatarURL")
     private String avatarURL;
 
+    @ColumnInfo(name = "avatarPath")
+    private String avatarPath;
+
     @ColumnInfo(name = "username")
     private String username;
 
+    // not used
     @ColumnInfo(name = "password")
     private String password;
 
     @ColumnInfo(name = "email")
     private String email;
 
+    // not used
     @ColumnInfo(name = "accessToken")
     private String accessToken;
 
@@ -45,6 +50,9 @@ public class User  {
 
     @ColumnInfo(name = "fingerprintData")
     private String fingerprintData;
+
+    @ColumnInfo(name = "creationDate")
+    private long creationDate;
 
 
     // Constructor
@@ -62,8 +70,24 @@ public class User  {
         this.fingerprintData = fingerprintData;
     }
 
+
     public User( ) {
 
+    }
+
+    public long getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(long creationDate) {
+        this.creationDate = creationDate;
+    }
+    public String getAvatarPath() {
+        return avatarPath;
+    }
+
+    public void setAvatarPath(String avatarPath) {
+        this.avatarPath = avatarPath;
     }
 
     // setters and getters
