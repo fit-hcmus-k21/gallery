@@ -35,7 +35,7 @@ public abstract class AppDatabase extends RoomDatabase {
     private static AppDatabase sInstance;
 
     public static synchronized AppDatabase getInstance() {
-        System.out.println("AppDatabase.getInstance");
+        //  System.out.println("AppDatabase.getInstance");
         if (sInstance == null) {
             sInstance = Room.databaseBuilder(
                             App.getInstance(),
@@ -60,7 +60,7 @@ public abstract class AppDatabase extends RoomDatabase {
 
 
 //    public static synchronized AppDatabase getInstance() {
-//        System.out.println("AppDatabase.getInstance: " + sInstance);
+//        //  System.out.println("AppDatabase.getInstance: " + sInstance);
 //        if (sInstance == null) {
 //            sInstance = Room.databaseBuilder(
 //                    App.getInstance(),

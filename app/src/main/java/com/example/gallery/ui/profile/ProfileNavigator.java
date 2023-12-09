@@ -17,5 +17,8 @@ public interface ProfileNavigator {
 
     ProfileViewModel getmProfileViewModel() ;
 
+    void openAddImageFromDeviceActivity();
+
+
 
 }

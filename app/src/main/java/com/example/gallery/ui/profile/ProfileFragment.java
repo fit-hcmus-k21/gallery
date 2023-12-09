@@ -1,35 +1,28 @@
 package com.example.gallery.ui.profile;
 
+
 import android.content.Intent;
 
 import androidx.annotation.NonNull;
 
 import android.os.Bundle;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 
-import androidx.databinding.DataBindingUtil;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
+
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.gallery.App;
 import com.example.gallery.BR;
 import com.example.gallery.R;
-import com.example.gallery.data.local.prefs.AppPreferencesHelper;
-import com.example.gallery.data.models.db.Album;
-import com.example.gallery.data.models.db.MediaItem;
-import com.example.gallery.data.repositories.models.Repository.MediaItemRepository;
-import com.example.gallery.data.repositories.models.Repository.UserRepository;
-import com.example.gallery.data.repositories.models.ViewModel.AlbumViewModel;
-import com.example.gallery.data.repositories.models.ViewModel.UserViewModel;
+
 import com.example.gallery.databinding.ProfileBinding;
 import com.example.gallery.ui.base.BaseFragment;
+import com.example.gallery.ui.custom.AddImageFromDevice;
 import com.example.gallery.ui.login.LoginActivity;
 
-import java.util.List;
 
 import javax.annotation.Nullable;
 
@@ -75,14 +68,14 @@ public class ProfileFragment extends BaseFragment<ProfileBinding, ProfileViewMod
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        System.out.println("On created view : " + mProfileBinding);
+        //  System.out.println("On created view : " + mProfileBinding);
 
 //        ------------------------------
-        System.out.println("mViewModel: " + mViewModel);
+        //  System.out.println("mViewModel: " + mViewModel);
         mViewModel.getNumberOfImages().observe(getViewLifecycleOwner(), new androidx.lifecycle.Observer<Integer>() {
             @Override
             public void onChanged(Integer integer) {
-                System.out.println("ProfileFragment 86: " + integer);
+                //  System.out.println("ProfileFragment 86: " + integer);
                 mProfileBinding.txtNumImg.setText("Number of images: " + integer);
             }
         });
@@ -90,8 +83,17 @@ public class ProfileFragment extends BaseFragment<ProfileBinding, ProfileViewMod
         mViewModel.getNumberOfAlbums().observe(getViewLifecycleOwner(), new androidx.lifecycle.Observer<Integer>() {
             @Override
             public void onChanged(Integer integer) {
-                System.out.println("ProfileFragment 86: " + integer);
+                //  System.out.println("ProfileFragment 86: " + integer);
                 mProfileBinding.txtNumAlbum.setText("Number of albums: " + integer);
+            }
+        });
+
+
+        mViewModel.getUser().observe(getViewLifecycleOwner(), new androidx.lifecycle.Observer<com.example.gallery.data.models.db.User>() {
+            @Override
+            public void onChanged(com.example.gallery.data.models.db.User user) {
+                //  System.out.println("ProfileFragment 86: " + integer);
+                System.out.println("User : " + user);
             }
         });
 
@@ -111,23 +113,23 @@ public class ProfileFragment extends BaseFragment<ProfileBinding, ProfileViewMod
 
         super.onCreateView(inflater, container, savedInstanceState);
         mProfileBinding = getViewDataBinding();
-        System.out.println("ProfileBinding 57: " + mProfileBinding);
+        //  System.out.println("ProfileBinding 57: " + mProfileBinding);
 
 
         // Inside ProfileActivity
         mViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
 
         if (mViewModel != null) {
-            System.out.println("ProfileActivity: " +  "mViewModel is not null: " + mViewModel);
+            //  System.out.println("ProfileActivity: " +  "mViewModel is not null: " + mViewModel);
             mViewModel.setNavigator(this);
 
         } else {
             // print to log
-            System.out.println("ProfileActivity:" + " mViewModel is null");
+            //  System.out.println("ProfileActivity:" + " mViewModel is null");
 
         }
 
-        System.out.println("ProfileBinding: " + mProfileBinding);
+        //  System.out.println("ProfileBinding: " + mProfileBinding);
 
         mProfileBinding.setViewModel(mViewModel);
 
@@ -151,6 +153,21 @@ public class ProfileFragment extends BaseFragment<ProfileBinding, ProfileViewMod
 
 //---------------------------
 
+    private static final int REQUEST_IMAGE_PICK = 1;
+    @Override
+    public void openAddImageFromDeviceActivity() {
+        System.out.println("openAddImageFromDeviceActivity");
+        Intent intent = new Intent(getActivity(), AddImageFromDevice.class);
+        startActivityForResult(intent, REQUEST_IMAGE_PICK);
+
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        // Xử lý kết quả từ AddImageFromDevice ở đây
+    }
 
 
 }

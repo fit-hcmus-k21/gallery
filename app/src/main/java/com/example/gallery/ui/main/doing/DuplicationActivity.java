@@ -53,7 +53,7 @@ public class DuplicationActivity extends AppCompatActivity implements View.OnCli
     @SuppressLint("MissingInflatedId")
     @Override
     public void onCreate(Bundle saveInstanceState){
-        System.out.println("DuplicationActivity 001: onCreate");
+        //  System.out.println("DuplicationActivity 001: onCreate");
         super.onCreate(saveInstanceState);
         setContentView(R.layout.duplicate_screen);
 
@@ -101,9 +101,9 @@ public class DuplicationActivity extends AppCompatActivity implements View.OnCli
 
                 //get similar photos
                 for(int i = 0 ; i < mediaItemGroupToSort.size(); ++i){
-                    System.out.println("Bitmap 112 | Duplication | " + i);
+                    //  System.out.println("Bitmap 112 | Duplication | " + i);
                     newList.add(find(mediaItemGroupToSort.get(dateListString.get(i))));
-                    System.out.println("Bitmap 114 | Duplication | " + i);
+                    //  System.out.println("Bitmap 114 | Duplication | " + i);
 
                 }
 
@@ -112,7 +112,7 @@ public class DuplicationActivity extends AppCompatActivity implements View.OnCli
                 //after get all similar photo
                 int run = 0;
                 for(int i = 0; i < newList.size(); ++i,++run){
-                    System.out.println(run +"---" + i);
+                    //  System.out.println(run +"---" + i);
 
                     if(newList.get(i).isEmpty()){
                         mediaItemGroupToSort.remove(dateListString.get(run));
@@ -167,7 +167,7 @@ public class DuplicationActivity extends AppCompatActivity implements View.OnCli
 
     // ----------------------------------------
     public List<MediaItem> find(List<MediaItem> photos){
-//        // tính giá trị finger
+
         List<MediaItem> temp = new ArrayList<>(photos);
         List<Long> fingerValues = CalculateFingerValue(photos);
         List<MediaItem> output = new ArrayList<>();                 // lưa danh sách ảnh trùng sau khi check
@@ -177,9 +177,10 @@ public class DuplicationActivity extends AppCompatActivity implements View.OnCli
             while(j < temp.size()){
                 int dist = 0;
                 try {
-                dist = hamDist(fingerValues.get(i),fingerValues.get(j));
+                    dist = hamDist(fingerValues.get(i),fingerValues.get(j));
                 }catch (Exception e){
                     System.out.println("Bitmap 203 | Duplication | " + e);
+
                 }
                 if(dist < 10){
                     if(check == false){
@@ -199,40 +200,13 @@ public class DuplicationActivity extends AppCompatActivity implements View.OnCli
         }
         return output;
 //        --------------------------------------------
-        // tính giá trị finger
-//        List<MediaItem> temp = new ArrayList<>(photos);
-//        List<Long> fingerValues = CalculateFingerValue(photos);
-//        List<MediaItem> output = new ArrayList<>(); // lưa danh sách ảnh trùng sau khi check
-//
-//        for (int i = 0; i < temp.size() - 1; ++i) {
-//            boolean check = false;
-//
-//            for (int j = i + 1; j < temp.size(); ++j) {
-//                try {
-//                    int dist = hamDist(fingerValues.get(i), fingerValues.get(j));
-//
-//                    if (dist < 10) {
-//                        if (!check) {
-//                            output.add(temp.get(i));
-//                            check = true;
-//                        }
-//
-//                        output.add(temp.get(j));
-//                        System.out.println("Bitmap 229 | Duplication | " + temp.get(j));
-//                    }
-//                } catch (Exception e) {
-//                    System.out.println("Bitmap 232 | Duplication | " + e);
-//                }
-//            }
-//        }
-//
-//        return output;
+
     }
     public List<Long> CalculateFingerValue(List<MediaItem> photos){
 
         List<Long> finger = new ArrayList<>();
         float scaleW, scaleH;
-        System.out.println("Bitmap 203 | Duplication | " + photos.size());
+        //  System.out.println("Bitmap 203 | Duplication | " + photos.size());
         for(int i = 0 ; i < photos.size(); ++i){
             MediaItem photo = photos.get(i);
 //            Bitmap bitmap = MediaStore.Images.Thumbnails.getThumbnail(DuplicationActivity.this.getContentResolver(),photo.getId(),MediaStore.Images.Thumbnails.MICRO_KIND,null);
@@ -245,7 +219,7 @@ public class DuplicationActivity extends AppCompatActivity implements View.OnCli
 
             // Kiểm tra xem Bitmap có được tạo thành công không
             if (bitmap != null) {
-                System.out.println("Bitmap 204 | Duplication | " + bitmap);
+                //  System.out.println("Bitmap 204 | Duplication | " + bitmap);
 
                 scaleW = 8.0f/bitmap.getWidth();
                 scaleH = 8.0f/bitmap.getHeight();
@@ -258,7 +232,7 @@ public class DuplicationActivity extends AppCompatActivity implements View.OnCli
             } else {
                 // Xử lý trường hợp không thể tạo Bitmap từ đường dẫn
                 Log.e("Error", "Unable to create Bitmap from the specified path");
-                System.out.println("Bitmap 219 | Duplication | " + bitmap);
+                //  System.out.println("Bitmap 219 | Duplication | " + bitmap);
             }
 
 

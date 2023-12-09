@@ -19,7 +19,9 @@
                         android:layout_height="match_parent"
                         android:padding="6dp">
 
-            <Button
+            <com.google.android.material.button.MaterialButton
+                style="?attr/materialButtonOutlinedStyle"
+
                 android:id="@+id/btnAddFromDevice"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -30,19 +32,6 @@
 
                 />
 
-<!--            <Button-->
-<!--                android:id="@+id/btnAddFromCamera"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_below="@id/btnAddFromDevice"-->
-<!--                android:layout_marginTop="6dp"-->
-<!--                android:layout_marginBottom="16dp"-->
-<!--                android:text="Take a photo"-->
-
-<!--                android:backgroundTint="#C6E2FF"-->
-
-<!--                android:onClick="@{()->viewModel.addImageFromCamera()}"-->
-<!--                />-->
 
             <TextView
                 android:layout_width="match_parent"
@@ -71,7 +60,9 @@
                 android:orientation="horizontal"
                 android:layout_below="@id/editTextImageUrl"
                 >
-                <Button
+                <com.google.android.material.button.MaterialButton
+                    style="?attr/materialButtonOutlinedStyle"
+
                     android:id="@+id/btnAddFromLink"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
@@ -89,7 +80,9 @@
                     android:layout_weight="1"
                     />
 
-                <Button
+                <com.google.android.material.button.MaterialButton
+                    style="?attr/materialButtonOutlinedStyle"
+
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginTop="6dp"
@@ -125,7 +118,9 @@
                 >
 
 
-                <Button
+                <com.google.android.material.button.MaterialButton
+                    style="?attr/materialButtonOutlinedStyle"
+
                     android:id="@+id/btnBackup"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -144,7 +139,9 @@
                     android:layout_weight="1"
                     />
 
-                <Button
+                <com.google.android.material.button.MaterialButton
+                    style="?attr/materialButtonOutlinedStyle"
+
                     android:id="@+id/btnSyncToRemote"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -163,7 +160,9 @@
 
 
 
-            <Button
+            <com.google.android.material.button.MaterialButton
+                style="?attr/materialButtonOutlinedStyle"
+
                 android:id="@+id/btnLogout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

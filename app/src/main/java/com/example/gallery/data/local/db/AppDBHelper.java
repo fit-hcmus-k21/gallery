@@ -44,7 +44,7 @@ public class AppDBHelper implements DBHelper {
     @Override
     public void insertUser(User user) {
         Executors.newSingleThreadExecutor().execute(() -> {
-            System.out.println("AppDBHelper.insertUser");
+            //  System.out.println("AppDBHelper.insertUser");
             mAppDatabase.userDao().insert(user);
         });
     }
@@ -62,7 +62,7 @@ public class AppDBHelper implements DBHelper {
             @Override
             public void run() {
 
-                System.out.println("AppDBHelper.insertAlbum: " + alb.getName());
+                //  System.out.println("AppDBHelper.insertAlbum: " + alb.getName());
                 mAppDatabase.albumDao().insert(alb);
             }
         });
@@ -86,7 +86,7 @@ public class AppDBHelper implements DBHelper {
 
     @Override
     public boolean isUserExist(String userID) {
-        System.out.println("UserRepository isUserExist");
+        //  System.out.println("UserRepository isUserExist");
 
         ExecutorService executorService = Executors.newSingleThreadExecutor();
 

@@ -3,12 +3,12 @@
         android:id="@+id/btnFlipAndRotate"
         android:enabled="true"
         android:icon="@drawable/baseline_crop_rotate_24"
-        android:title="Flip"/>
+        android:title="Rotate"/>
     <item
         android:id="@+id/btnDraw"
         android:enabled="true"
         android:icon="@drawable/baseline_draw_24"
-        android:title="Rotate"/>
+        android:title="Draw"/>
     <item
         android:id="@+id/btnSharp"
         android:enabled="true"

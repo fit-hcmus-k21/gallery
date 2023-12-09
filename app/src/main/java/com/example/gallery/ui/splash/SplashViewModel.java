@@ -1,10 +1,12 @@
 package com.example.gallery.ui.splash;
 
-import android.os.AsyncTask;
 
-import com.example.gallery.App;
 import com.example.gallery.data.DataManager;
-import com.example.gallery.data.repositories.models.ViewModel.UserViewModel;
+import com.example.gallery.data.local.db.AppDBHelper;
+import com.example.gallery.data.local.prefs.AppPreferencesHelper;
+import com.example.gallery.data.models.db.User;
+import com.example.gallery.data.repositories.models.Repository.MediaItemRepository;
+import com.example.gallery.data.repositories.models.Repository.UserRepository;
 import com.example.gallery.ui.base.BaseViewModel;
 
 /**
@@ -18,7 +20,17 @@ public class SplashViewModel extends BaseViewModel<SplashNavigator> {
 
     public void startSeeding() {
         // get data from database local, if not exist, get data from server
+        if (AppDBHelper.getInstance().isUserExist(AppPreferencesHelper.getInstance().getCurrentUserId())) {
+            // TODO: nothing :))
+        } else {
+            // TODO: get data from server
 
+            // TODO: save data to database local
+            User user = new User();
+            user.setId(AppPreferencesHelper.getInstance().getCurrentUserId());
+
+            UserRepository.getInstance().insertUser(user);
+        }
 
     }
 
@@ -31,18 +43,18 @@ public class SplashViewModel extends BaseViewModel<SplashNavigator> {
 
         // check pref if exist
 
-        System.out.println("CurrentUserId() : " + getDataManager().getCurrentUserId());
-        System.out.println("CurrentUserLoggedInMode(): " + getDataManager().getCurrentUserLoggedInMode());
+        //  System.out.println("CurrentUserId() : " + getDataManager().getCurrentUserId());
+        //  System.out.println("CurrentUserLoggedInMode(): " + getDataManager().getCurrentUserLoggedInMode());
 
 
         if (getDataManager().getCurrentUserLoggedInMode() == DataManager.LoggedInMode.LOGGED_IN_MODE_LOGGED_OUT.getType()) {
-            System.out.println("Open login activity from splash");
+            //  System.out.println("Open login activity from splash");
             getNavigator().openLoginActivity();
         } else {
-            System.out.println("Start seeding from splash");
+            //  System.out.println("Start seeding from splash");
 
             startSeeding();
-            System.out.println("Open main activity from splash");
+            //  System.out.println("Open main activity from splash");
 
             getNavigator().openMainActivity();
         }

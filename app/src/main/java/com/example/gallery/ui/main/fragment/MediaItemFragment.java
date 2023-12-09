@@ -1,13 +1,25 @@
 package com.example.gallery.ui.main.fragment;
 
+import static androidx.browser.customtabs.CustomTabsClient.getPackageName;
+
+import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -15,7 +27,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,7 +38,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.example.gallery.App;
 import com.example.gallery.R;
+import com.example.gallery.data.local.prefs.AppPreferencesHelper;
 import com.example.gallery.data.models.db.MediaItem;
 
 import com.example.gallery.data.repositories.models.Repository.MediaItemRepository;
@@ -33,16 +49,20 @@ import com.example.gallery.ui.main.adapter.MainMediaItemAdapter;
 import com.example.gallery.utils.BytesToStringConverter;
 import com.example.gallery.ui.main.doing.DuplicationActivity;
 
-import java.io.Serializable;
+import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 public class MediaItemFragment extends Fragment {
 
     public static final int REQUEST_TAKE_PHOTO = 256;
     public static final int REQUEST_SIMILAR_PHOTO = 123;
+    private static final int MY_CAMERA_PERMISSION_CODE = 10001;
 
     View mView;
     private RecyclerView recyclerView;
@@ -59,6 +79,9 @@ public class MediaItemFragment extends Fragment {
     List<String> dateListString;
     HashMap<String, List<MediaItem>> mediaItemGroupByDate;
     List<MediaItem> filterData;
+    List<MediaItem> mediaItemsLíst;
+    private ActivityResultLauncher<String[]> requestPermissionLauncher;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -134,6 +157,7 @@ public class MediaItemFragment extends Fragment {
                 for(MediaItem mediaItem : filterData){
                     System.out.println("MediaItemFragment 001: onViewCreated: getAllMediaItems: onChanged: in loop");
 
+
                     mediaItem.setTypeDisplay(mCurrentType);
                 }
 
@@ -145,17 +169,30 @@ public class MediaItemFragment extends Fragment {
                 mainMediaItemAdapter.setData(filterData, mediaItemGroupByDate, dateListString); // trong adapter có hàm setData và có notifydatasetchanged
                 System.out.println("on observe : " + mediaItems.size() + " before set hash map");
 
+
                 HashMap<String, List<MediaItem>> mediaItemGroupByDate = setMediaItemGroupByDate(filterData);
 
-                System.out.println("on observe : after set hash map , before set data");
+                //  System.out.println("on observe : after set hash map , before set data");
 
 
                 mainMediaItemAdapter.setData(filterData, mediaItemGroupByDate, dateListString); // trong adapter có hàm setData và có notifydatasetchanged
 
-                System.out.println("on observe : after set hash map , after set data");
+                //  System.out.println("on observe : after set hash map , after set data");
 
 
 
+            }
+        });
+
+        // Khởi tạo ActivityResultLauncher cho yêu cầu quyền
+        requestPermissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), isGranted -> {
+            // Xử lý khi quyền được cấp hoặc không được cấp
+            if (isGranted.getOrDefault(Manifest.permission.CAMERA, false)) {
+                // Quyền CAMERA được cấp, thực hiện các thao tác liên quan
+                getPictureFromCamera();
+            } else {
+                // Quyền CAMERA không được cấp, hiển thị thông báo hoặc thực hiện các xử lý khác
+                Toast.makeText(getContext(), "Quyền CAMERA không được cấp", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -215,7 +252,8 @@ public class MediaItemFragment extends Fragment {
             onClickChangeTypeDisplay();
         }
         else if(id == R.id.camera_item){
-            takeAPickture();
+            requestCameraPermissionAndTakePhoto();
+
         }else if(id == R.id.similarPhoto){
             Intent intent = new Intent(getContext(), DuplicationActivity.class);
             startActivityForResult(intent,REQUEST_SIMILAR_PHOTO);
@@ -228,16 +266,102 @@ public class MediaItemFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-    private void takeAPickture() {
-        // Gọi intent để chụp ảnh
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        // Kiểm tra có đủ điều kiện để chụp ảnh hay không về mặt phần cứng
-        if(takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null){
-            // Gọi startActivityForResult để nhận kết quả trả về
-            startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
-        }
 
+
+    private String currentPhotoPath;
+
+
+
+    private void requestCameraPermissionAndTakePhoto() {
+
+        if (ContextCompat.checkSelfPermission(App.getInstance(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            // Yêu cầu quyền CAMERA nếu chưa có
+            requestPermissionLauncher.launch(new String[]{Manifest.permission.CAMERA});
+        } else {
+            // Quyền đã được cấp, thực hiện các thao tác liên quan
+            getPictureFromCamera();
+        }
     }
+
+
+    protected void getPictureFromCamera() {
+
+
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+
+            if (photoFile != null) {
+                Uri uri = FileProvider.getUriForFile(App.getInstance(), App.getProcessName() + ".provider", new File(photoFile.getPath()));
+
+                System.out.println("MediaItemFragment : takeAPicture: uri: " + uri);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+                System.out.println("MediaItemFragment : before startActivityForResult: ");
+
+                    startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+
+
+
+                System.out.println("MediaItemFragment : after startActivityForResult: ");
+
+            }
+        }
+    }
+
+
+
+
+
+
+    // Hàm này tạo một file để lưu ảnh
+    private File createImageFile() throws IOException {
+        System.out.println("MediaItemFragment : createImageFile: ");
+        String timeStamp = new SimpleDateFormat("yyyyMMdd", Locale.getDefault()).format(new Date());
+
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File imageFile = File.createTempFile(
+                imageFileName,
+                ".jpg",
+                storageDir
+        );
+
+        currentPhotoPath = imageFile.getAbsolutePath();
+        return imageFile;
+    }
+
+    // Hàm này xử lý kết quả trả về từ intent chụp ảnh
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        System.out.println("MediaItemFragment : onActivityResult: ");
+
+        if (requestCode == REQUEST_TAKE_PHOTO && resultCode == Activity.RESULT_OK) {
+            // Ảnh đã được chụp thành công
+            Toast.makeText(getContext(), "Chụp ảnh thành công", Toast.LENGTH_SHORT).show();
+
+            // Sử dụng currentPhotoPath để truy cập đường dẫn của ảnh
+            if (currentPhotoPath != null) {
+                // In đường dẫn ra Log (hoặc thực hiện các thao tác khác)
+                Log.d("YourFragment", "Đường dẫn ảnh đã chụp: " + currentPhotoPath);
+                MediaItem item = new MediaItem();
+                item.setUserID(AppPreferencesHelper.getInstance().getCurrentUserId());
+                item.setPath(currentPhotoPath);
+                item.setAlbumName("Camera");
+                item.setCreationDate(new Date().getTime());
+
+                MediaItemRepository.getInstance().insert(item);
+            }
+        }
+    }
+
+
+
 
     public void onClickChangeTypeDisplay(){ // Bao gồm việc thây đổi type hiển thị cho item, và đổi icon của menu, đổi thêm layoutmanager
         if(mCurrentType == MediaItem.TYPE_GRID){
@@ -266,22 +390,6 @@ public class MediaItemFragment extends Fragment {
         }
     }
 
-//    @Override
-//    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//        if(requestCode == REQUEST_TAKE_PHOTO && resultCode == getActivity().RESULT_OK){
-//            Toast.makeText(getContext(), "Take a picture success", Toast.LENGTH_SHORT).show();
-//            // Lấy dữ liệu trả về từ intent cho việc take a picture
-//            Bundle bundle = data.getExtras();
-//            // Lấy ảnh từ bundle có thể dưới dạng bitmap hoặc uri nhưng sẽ lấy uri để tiện cho việc lưu xuống
-//            Uri uri = data.getData();
-//
-//            List<Uri> uriList = new ArrayList<>();
-//            uriList.add(Uri.withAppendedPath(Uri, ));
-//
-//            // Lưu ảnh vào MediaStore.Images.Media
-//
-//    }
 
     private void showStatisticDialog(){
         List<MediaItem> list =  MediaItemRepository.getInstance().getAllMediaItems().getValue();
