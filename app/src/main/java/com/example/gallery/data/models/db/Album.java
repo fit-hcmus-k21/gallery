@@ -38,6 +38,9 @@ public class Album {
         @ColumnInfo(name = "coverPhotoPath")
         private String coverPhotoPath;
 
+        @ColumnInfo(name = "coverPhotoURL")
+        private String coverPhotoURL;
+
         @ColumnInfo(name = "userID", index = true)
         private String userID;
 
@@ -65,6 +68,14 @@ public class Album {
         }
 
         // setters and getters
+
+        public String getCoverPhotoURL() {
+                return coverPhotoURL;
+        }
+
+        public void setCoverPhotoURL(String coverPhotoURL) {
+                this.coverPhotoURL = coverPhotoURL;
+        }
 
         public int getId() {
                 return id;

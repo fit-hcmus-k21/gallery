@@ -68,75 +68,34 @@ public class RegisterViewModel extends BaseViewModel<RegisterNavigator> {
                     );
                 }
 
-//                database.getReference("users").child(mAuth.getCurrentUser().getUid()).child("fullName").setValue(fullname);
+                User user = new User();
+                user.setId(mAuth.getCurrentUser().getUid());
+                user.setFullName(fullname);
+                user.setEmail(email);
+                user.setCreationDate(new Date().getTime());
+
 
                 // Write a message to the database
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
 
-                //  System.out.println("Register: 64");
 
                 DatabaseReference usersRef = database.getReference("users");
-
-// Ghi trường "fullName" của người dùng hiện tại vào child "user_info"
-
-
-                usersRef.child(mAuth.getCurrentUser().getUid() ).child("user_info").child("fullName").setValue(fullname)
+                usersRef.child(mAuth.getCurrentUser().getUid() ).child("user_info").setValue(user)
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
                                 // Ghi dữ liệu thành công
-                                //  System.out.println("Ghi dữ liệu fullName thành công");
+                                  System.out.println("Ghi dữ liệu user_info thành công");
 
-                                // Đường dẫn đến người dùng hiện tại
-                                DatabaseReference currentUserRef = usersRef.child(mAuth.getCurrentUser().getUid());
-
-                                // Ghi trường "creationDate" của người dùng hiện tại với dd/mm/yyyyy
-                                Date date = new Date();
-                                currentUserRef.child("user_info").child("creationDate").setValue(date.toString())
-                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void aVoid) {
-                                                // Ghi dữ liệu thành công
-                                                //  System.out.println("Ghi dữ liệu creation_date thành công");
-
-                                                // Ghi trường "email" của người dùng hiện tại
-                                                currentUserRef.child("user_info").child("email").setValue(email)
-                                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                            @Override
-                                                            public void onSuccess(Void aVoid) {
-                                                                // Ghi dữ liệu thành công
-                                                                //  System.out.println("Ghi dữ liệu email thành công");
-
-                                                            }
-                                                        })
-                                                        .addOnFailureListener(new OnFailureListener() {
-                                                            @Override
-                                                            public void onFailure(@NonNull Exception e) {
-                                                                // Xử lý lỗi
-                                                                //  System.out.println("Xử lý lỗi khi ghi dữ liệu email" + e.toString());
-                                                            }
-                                                        });
-
-                                            }
-                                        })
-                                        .addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                // Xử lý lỗi
-                                                //  System.out.println("Xử lý lỗi khi ghi dữ liệu creationDate" + e.toString());
-                                            }
-                                        });
                             }
                         })
                         .addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
                                 // Xử lý lỗi
-                                //  System.out.println("Xử lý lỗi khi ghi dữ liệu fullName" + e.toString());
+                                  System.out.println("Xử lý lỗi khi ghi dữ liệu user_info" + e.toString());
                             }
                         });
-
-
 
 //                set logged in mode in prefs, userID
                 getDataManager().setCurrentUserId(mAuth.getCurrentUser().getUid());
@@ -145,13 +104,6 @@ public class RegisterViewModel extends BaseViewModel<RegisterNavigator> {
                 getDataManager().setCurrentUserEmail(email);
 
                 // insert user, default albums  to room/
-                User user = new User();
-                user.setId(mAuth.getCurrentUser().getUid());
-                user.setFullName(fullname);
-                user.setEmail(email);
-
-
-
                 Executors.newSingleThreadExecutor().execute(new Runnable() {
                     @Override
                     public void run() {
@@ -169,12 +121,6 @@ public class RegisterViewModel extends BaseViewModel<RegisterNavigator> {
                         });
                     }
                 });
-
-
-
-
-
-
 
                 setIsLoading(true);
                 getNavigator().openMainActivity();

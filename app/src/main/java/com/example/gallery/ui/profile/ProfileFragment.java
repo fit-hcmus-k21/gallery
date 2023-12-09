@@ -88,6 +88,15 @@ public class ProfileFragment extends BaseFragment<ProfileBinding, ProfileViewMod
             }
         });
 
+
+        mViewModel.getUser().observe(getViewLifecycleOwner(), new androidx.lifecycle.Observer<com.example.gallery.data.models.db.User>() {
+            @Override
+            public void onChanged(com.example.gallery.data.models.db.User user) {
+                //  System.out.println("ProfileFragment 86: " + integer);
+                System.out.println("User : " + user);
+            }
+        });
+
 //        ------------------------------
 
         mProfileBinding.txtUserID.setText("Your userId: " + mViewModel.getDataManager().getCurrentUserId() + " ");

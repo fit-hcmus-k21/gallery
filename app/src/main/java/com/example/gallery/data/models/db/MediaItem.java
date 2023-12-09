@@ -77,6 +77,7 @@ public class MediaItem implements Serializable {
     @ColumnInfo(name = "description")
     private String description;
 
+    // path in local
     @ColumnInfo(name = "path")
     private String path;
 
@@ -103,6 +104,7 @@ public class MediaItem implements Serializable {
     @ColumnInfo(name = "albumName")
     private String albumName;
 
+    // url when sync to cloud storage
     @ColumnInfo(name = "url")
     private String url;
 
@@ -118,6 +120,7 @@ public class MediaItem implements Serializable {
     @ColumnInfo(name = "deletedTs") // Deleted timestamp
     private long deletedTs;
 
+    // if download through a link, origin is the link
     @ColumnInfo(name = "origin")
     private String origin;
 
