@@ -1,4 +1,6 @@
-package com.example.gallery.data.repositories.models;
+package com.example.gallery.bin;
+
+import com.example.gallery.data.repositories.models.Sound;
 
 import java.util.ArrayList;
 import java.util.HashMap;

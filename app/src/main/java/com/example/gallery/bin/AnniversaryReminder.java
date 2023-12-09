@@ -1,6 +1,8 @@
-package com.example.gallery.data.repositories.models;
+package com.example.gallery.bin;
 
 
+
+import com.example.gallery.data.models.db.MediaItem;
 
 import java.util.ArrayList;
 

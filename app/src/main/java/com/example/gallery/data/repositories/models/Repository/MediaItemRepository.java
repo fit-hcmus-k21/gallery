@@ -319,6 +319,35 @@ public class MediaItemRepository {
         return mediaItemDao.getMediaFromPath(path);
     }
 
+    public void updateMediaItemAlbum(int id, String newAlbum){
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                mediaItemDao.updateMediaItemAlbum(id,newAlbum);
+            }
+        });
+    }
+
+    public void updateMediaItemDeleteTs(int id, long newTime){
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                mediaItemDao.updateMediaItemDeleteTs(id,newTime);
+            }
+        });
+    }
+
+    public void updateMediaPreviousAlbum(int id, String previous){
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                mediaItemDao.updateMediaPreviousAlbum(id,previous);
+            }
+        });
+    }
     public void updateDeletedTs(int id, long deletedTs){
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         executorService.execute(new Runnable() {

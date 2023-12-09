@@ -34,7 +34,7 @@ import java.util.List;
 
 public class InnerAlbumScreen extends AppCompatActivity {
     RecyclerView recyclerView;
-    MediaItemAdapter mediaItemAdapter;
+    public static MediaItemAdapter mediaItemAdapter;
     MaterialToolbar topAppBar;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

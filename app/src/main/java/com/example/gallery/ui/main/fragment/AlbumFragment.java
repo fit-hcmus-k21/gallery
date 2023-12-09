@@ -1,5 +1,6 @@
 package com.example.gallery.ui.main.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -26,7 +27,9 @@ import com.example.gallery.R;
 import com.example.gallery.data.models.db.Album;
 import com.example.gallery.data.repositories.models.Repository.AlbumRepository;
 import com.example.gallery.ui.main.adapter.AlbumAdapter;
+import com.example.gallery.ui.main.doing.DeleteActivity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class AlbumFragment extends Fragment {
@@ -36,6 +39,7 @@ public class AlbumFragment extends Fragment {
     private RecyclerView recyclerView;
     private  AlbumAdapter albumAdapter;
     private Menu mMenu;
+    LinearLayout deleteAlbum;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -61,6 +65,7 @@ public class AlbumFragment extends Fragment {
 
         // Ánh xạ các biến
         recyclerView = view.findViewById(R.id.rcv_album_item);
+        deleteAlbum = view.findViewById(R.id.albumDelete);
 
         // Xử lý RecyclerView GridManager
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
@@ -83,7 +88,20 @@ public class AlbumFragment extends Fragment {
         AlbumRepository.getInstance().getAlbums().observe(getViewLifecycleOwner(), new Observer<List<Album>>() {
             @Override
             public void onChanged(List<Album> albums) {
-                albumAdapter.setData(albums);
+                List<Album> data = new ArrayList<>();
+                for(Album iterator : albums)
+                    if(!iterator.getName().equals("Bin"))
+                        data.add(iterator);
+                albumAdapter.setData(data);
+            }
+        });
+
+        //xử lý sự kiện chọn album delete
+        deleteAlbum.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), DeleteActivity.class);
+                startActivity(intent);
             }
         });
 

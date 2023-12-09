@@ -70,6 +70,19 @@ public class MediaItemViewModel extends AndroidViewModel {
     public void clearRecycleBinItemWithId(int id) {
         mediaItemRepository.clearRecycleBinItemWithId(id);
     }
+
+    public void updateMediaItemAlbum(int id, String newAlbum){
+        mediaItemRepository.updateMediaItemAlbum(id,newAlbum);
+    }
+
+    public void updateMediaItemDeleteTs(int id, long newTime){
+        mediaItemRepository.updateMediaItemDeleteTs(id,newTime);
+    }
+
+    public void updateMediaPreviousAlbum(int id, String previous){
+        mediaItemRepository.updateMediaPreviousAlbum(id, previous);
+    }
+
     public void updateMediaItemDescription(int id, String description) {
         mediaItemRepository.updateMediaItemDescription(id, description);
     }

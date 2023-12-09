@@ -1,41 +1,52 @@
-<?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             tools:context=".ui.main.fragment.MediaItemFragment"
-             android:orientation="vertical">
+<androidx.coordinatorlayout.widget.CoordinatorLayout android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".ui.main.fragment.MediaItemFragment"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
-   <!-- Your existing layout -->
 
-   <com.google.android.material.appbar.AppBarLayout
+   <LinearLayout
        android:layout_width="match_parent"
-       android:layout_height="wrap_content"
-       android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-       android:paddingBottom="10dp">
+       android:layout_height="match_parent"
+       android:orientation="vertical">
 
-      <androidx.appcompat.widget.Toolbar
-          android:id="@+id/toolbar_media_item"
+
+      <com.google.android.material.appbar.AppBarLayout
           android:layout_width="match_parent"
-          android:layout_height="?attr/actionBarSize"
-          android:background="@color/purple_700"
-          android:theme="@style/ThemeOverlay.AppCompat.Light"
-          />
-   </com.google.android.material.appbar.AppBarLayout>
+          android:layout_height="wrap_content"
+          android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+          android:paddingBottom="10dp">
 
-   <androidx.recyclerview.widget.RecyclerView
-       android:id="@+id/rcv_media_item"
-       android:layout_width="match_parent"
-       android:layout_height="wrap_content"
-       android:layout_marginStart="10dp"
-       android:layout_marginBottom="10dp" />
 
-   <!-- Progress bar to show loading indicator, initially invisible -->
-   <ProgressBar
-       android:id="@+id/fragment_main_progressBar"
+         <androidx.appcompat.widget.Toolbar
+             android:id="@+id/toolbar_media_item"
+             android:layout_width="match_parent"
+             android:layout_height="?attr/actionBarSize"
+             android:background="@color/purple_700"
+             app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+      </com.google.android.material.appbar.AppBarLayout>
+
+      <androidx.recyclerview.widget.RecyclerView
+          android:id="@+id/rcv_media_item"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="10dp"
+          android:layout_marginBottom="10dp" />
+
+   </LinearLayout>
+
+   <!-- Floating button -->
+   <com.google.android.material.floatingactionbutton.FloatingActionButton
+       android:id="@+id/floating_action_button"
        android:layout_width="wrap_content"
        android:layout_height="wrap_content"
-       android:layout_gravity="center"
-       android:visibility="gone"
-       style="?android:attr/progressBarStyle" />
-</FrameLayout>
+       android:layout_gravity="bottom|end"
+       android:elevation="100dp"
+       android:layout_margin="16dp"
+       android:contentDescription="Add media item"
+       app:srcCompat="@drawable/baseline_add_24"/>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+

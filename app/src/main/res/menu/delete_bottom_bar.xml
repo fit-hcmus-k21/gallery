@@ -1,0 +1,13 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/btnRestore"
+        android:enabled="true"
+        android:icon="@drawable/baseline_settings_backup_restore_24"
+        android:title="Restore"/>
+    <item
+        android:id="@+id/btnDelete"
+        android:enabled="true"
+        android:icon="@drawable/baseline_trash_can_svgrepo_com"
+        android:title="Delete"/>
+
+</menu>

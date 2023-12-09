@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginTop="10dp"
+    android:layout_marginEnd="10dp">
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="20dp">
+
+    <ImageView
+        android:id="@+id/delete_photo"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/icon_25"
+        />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:text="dfdfd"
+            android:layout_marginTop="100dp"
+            android:id="@+id/delete_date"
+            android:textColor="@color/black"
+            android:background="@drawable/linear_background"
+            android:gravity="center|bottom"/>
+
+    </androidx.cardview.widget.CardView>
+
+</FrameLayout>

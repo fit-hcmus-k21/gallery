@@ -353,12 +353,16 @@ public class DuplicationActivity extends AppCompatActivity implements View.OnCli
                         //remove trong firstdata
                         int pos = firstData.lastIndexOf(deleteItem);
                         firstData.remove(pos);
-                        //xóa trong database(đưa vào thùng rác) ****
+                        //xóa trong database(đưa vào thùng rác)
+                        MediaItemRepository.getInstance().updateMediaPreviousAlbum(deleteItem.getId(),deleteItem.getAlbumName());
+                        MediaItemRepository.getInstance().updateMediaItemAlbum(deleteItem.getId(),"Bin");
+                        deleteItem.setPreviousAlbum(deleteItem.getName());
                         deleteItem.setAlbumName("Bin");
-                        //set deletetime  ****
+                        //set deletetime
                         Calendar calendar = Calendar.getInstance();
                         long currentDate = calendar.getTimeInMillis();
                         deleteItem.setDeletedTs(currentDate);
+                        MediaItemRepository.getInstance().updateMediaItemDeleteTs(deleteItem.getId(),currentDate);
                         --j;
                     }
                 }

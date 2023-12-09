@@ -8,10 +8,10 @@ import java.util.HashMap;
 
 public class AlbumManager {
     // attributes
-    private HashMap<String, Album> defaultAlbums; // favorite, from zalo, facebook, messenger, instagram, camera, download
-    private SecureAlbum secureAlbum;
-    private BinAlbum binAlbum;
-    private HashMap<String, Album> customAlbum;
+    private HashMap<String, com.example.gallery.data.repositories.models.Album> defaultAlbums; // favorite, from zalo, facebook, messenger, instagram, camera, download
+    private com.example.gallery.data.repositories.models.SecureAlbum secureAlbum;
+    private com.example.gallery.data.repositories.models.BinAlbum binAlbum;
+    private HashMap<String, com.example.gallery.data.repositories.models.Album> customAlbum;
 
     // constructors
 
@@ -19,7 +19,7 @@ public class AlbumManager {
         // default constructor
     }
 
-    public AlbumManager(HashMap<String, Album> defaultAlbums, SecureAlbum secureAlbum, BinAlbum binAlbum, HashMap<String, Album> customAlbum) {
+    public AlbumManager(HashMap<String, com.example.gallery.data.repositories.models.Album> defaultAlbums, com.example.gallery.data.repositories.models.SecureAlbum secureAlbum, com.example.gallery.data.repositories.models.BinAlbum binAlbum, HashMap<String, com.example.gallery.data.repositories.models.Album> customAlbum) {
         this.defaultAlbums = defaultAlbums;
         this.secureAlbum = secureAlbum;
         this.binAlbum = binAlbum;
@@ -29,38 +29,38 @@ public class AlbumManager {
 
     // setters
 
-    public void setDefaultAlbums(HashMap<String, Album> defaultAlbums) {
+    public void setDefaultAlbums(HashMap<String, com.example.gallery.data.repositories.models.Album> defaultAlbums) {
         this.defaultAlbums = defaultAlbums;
     }
 
-    public void setSecureAlbum(SecureAlbum secureAlbum) {
+    public void setSecureAlbum(com.example.gallery.data.repositories.models.SecureAlbum secureAlbum) {
         this.secureAlbum = secureAlbum;
     }
 
-    public void setBinAlbum(BinAlbum binAlbum) {
+    public void setBinAlbum(com.example.gallery.data.repositories.models.BinAlbum binAlbum) {
         this.binAlbum = binAlbum;
     }
 
-    public void setCustomAlbum(HashMap<String, Album> customAlbum) {
+    public void setCustomAlbum(HashMap<String, com.example.gallery.data.repositories.models.Album> customAlbum) {
         this.customAlbum = customAlbum;
     }
 
 
     // getters
 
-    public HashMap<String, Album> getDefaultAlbums() {
+    public HashMap<String, com.example.gallery.data.repositories.models.Album> getDefaultAlbums() {
         return defaultAlbums;
     }
 
-    public SecureAlbum getSecureAlbum() {
+    public com.example.gallery.data.repositories.models.SecureAlbum getSecureAlbum() {
         return secureAlbum;
     }
 
-    public BinAlbum getBinAlbum() {
+    public com.example.gallery.data.repositories.models.BinAlbum getBinAlbum() {
         return binAlbum;
     }
 
-    public HashMap<String, Album> getCustomAlbum() {
+    public HashMap<String, com.example.gallery.data.repositories.models.Album> getCustomAlbum() {
         return customAlbum;
     }
 
@@ -68,7 +68,7 @@ public class AlbumManager {
     // other methods
 
     // add custom album to album manager
-    public void addCustomAlbum(Album item) {
+    public void addCustomAlbum(com.example.gallery.data.repositories.models.Album item) {
 
         // handle here
 

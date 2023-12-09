@@ -78,6 +78,7 @@ public class MediaItemFragment extends Fragment {
     StaggeredGridLayoutManager staggeredGridLayoutManager;
     List<String> dateListString;
     HashMap<String, List<MediaItem>> mediaItemGroupByDate;
+    List<MediaItem> filterData;
     List<MediaItem> mediaItemsLíst;
     private ActivityResultLauncher<String[]> requestPermissionLauncher;
 
@@ -148,27 +149,33 @@ public class MediaItemFragment extends Fragment {
                 if(mediaItems == null) {
                     return;
                 }
+                filterData = new ArrayList<>();
+                for(MediaItem iterator : mediaItems)
+                    if(!iterator.getAlbumName().equals("Bin"))
+                        filterData.add(iterator);
 
-                for(MediaItem mediaItem : mediaItems){
-                    // //  System.out.println("MediaItemFragment 001: onViewCreated: getAllMediaItems: onChanged: in loop");
+                for(MediaItem mediaItem : filterData){
+                    System.out.println("MediaItemFragment 001: onViewCreated: getAllMediaItems: onChanged: in loop");
+
 
                     mediaItem.setTypeDisplay(mCurrentType);
                 }
 
-                mediaItemGroupByDate = setMediaItemGroupByDate(mediaItems);
+                mediaItemGroupByDate = setMediaItemGroupByDate(filterData);
 
-                mediaItemsLíst = mediaItems;
+//                 mediaItemsLíst= mediaItems;
 
 
-                mainMediaItemAdapter.setData(mediaItemsLíst, mediaItemGroupByDate, dateListString); // trong adapter có hàm setData và có notifydatasetchanged
-                //  System.out.println("on observe : " + mediaItems.size() + " before set hash map");
+                mainMediaItemAdapter.setData(filterData, mediaItemGroupByDate, dateListString); // trong adapter có hàm setData và có notifydatasetchanged
+                System.out.println("on observe : " + mediaItems.size() + " before set hash map");
 
-                HashMap<String, List<MediaItem>> mediaItemGroupByDate = setMediaItemGroupByDate(mediaItems);
+
+                HashMap<String, List<MediaItem>> mediaItemGroupByDate = setMediaItemGroupByDate(filterData);
 
                 //  System.out.println("on observe : after set hash map , before set data");
 
 
-                mainMediaItemAdapter.setData(mediaItems, mediaItemGroupByDate, dateListString); // trong adapter có hàm setData và có notifydatasetchanged
+                mainMediaItemAdapter.setData(filterData, mediaItemGroupByDate, dateListString); // trong adapter có hàm setData và có notifydatasetchanged
 
                 //  System.out.println("on observe : after set hash map , after set data");
 

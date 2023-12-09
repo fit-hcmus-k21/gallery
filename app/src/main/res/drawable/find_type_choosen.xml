@@ -1,0 +1,9 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Màu trắng cho background -->
+    <item android:drawable="@android:color/black" />
+
+    <!-- Border màu đen cho bottom background -->
+    <item
+        android:bottom="2dp"
+        android:drawable="@android:color/white" />
+</layer-list>

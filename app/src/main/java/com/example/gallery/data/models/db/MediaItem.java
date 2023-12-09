@@ -123,6 +123,8 @@ public class MediaItem implements Serializable {
     // if download through a link, origin is the link
     @ColumnInfo(name = "origin")
     private String origin;
+    @ColumnInfo(name = "previousAlbum")
+    private String previousAlbum;
 
     // Add ignore attribute to display some work
 
@@ -140,6 +142,9 @@ public class MediaItem implements Serializable {
 
     // Constructor
     public MediaItem() {
+//        if (this.previousAlbum == null)
+//            this.previousAlbum = this.albumName;
+
     }
 
 
@@ -164,7 +169,12 @@ public class MediaItem implements Serializable {
         this.parentPath = parentPath;
         this.lastModified = lastModified;
         this.deletedTs = deletedTs;
+//        if (this.previousAlbum == null)
+//            this.previousAlbum = "";
     }
+
+    public String getPreviousAlbum(){return  this.previousAlbum;}
+    public void setPreviousAlbum(String name){this.previousAlbum = name;}
 
     public int getId() {
         return id;
