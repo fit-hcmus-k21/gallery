@@ -248,7 +248,7 @@ public class BackupManager {
 
     // TODO: download file from cloud storage
     private static FirebaseStorage storage = FirebaseStorage.getInstance();
-    private static StorageReference storageRef = storage.getReference().child(AppPreferencesHelper.getInstance().getCurrentUserId()).child("images");
+    private static StorageReference storageRef = storage.getReference().child(AppPreferencesHelper.getInstance().getCurrentUserId());
     public static void RestoreFile(String cloudStoragePath, String localBackupPath) {
 
         System.out.println("Cloud storage path: " + cloudStoragePath);

@@ -78,6 +78,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -336,7 +338,7 @@ public class ProfileViewModel extends BaseViewModel<ProfileNavigator> {
     public void syncToCloudStorage() {
         // TODO: upload all images, albums and user info to cloud storage
         FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageRef = storage.getReference();
+        StorageReference storageRef = storage.getReference().child(AppPreferencesHelper.getInstance().getCurrentUserId());
 
         ExecutorService executorService = Executors.newSingleThreadExecutor();
 
@@ -369,7 +371,7 @@ public class ProfileViewModel extends BaseViewModel<ProfileNavigator> {
 
 
         DatabaseReference albumRef = usersRef.child("user_data").child("albums");
-        DatabaseReference imagesRef = usersRef.child("user_data").child("media_items");
+        DatabaseReference mediaItemsRef = usersRef.child("user_data").child("media_items");
 
 
         executorService.execute(new Runnable() {
@@ -408,44 +410,90 @@ public class ProfileViewModel extends BaseViewModel<ProfileNavigator> {
                     return;
                 }
 
-
-                String userIdStr = AppPreferencesHelper.getInstance().getCurrentUserId();
+                String userId = AppPreferencesHelper.getInstance().getCurrentUserId() ;
 
                 for (MediaItem item : listItems) {
                     String id = Utils.getStoragePathFile(item.getId() + "", item.getCreationDate(), item.getFileExtension());
                     StorageReference fileRef = storageRef.child(id);
                     Uri fileUri = Uri.fromFile(new File(item.getPath()));
-                    UploadTask uploadTask = fileRef.putFile(fileUri);  // Tải lên ảnh lên Cloud Storage
-                    uploadTask.addOnSuccessListener(taskSnapshot -> {
-                        // Ảnh đã được tải lên thành công
-                        // Lấy URL của ảnh trong Cloud Storage
-                        fileRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                            String imageUrl = uri.toString();
-                            item.setUrl(imageUrl);
-                            //  lưu đường dẫn URL này trong cơ sở dữ liệu hoặc thực hiện các thao tác khác.
+//                    ------------------------
+                    // Nếu là video, sử dụng putStream
+                    if (item.getFileExtension().equalsIgnoreCase("mp4")) {
+                        try {
+                            InputStream inputStream = new FileInputStream(new File(item.getPath()));
+                            UploadTask uploadTask = fileRef.putStream(inputStream);
 
-                            imagesRef.child(item.getId() + "").setValue(item)
-                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
-                                            // Ghi dữ liệu thành công
-                                            System.out.println("đồng bộ và ghi dữ liệu thành công | mediaItems");
-                                        }
-                                    })
-                                    .addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            // Xử lý lỗi
-                                            System.out.println("Có lỗi khi đồng bộ và ghi dữ liệu | mediaItems " + e.toString());
-                                        }
-                                    });
+                            // Tiếp tục xử lý tương tự như cho ảnh
+                            uploadTask.addOnSuccessListener(taskSnapshot -> {
+                                // ...
+                                fileRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                                    String videoUrl = uri.toString();
+                                    item.setUrl(videoUrl);
+                                    //  lưu đường dẫn URL này trong cơ sở dữ liệu hoặc thực hiện các thao tác khác.
+
+                                    mediaItemsRef.child(item.getId() + "").setValue(item)
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    // Ghi dữ liệu thành công
+                                                    System.out.println("đồng bộ và ghi dữ liệu thành công | mediaItems");
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    // Xử lý lỗi
+                                                    System.out.println("Có lỗi khi đồng bộ và ghi dữ liệu | mediaItems " + e.toString());
+                                                }
+                                            });
+
+                            }).addOnFailureListener(exception -> {
+                                // ...
+                                    System.out.println("Error when upload video to cloud storage " + exception.getMessage());
+                            });
+                            });
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        // Nếu là ảnh, sử dụng putFile
+                        UploadTask uploadTask = fileRef.putFile(fileUri);  // Tải lên ảnh lên Cloud Storage
+                        uploadTask.addOnSuccessListener(taskSnapshot -> {
+                            // Ảnh đã được tải lên thành công
+                            // Lấy URL của ảnh trong Cloud Storage
+                            fileRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                                String imageUrl = uri.toString();
+                                item.setUrl(imageUrl);
+                                //  lưu đường dẫn URL này trong cơ sở dữ liệu hoặc thực hiện các thao tác khác.
+
+                                mediaItemsRef.child(item.getId() + "").setValue(item)
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                // Ghi dữ liệu thành công
+                                                System.out.println("đồng bộ và ghi dữ liệu thành công | mediaItems");
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                // Xử lý lỗi
+                                                System.out.println("Có lỗi khi đồng bộ và ghi dữ liệu | mediaItems " + e.toString());
+                                            }
+                                        });
 
 
+                            });
+                        }).addOnFailureListener(exception -> {
+                            // Xử lý lỗi khi tải ảnh lên
+                            System.out.println("Error when upload image to cloud storage " + exception.getMessage());
                         });
-                    }).addOnFailureListener(exception -> {
-                        // Xử lý lỗi khi tải ảnh lên
-                        System.out.println("Error when upload image to cloud storage " + exception.getMessage());
-                    });
+                    }
+
+//                    ------------------------
+
+
+
                 }
                 System.out.println("Đã đồng bộ và ghi dữ liệu xong | images");
             }

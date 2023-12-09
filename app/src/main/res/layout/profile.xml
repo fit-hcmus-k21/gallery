@@ -110,71 +110,150 @@
                 android:visibility="gone"
                 />
 
+<!--            <LinearLayout-->
+<!--                android:id="@+id/LinearLayoutSyncAndBackup"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:orientation="vertical"-->
+<!--                android:layout_below="@id/imageViewDownloaded"-->
+<!--                >-->
+
+<!--                <com.google.android.material.button.MaterialButton-->
+<!--                    style="?attr/materialButtonOutlinedStyle"-->
+
+<!--                    android:id="@+id/btnSyncToRemote"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="Sync Data"-->
+<!--                    android:layout_marginTop="6dp"-->
+<!--                    android:layout_marginBottom="6dp"-->
+<!--                    android:backgroundTint="#C6EF"-->
+<!--                    android:layout_weight="1"-->
+
+<!--                    android:onClick="@{()->viewModel.syncToCloudStorage()}"-->
+<!--                    />-->
+
+
+<!--                <TextView-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="match_parent"-->
+<!--                    android:layout_weight="1"-->
+<!--                    />-->
+
+<!--                <com.google.android.material.button.MaterialButton-->
+<!--                    style="?attr/materialButtonOutlinedStyle"-->
+
+<!--                    android:id="@+id/btnBackup"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="Restore "-->
+<!--                    android:layout_marginTop="6dp"-->
+<!--                    android:layout_marginBottom="6dp"-->
+<!--                    android:backgroundTint="#C6E"-->
+<!--                    android:layout_weight="1"-->
+
+<!--                    android:onClick="@{()->viewModel.backup()}"-->
+<!--                    />-->
+
+
+
+
+
+
+<!--            </LinearLayout>-->
+
             <LinearLayout
                 android:id="@+id/LinearLayoutSyncAndBackup"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_below="@id/imageViewDownloaded"
-                >
+                android:orientation="vertical"
+                android:layout_below="@id/imageViewDownloaded">
 
-
+                <!-- Sync Button -->
                 <com.google.android.material.button.MaterialButton
                     style="?attr/materialButtonOutlinedStyle"
-
-                    android:id="@+id/btnBackup"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Backup"
-                    android:layout_marginTop="6dp"
-                    android:layout_marginBottom="6dp"
-                    android:backgroundTint="#C6E"
-                    android:layout_weight="1"
-
-                    android:onClick="@{()->viewModel.backup()}"
-                    />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    />
-
-                <com.google.android.material.button.MaterialButton
-                    style="?attr/materialButtonOutlinedStyle"
-
                     android:id="@+id/btnSyncToRemote"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Sync "
+                    android:text="Sync Data"
                     android:layout_marginTop="6dp"
                     android:layout_marginBottom="6dp"
                     android:backgroundTint="#C6EF"
                     android:layout_weight="1"
-
                     android:onClick="@{()->viewModel.syncToCloudStorage()}"
                     />
 
+                <!-- Sync ProgressBar and TextView -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:visibility="gone"
 
+                    >
+
+                    <SeekBar
+                        android:id="@+id/seekBarSync"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="4"
+                        android:visibility="visible"/>
+
+                    <TextView
+                        android:id="@+id/textViewSyncProgress"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:visibility="visible"
+                        android:hint="12/39"
+                        android:layout_marginStart="8dp"
+                        />
+                </LinearLayout>
+
+
+                <!-- Restore Button -->
+                <com.google.android.material.button.MaterialButton
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:id="@+id/btnBackup"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Restore"
+                    android:layout_marginTop="6dp"
+                    android:layout_marginBottom="6dp"
+                    android:backgroundTint="#C6E"
+                    android:layout_weight="1"
+                    android:onClick="@{()->viewModel.backup()}"
+                    />
+
+                <!-- Restore ProgressBar and TextView -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:visibility="gone"
+                    >
+
+                    <SeekBar
+                        android:id="@+id/progressBarRestore"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="4"
+                        android:visibility="visible"/>
+
+                    <TextView
+                        android:id="@+id/textViewRestoreProgress"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:visibility="visible"
+                        android:hint="22/100"
+                        android:layout_marginStart="8dp"
+                        />
+                </LinearLayout>
 
             </LinearLayout>
 
 
-
-            <com.google.android.material.button.MaterialButton
-                style="?attr/materialButtonOutlinedStyle"
-
-                android:id="@+id/btnLogout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Logout"
-                android:layout_below="@id/LinearLayoutSyncAndBackup"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
-                android:backgroundTint="#C6E2FF"
-
-                android:onClick="@{()->viewModel.logout()}"
-                />
 
 
             <TextView
@@ -184,7 +263,7 @@
                 android:textSize="20sp"
                 android:layout_marginTop="6dp"
                 android:id="@+id/txtName"
-                android:layout_below="@id/btnLogout"
+                android:layout_below="@id/LinearLayoutSyncAndBackup"
                 />
             <TextView
                 android:layout_width="match_parent"
@@ -194,6 +273,7 @@
                 android:layout_marginTop="6dp"
                 android:id="@+id/txtUserID"
                 android:layout_below="@id/txtName"
+                android:visibility="gone"
 
                 />
             <TextView
@@ -207,16 +287,6 @@
 
                 />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Number Images:  "
-                android:textSize="20sp"
-                android:layout_marginTop="6dp"
-                android:id="@+id/txtNumImg"
-                android:layout_below="@id/txtEmail"
-
-                />
 
             <TextView
                 android:layout_width="match_parent"
@@ -225,10 +295,37 @@
                 android:textSize="20sp"
                 android:layout_marginTop="6dp"
                 android:id="@+id/txtNumAlbum"
-                android:layout_below="@id/txtNumImg"
+                android:layout_below="@id/txtEmail"
 
                 />
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Number media items:  "
+                android:textSize="20sp"
+                android:layout_marginTop="6dp"
+                android:id="@+id/txtNumImg"
+                android:layout_below="@id/txtNumAlbum"
+
+                />
+
+            <com.google.android.material.button.MaterialButton
+                style="?attr/materialButtonOutlinedStyle"
+
+                android:id="@+id/btnLogout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Logout"
+                android:layout_below="@id/txtNumImg"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:backgroundTint="#C6E2FF"
+                android:layout_marginStart="40dp"
+                android:layout_marginEnd="40dp"
+
+                android:onClick="@{()->viewModel.logout()}"
+                />
 
 
 
