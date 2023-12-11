@@ -10,11 +10,15 @@
         android:title="Trình chiếu"
         app:showAsAction="never" />
     <item
-        android:id="@+id/setting"
-        android:title="Cài đặt Album"
+        android:id="@+id/change_name"
+        android:title="Đổi tên"
         app:showAsAction="never" />
     <item
         android:id="@+id/statistic"
         android:title="Thống kê"
         app:showAsAction="never"/>
+    <item
+        android:id="@+id/change_thumbnail"
+        android:title="Đổi ảnh bìa"
+        app:showAsAction="never" />
 </menu>

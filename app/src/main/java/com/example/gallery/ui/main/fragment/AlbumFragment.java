@@ -78,11 +78,6 @@ public class AlbumFragment extends Fragment {
         albumAdapter = new AlbumAdapter();
         recyclerView.setAdapter(albumAdapter);
 
-//        // Thêm Decorations cho RecyclerView là những đường kẻ ngang và dọc
-//        RecyclerView.ItemDecoration itemDecorationHorizontal = new DividerItemDecoration(getContext(), DividerItemDecoration.HORIZONTAL);
-//        RecyclerView.ItemDecoration itemDecorationVertical = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
-//        recyclerView.addItemDecoration(itemDecorationHorizontal);
-//        recyclerView.addItemDecoration(itemDecorationVertical);
 
         // Xử lý dữ liệu
         AlbumRepository.getInstance().getAlbums().observe(getViewLifecycleOwner(), new Observer<List<Album>>() {

@@ -80,7 +80,6 @@ public class MediaItemFragment extends Fragment {
     // 3 Layout management
     GridLayoutManager gridLayoutManager;
     LinearLayoutManager linearLayoutManager;
-    StaggeredGridLayoutManager staggeredGridLayoutManager;
     List<String> dateListString;
     HashMap<String, List<MediaItem>> mediaItemGroupByDate;
     List<MediaItem> filterData;

@@ -25,6 +25,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -402,6 +403,9 @@ public class SingleMediaActivity extends AppCompatActivity  {
 //            });
 
         }
+        else if(id == R.id.media_note_media_item){
+            showNoteDialog();
+        }
 
 
         return super.onOptionsItemSelected(item);
@@ -721,5 +725,47 @@ public class SingleMediaActivity extends AppCompatActivity  {
         startActivity(Intent.createChooser(intent, "Share this image with..."));
         //  System.out.println("Share image : 347");
 
+    }
+    private void showNoteDialog() {
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_note_media_item);
+
+        Window window = dialog.getWindow();
+
+        if(window == null){
+            return;
+        }
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        window.setGravity(Gravity.CENTER);
+        window.setAttributes(window.getAttributes());
+
+        dialog.setCancelable(true);
+
+        // Anh xa cac view
+        EditText editText = dialog.findViewById(R.id.note_media_discription);
+        Button button_save = dialog.findViewById(R.id.save_button);
+        Button button_cancel = dialog.findViewById(R.id.cancel_button);
+
+        // Set du lieu cho editText tu database voi truong description
+        editText.setText(mediaItemsList.get(currentIndex).getDescription());
+
+        button_save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String description = editText.getText().toString();
+                MediaItemRepository.getInstance().updateMediaItemDescription(mediaItemsList.get(currentIndex).getId(), description);
+                dialog.dismiss();
+            }
+        });
+        button_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
     }
 }

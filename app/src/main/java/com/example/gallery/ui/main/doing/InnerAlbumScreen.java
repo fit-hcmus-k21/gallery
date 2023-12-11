@@ -2,18 +2,28 @@ package com.example.gallery.ui.main.doing;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
+import android.util.Log;
+import android.view.Gravity;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.app.Dialog;
 
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
+import android.widget.ViewFlipper;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -21,8 +31,10 @@ import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.gallery.R;
 import com.example.gallery.data.models.db.MediaItem;
+import com.example.gallery.data.repositories.models.Repository.AlbumRepository;
 import com.example.gallery.data.repositories.models.Repository.MediaItemRepository;
 import com.example.gallery.ui.main.adapter.MediaItemAdapter;
 import com.example.gallery.utils.BytesToStringConverter;
@@ -36,6 +48,8 @@ public class InnerAlbumScreen extends AppCompatActivity {
     RecyclerView recyclerView;
     public static MediaItemAdapter mediaItemAdapter;
     MaterialToolbar topAppBar;
+    List<MediaItem> mediaItemList = new ArrayList<>();
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         //  System.out.println("InnerAlbumScreen  27: onCreate: ");
@@ -44,9 +58,14 @@ public class InnerAlbumScreen extends AppCompatActivity {
         topAppBar = findViewById(R.id.topAppBar);
 
 
-        // Khởi tạo viewModel
+        // List MediaItem in album
 
-        MaterialToolbar materialToolbar = findViewById(R.id.topAppBar);
+
+//        MaterialToolbar materialToolbar = findViewById(R.id.topAppBar);
+        //Toolbar here
+        Toolbar materialToolbar = findViewById(R.id.topAppBar);
+        setSupportActionBar(materialToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Ánh xạ các view
         recyclerView = findViewById(R.id.inner_album_recycler_view);
@@ -62,12 +81,14 @@ public class InnerAlbumScreen extends AppCompatActivity {
         // Lấy dữ liệu từ intent
         Bundle bundle = getIntent().getExtras();
         String albumName = bundle.getString("albumName");
+        String albumPath = bundle.getString("albumPath");
+//        thumbnailPath = bundle.getString("thumbnailPath");
 
         MediaItemRepository.getInstance().getAllMediaItems().observe(this, new Observer<List<MediaItem>>() {
             @Override
             public void onChanged(List<MediaItem> mediaItems) {
 
-                List<MediaItem> mediaItemList = getMediaItemsOfAlbum(mediaItems, albumName);
+                mediaItemList = getMediaItemsOfAlbum(mediaItems, albumName);
 //                Log.e("Mytag", "onChanged: " + mediaItemList.size());
                 //  System.out.println("InnerAlbumScreen  53: onChanged before set data: mediaItemList = " + mediaItems);
                 mediaItemAdapter.setData(mediaItemList);
@@ -162,13 +183,15 @@ public class InnerAlbumScreen extends AppCompatActivity {
 
                 }
                 if(item.getItemId() == R.id.slideShow){
-                    Toast.makeText(InnerAlbumScreen.this,"SLIDESHOW",Toast.LENGTH_SHORT).show();
-                    //to do nothing
+                    slideShowDialog();
                 }
-                if(item.getItemId() == R.id.setting){
+                if(item.getItemId() == R.id.change_name){
                     Toast.makeText(InnerAlbumScreen.this,"SETTING",Toast.LENGTH_SHORT).show();
 
                     //to do nothing
+                }
+                else if(item.getItemId() == R.id.change_thumbnail){
+                    chooseThumnailDialog(albumPath);
                 }
                 return true;
             }
@@ -176,17 +199,24 @@ public class InnerAlbumScreen extends AppCompatActivity {
 
     }
 
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if(item.getItemId() == android.R.id.home){
+            onBackPressed();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.top_appbar_inner_album_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+
     private List<MediaItem> getMediaItemsOfAlbum(List<MediaItem> mediaItems, String albumName) {
         List<MediaItem> result = new ArrayList<>();
 
-//        if(albumName.equals("favoritePath")){ // Không nên dùng == để so sánh chuỗi hãy dùng equals
-//            for(MediaItem mediaItem : mediaItems){
-//                if(mediaItem.isFavorite()){
-//                    result.add(mediaItem);
-//                    Log.e("Mytag", "getMediaItemsOfAlbum: " + mediaItem.getName());
-//                }
-//            }
-//        }
         {
             for(MediaItem mediaItem : mediaItems){
                 if(mediaItem.getAlbumName().equals(albumName)){
@@ -221,5 +251,80 @@ public class InnerAlbumScreen extends AppCompatActivity {
 
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
+    }
+    private void slideShowDialog() {
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_slideshow);
+
+        Window window = dialog.getWindow();
+
+        if(window == null){
+            return;
+        }
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        window.setGravity(Gravity.TOP);
+        window.setAttributes(window.getAttributes());
+
+        dialog.setCancelable(true);
+
+        // Ánh xạ các view
+        ViewFlipper viewFlipper = dialog.findViewById(R.id.view_flipper);
+
+        for(MediaItem mediaItem : mediaItemList){
+            ImageView imageView = new ImageView(this);
+            Glide.with(this).load(mediaItem.getPath()).into(imageView);
+            viewFlipper.addView(imageView);
+            Log.e("Mytag2", "slideShow: " + mediaItem.getPath());
+        }
+        viewFlipper.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+    }
+    public void chooseThumnailDialog(String albumPath){
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_choose_thumbnail);
+
+        Window window = dialog.getWindow();
+
+        if(window == null){
+            return;
+        }
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        window.setGravity(Gravity.TOP);
+        window.setAttributes(window.getAttributes());
+
+        dialog.setCancelable(true);
+
+        // Ánh xạ các view
+        RecyclerView rcvChooseThumbnail = dialog.findViewById(R.id.choose_thumbnail_recycler_view);
+
+        // Layoutmanager
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 3);
+        rcvChooseThumbnail.setLayoutManager(gridLayoutManager);
+
+        // Xu ly adapter
+        MediaItemAdapter mediaItemAdapter = new MediaItemAdapter();
+        mediaItemAdapter.setData(mediaItemList);
+        rcvChooseThumbnail.setAdapter(mediaItemAdapter);
+
+        mediaItemAdapter.setOnItemClickListener(new MediaItemAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(MediaItem mediaItem) {
+                String newThumbnailPath = mediaItem.getPath();
+                AlbumRepository.getInstance().updateAlbumCoverPhotoPath(albumPath, newThumbnailPath);
+                Toast.makeText(InnerAlbumScreen.this, "Đổi ảnh đại diện thành công", Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
     }
 }
