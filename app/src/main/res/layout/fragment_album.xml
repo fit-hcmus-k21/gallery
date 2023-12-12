@@ -16,10 +16,11 @@
         android:id="@+id/header">
 
         <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar_album"
+            android:id="@+id/toolbar_fragment_album"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/purple_700"
+            app:menu="@menu/top_appbar_album_menu"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
     </com.google.android.material.appbar.AppBarLayout>
 

@@ -44,6 +44,7 @@ import com.example.gallery.R;
 import com.example.gallery.data.local.prefs.AppPreferencesHelper;
 import com.example.gallery.data.models.db.MediaItem;
 
+import com.example.gallery.data.repositories.models.Repository.AlbumRepository;
 import com.example.gallery.data.repositories.models.Repository.MediaItemRepository;
 import com.example.gallery.ui.custom.AddImageFromDevice;
 import com.example.gallery.ui.main.adapter.MainMediaItemAdapter;
@@ -154,23 +155,6 @@ public class MediaItemFragment extends Fragment {
         // Adapter for recycler view
         mainMediaItemAdapter = new MainMediaItemAdapter();
         recyclerView.setAdapter(mainMediaItemAdapter);
-//        mainMediaItemAdapter.mediaItemAdapter.setOnItemClickListener(new MediaItemAdapter.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(MediaItem mediaItem) {
-//                Log.e("Mytag", "onItemClick: " + mediaItem.getPath());
-//
-////                Intent intent = new Intent(holder.imageView.getContext(), SingleMediaActivity.class);
-////
-////                Bundle bundle = new Bundle();
-////                bundle.putSerializable("listmediaitem", (ArrayList<MediaItem>)mediaItemList);
-////                bundle.putSerializable("mediaitem", mediaItem);
-////                intent.putExtras(bundle);
-////
-////                holder.imageView.getContext().startActivity(intent);
-//            }
-//        });
-
-        // check if mediaItemViewModel is null or mediaItemViewModel.getAllMediaItems() is null
 
         // Data from viewModel
         MediaItemRepository.getInstance().getAllMediaItems().observe(getViewLifecycleOwner(), new Observer<List<MediaItem>>() {
@@ -233,7 +217,8 @@ public class MediaItemFragment extends Fragment {
     private  HashMap<String, List<MediaItem>> setMediaItemGroupByDate(List<MediaItem> mediaItems) {
         HashMap<String, List<MediaItem>> result = new HashMap<>();
 
-        for(MediaItem mediaItem : mediaItems){
+        for(int i = mediaItems.size() - 1; i >= 0; i--){
+            MediaItem mediaItem = mediaItems.get(i);
             String date = new SimpleDateFormat("dd/MM/yyyy").format(mediaItem.getCreationDate());
             if(result.containsKey(date)){
                 result.get(date).add(mediaItem);
@@ -245,7 +230,6 @@ public class MediaItemFragment extends Fragment {
                 mediaItemList.add(mediaItem);
 
                 result.put(date, mediaItemList);
-
             }
         }
 
@@ -387,6 +371,10 @@ public class MediaItemFragment extends Fragment {
                 item.setPath(currentPhotoPath);
                 item.setAlbumName("Camera");
                 item.setCreationDate(new Date().getTime());
+
+                // Update thumbnail for "All" Album
+                //TODO: chưa cập nhật được lần đâu cho Camera về thumbnail
+                AlbumRepository.getInstance().updateAlbumCoverPhotoPath(AppPreferencesHelper.getInstance().getCurrentUserId(), "Camera", currentPhotoPath);
 
                 MediaItemRepository.getInstance().insert(item);
             }

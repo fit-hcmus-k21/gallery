@@ -434,4 +434,22 @@ public class MediaItemRepository {
         return mediaItemDao.getNumberOfMediaItems(AppPreferencesHelper.getInstance().getCurrentUserId());
     }
 
+    public void updateAlbumName(String oldAlbumName, String newAlbumName){
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                mediaItemDao.updateAlbumName(AppPreferencesHelper.getInstance().getCurrentUserId(), oldAlbumName, newAlbumName);
+            }
+        });
+    }
+    public LiveData<List<MediaItem>> getAllMediaItemsByAlbumName(String albumName) {
+        return mediaItemDao.getAllMediaItemsByAlbumName(AppPreferencesHelper.getInstance().getCurrentUserId(), albumName);
+    }
+    public LiveData<List<MediaItem>> getDeletedMediaItems(){
+        return mediaItemDao.getDeletedMediaItems(AppPreferencesHelper.getInstance().getCurrentUserId());
+    }
+    public LiveData<List<MediaItem>> getAllFavoriteMediaItem(String userID){
+        return mediaItemDao.getAllFavoriteMediaItem(AppPreferencesHelper.getInstance().getCurrentUserId(), true);
+    }
 }

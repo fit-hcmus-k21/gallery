@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -33,22 +34,34 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.gallery.R;
+import com.example.gallery.data.local.prefs.AppPreferencesHelper;
 import com.example.gallery.data.models.db.MediaItem;
 import com.example.gallery.data.repositories.models.Repository.AlbumRepository;
 import com.example.gallery.data.repositories.models.Repository.MediaItemRepository;
+import com.example.gallery.ui.custom.AddImageFromDevice;
 import com.example.gallery.ui.main.adapter.MediaItemAdapter;
 import com.example.gallery.utils.BytesToStringConverter;
 
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
 public class InnerAlbumScreen extends AppCompatActivity {
+    //TODO: Lướt ngược
+    private static final int REQUEST_IMAGE_PICK = 1;
+
     RecyclerView recyclerView;
     public static MediaItemAdapter mediaItemAdapter;
     MaterialToolbar topAppBar;
     List<MediaItem> mediaItemList = new ArrayList<>();
+
+    // -----------
+    private FloatingActionButton btnPickFiles;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -56,9 +69,11 @@ public class InnerAlbumScreen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.inner_album_layout);
         topAppBar = findViewById(R.id.topAppBar);
+        btnPickFiles = findViewById(R.id.floating_pick_from_device_button_in_album);
 
-
-        // List MediaItem in album
+        // Lấy dữ liệu từ intent
+        Bundle bundle = getIntent().getExtras();
+        String albumName = bundle.getString("albumName");
 
 
 //        MaterialToolbar materialToolbar = findViewById(R.id.topAppBar);
@@ -66,6 +81,7 @@ public class InnerAlbumScreen extends AppCompatActivity {
         Toolbar materialToolbar = findViewById(R.id.topAppBar);
         setSupportActionBar(materialToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Album: " + albumName);
 
         // Ánh xạ các view
         recyclerView = findViewById(R.id.inner_album_recycler_view);
@@ -78,11 +94,6 @@ public class InnerAlbumScreen extends AppCompatActivity {
         mediaItemAdapter = new MediaItemAdapter();
         recyclerView.setAdapter(mediaItemAdapter);
 
-        // Lấy dữ liệu từ intent
-        Bundle bundle = getIntent().getExtras();
-        String albumName = bundle.getString("albumName");
-        String albumPath = bundle.getString("albumPath");
-//        thumbnailPath = bundle.getString("thumbnailPath");
 
         MediaItemRepository.getInstance().getAllMediaItems().observe(this, new Observer<List<MediaItem>>() {
             @Override
@@ -104,8 +115,9 @@ public class InnerAlbumScreen extends AppCompatActivity {
                 Intent intent = new Intent(InnerAlbumScreen.this, SingleMediaActivity.class);
 
                 Bundle bundle = new Bundle();
-
+                bundle.putString("albumName", albumName);
                 bundle.putSerializable("mediaItem", mediaItem);
+
                 intent.putExtras(bundle);
 
                 startActivity(intent);
@@ -186,18 +198,32 @@ public class InnerAlbumScreen extends AppCompatActivity {
                     slideShowDialog();
                 }
                 if(item.getItemId() == R.id.change_name){
-                    Toast.makeText(InnerAlbumScreen.this,"SETTING",Toast.LENGTH_SHORT).show();
-
-                    //to do nothing
+                    showRenameDialog(albumName);
                 }
                 else if(item.getItemId() == R.id.change_thumbnail){
-                    chooseThumnailDialog(albumPath);
+                    chooseThumnailDialog(albumName);
                 }
                 return true;
             }
         });
 
+        // add event for button
+        btnPickFiles.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                System.out.println("openAddImageFromDeviceActivity");
+                Intent intent = new Intent(InnerAlbumScreen.this, AddImageFromDevice.class);
+
+                Bundle sendBundle = new Bundle();
+                sendBundle.putString("albumName", albumName);
+                intent.putExtras(sendBundle);
+
+                startActivityForResult(intent, REQUEST_IMAGE_PICK);
+
+            }
+        });
     }
+
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
@@ -216,17 +242,20 @@ public class InnerAlbumScreen extends AppCompatActivity {
 
     private List<MediaItem> getMediaItemsOfAlbum(List<MediaItem> mediaItems, String albumName) {
         List<MediaItem> result = new ArrayList<>();
-
-        {
+        if(albumName.equals("Favorite")) {
+            for(MediaItem mediaItem : mediaItems){
+                if(mediaItem.isFavorite()){
+                    result.add(mediaItem);
+                }
+            }
+        }
+        else{
             for(MediaItem mediaItem : mediaItems){
                 if(mediaItem.getAlbumName().equals(albumName)){
                     result.add(mediaItem);
                 }
             }
         }
-
-
-
         return result;
     }
     private void showStatisticDialog(){
@@ -286,7 +315,7 @@ public class InnerAlbumScreen extends AppCompatActivity {
         });
         dialog.show();
     }
-    public void chooseThumnailDialog(String albumPath){
+    public void chooseThumnailDialog(String albumName){
         final Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_choose_thumbnail);
@@ -319,9 +348,60 @@ public class InnerAlbumScreen extends AppCompatActivity {
             @Override
             public void onItemClick(MediaItem mediaItem) {
                 String newThumbnailPath = mediaItem.getPath();
-                AlbumRepository.getInstance().updateAlbumCoverPhotoPath(albumPath, newThumbnailPath);
+                AlbumRepository.getInstance().updateAlbumCoverPhotoPath(AppPreferencesHelper.getInstance().getCurrentUserId(), albumName, newThumbnailPath);
                 Toast.makeText(InnerAlbumScreen.this, "Đổi ảnh đại diện thành công", Toast.LENGTH_SHORT).show();
                 dialog.dismiss();
+            }
+        });
+
+        dialog.show();
+    }
+
+    private void showRenameDialog(String oldAlbumName) {
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_rename_album);
+
+        Window window = dialog.getWindow();
+
+        if(window == null){
+            return;
+        }
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        window.setGravity(Gravity.CENTER);
+        window.setAttributes(window.getAttributes());
+
+        dialog.setCancelable(false);
+
+        // Ánh xạ các view
+        Button btnCancel = dialog.findViewById(R.id.btn_cancel_rename_album);
+        Button btnOke = dialog.findViewById(R.id.btn_ok_rename_album);
+        EditText editText = dialog.findViewById(R.id.edt_rename_album);
+
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        btnOke.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                String newAlbumName = editText.getText().toString();
+                if(newAlbumName.isEmpty()){
+                    Toast.makeText(InnerAlbumScreen.this, "Tên album không được để trống", Toast.LENGTH_SHORT).show();
+                }
+                else{
+
+                    AlbumRepository.getInstance().updateAlbumName(AppPreferencesHelper.getInstance().getCurrentUserId(), oldAlbumName, newAlbumName);
+                    MediaItemRepository.getInstance().updateAlbumName(oldAlbumName, newAlbumName);
+
+                    dialog.dismiss();
+                    finish();
+
+                }
             }
         });
 

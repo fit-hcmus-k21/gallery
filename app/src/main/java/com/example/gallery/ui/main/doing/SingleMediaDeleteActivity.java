@@ -9,6 +9,7 @@ import android.widget.TableRow;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.viewpager2.widget.ViewPager2;
@@ -29,7 +30,6 @@ public class SingleMediaDeleteActivity extends AppCompatActivity {
     ViewPager2 deletePic;
     List<MediaItem> listMediaItem = new ArrayList<>();
     BottomNavigationView bottomNavigationView;
-    Button btnReturn;
     int currentIndex = -1;
 
     @Override
@@ -38,8 +38,15 @@ public class SingleMediaDeleteActivity extends AppCompatActivity {
         setContentView(R.layout.delete_single_media_item);
 
         deletePic = findViewById(R.id.single_photo_delete);
-        btnReturn = findViewById(R.id.btnReturn);
         bottomNavigationView = findViewById(R.id.deleteBottomNavigation);
+
+        // Toolbar
+        // Toolbar
+        Toolbar toolbar = findViewById(R.id.toolbar_in_item_deleted);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("MediaItem's deleted");
+        getSupportActionBar().setBackgroundDrawable(getResources().getDrawable(R.color.purple_700));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         //get data
         Intent intent = getIntent();
@@ -50,7 +57,7 @@ public class SingleMediaDeleteActivity extends AppCompatActivity {
         deletePic.setAdapter(viewPagerSingleMediaAdapter);
 
         final boolean[] isMoveToCurrentItem = {false};
-        MediaItemRepository.getInstance().getAllMediaItems().observe(this, new Observer<List<MediaItem>>() {
+        MediaItemRepository.getInstance().getDeletedMediaItems().observe(this, new Observer<List<MediaItem>>() {
             @Override
             public void onChanged(List<MediaItem> mediaItems) {
                 // lấy danh sách các item trong bin
@@ -124,14 +131,14 @@ public class SingleMediaDeleteActivity extends AppCompatActivity {
 
         });
 
-
-        btnReturn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-
     }
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
 
+        if(id == android.R.id.home){
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }

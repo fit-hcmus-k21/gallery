@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 
 import android.database.Cursor;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -29,6 +30,7 @@ import androidx.core.content.FileProvider;
 import com.example.gallery.App;
 import com.example.gallery.data.local.prefs.AppPreferencesHelper;
 import com.example.gallery.data.models.db.MediaItem;
+import com.example.gallery.data.repositories.models.Repository.AlbumRepository;
 import com.example.gallery.data.repositories.models.Repository.MediaItemRepository;
 
 import java.io.File;
@@ -49,11 +51,20 @@ public class AddImageFromDevice extends AppCompatActivity {
 
     private static final int REQUEST_IMAGE_PICK = 1;
     private static final int REQUEST_READ_EXTERNAL_STORAGE = 2;
+    String albumNameFromIntent = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         System.out.println("onCreate in AddImageFromDevice");
+        // --------------------
+
+        // Get album name from intent
+        Intent intent = getIntent();
+        albumNameFromIntent = intent.getStringExtra("albumName");
+
+        // --------------------
+
         openImagePicker();
     }
 
@@ -137,11 +148,28 @@ public class AddImageFromDevice extends AppCompatActivity {
                                     MediaItem item = new MediaItem();
                                     item.setCreationDate(System.currentTimeMillis());
                                     item.setUserID(AppPreferencesHelper.getInstance().getCurrentUserId());
-                                    item.setAlbumName("Videos");
+                                    item.setAlbumName( albumNameFromIntent != null && !albumNameFromIntent.isEmpty() ? albumNameFromIntent : "Videos");
                                     item.setPath(path);
                                     item.setFileExtension("mp4");
 
+//                                    /*Temp. lastmodified attributes is represent for the real creation date*/
+//                                    String realMediaItemPath = getPathFromUri(uri, 1);
+//                                    try {
+//                                        ExifInterface exifInterface = new ExifInterface(realMediaItemPath);
+//                                        String lastModified = exifInterface.getAttribute(ExifInterface.TAG_DATETIME);
+//                                        item.setLastModified(12345L);
+//                                    } catch (IOException e) {
+//                                        item.setLastModified(12345L);
+//                                        throw new RuntimeException(e);
+//
+//                                    }
+
+
                                     MediaItemRepository.getInstance().insert(item);
+
+                                    // Update thumbnail for "Videos" Album
+                                    AlbumRepository.getInstance().updateAlbumCoverPhotoPath(AppPreferencesHelper.getInstance().getCurrentUserId(), albumNameFromIntent != null && !albumNameFromIntent.isEmpty() ? albumNameFromIntent : "Videos", path);
+
                                     System.out.println("add video from device success: " + item.getPath());
                                 }
                             } else {
@@ -151,10 +179,14 @@ public class AddImageFromDevice extends AppCompatActivity {
                                     MediaItem item = new MediaItem();
                                     item.setCreationDate(System.currentTimeMillis());
                                     item.setUserID(AppPreferencesHelper.getInstance().getCurrentUserId());
-                                    item.setAlbumName("All");
+                                    item.setAlbumName(albumNameFromIntent != null && !albumNameFromIntent.isEmpty() ? albumNameFromIntent : "All");
                                     item.setPath(path);
 
                                     MediaItemRepository.getInstance().insert(item);
+
+                                    // Update thumbnail for "All" Album
+                                    AlbumRepository.getInstance().updateAlbumCoverPhotoPath(AppPreferencesHelper.getInstance().getCurrentUserId(), albumNameFromIntent != null && !albumNameFromIntent.isEmpty() ? albumNameFromIntent : "All", path);
+
                                     System.out.println("add image from device success: " + item.getPath());
                                 }
                             }
@@ -171,6 +203,8 @@ public class AddImageFromDevice extends AppCompatActivity {
                 .setMediaType(ActivityResultContracts.PickVisualMedia.ImageAndVideo.INSTANCE)
                 .build());
     }
+
+
 
     // Function to check if the selected media is a video file
     private boolean isVideoFile(Uri uri) {
@@ -297,8 +331,35 @@ public class AddImageFromDevice extends AppCompatActivity {
 
 
 //    --------------------
+    private String getPathFromUri(Uri uri, int typeMedia) {
+        String path = null;
 
+        if(typeMedia == 1){
+            // Handle image file
+            String[] projection = {MediaStore.Images.Media.DATA};
 
+            Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
+            if(cursor != null){
+                cursor.moveToFirst();
+                int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                path = cursor.getString(columnIndex);
+            }
+        }
+        else if(typeMedia == 2){
+            // Handle video file
+            String[] projection = new String[]{MediaStore.Video.Media.DATA};
+
+            Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
+            if(cursor != null){
+                cursor.moveToFirst();
+                int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
+                path = cursor.getString(columnIndex);
+            }
+        }
+        return path;
+    }
+
+//    --------------------
 
 
     // Handle the result from the permission request

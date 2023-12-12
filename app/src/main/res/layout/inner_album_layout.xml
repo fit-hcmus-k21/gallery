@@ -32,4 +32,14 @@
             android:layout_marginBottom="10dp"/>
 
     </RelativeLayout>
+    <!-- Floating button -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floating_pick_from_device_button_in_album"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:elevation="100dp"
+        android:layout_margin="16dp"
+        android:contentDescription="Add media item"
+        app:srcCompat="@drawable/baseline_add_24"/>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

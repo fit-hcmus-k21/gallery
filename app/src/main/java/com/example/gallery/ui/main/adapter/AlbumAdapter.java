@@ -61,8 +61,6 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
                 Bundle bundle = new Bundle();
 
                 bundle.putString("albumName", album.getName());
-                bundle.putString("albumPath", album.getPath());
-//                bundle.putString("thumbnailPath", album.getCoverPhotoPath());
                 //  System.out.println( "onClick album name: " + album.getName());
                 intent.putExtras(bundle);
 

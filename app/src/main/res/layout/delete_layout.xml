@@ -10,21 +10,38 @@
         android:orientation="horizontal"
         app:layout_constraintTop_toTopOf="parent"
         android:id="@+id/header">
-        <Button
-            android:layout_width="wrap_content"
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/btnReturn"
-            style="@style/Widget.Material3.Button.TextButton.Icon"
-            app:icon = "@drawable/baseline_arrow_back_ios_24"
-            />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/headerTitle"
-            android:text="Recently Deleted"
-            android:textSize="25dp"
-            android:textColor="@color/black"
-            android:paddingTop="10dp"/>
+            android:paddingBottom="10dp"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            tools:ignore="MissingConstraints">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar_deleted_activity"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/purple_700"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+        </com.google.android.material.appbar.AppBarLayout>
+<!--        <Button-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:id="@+id/btnReturn"-->
+<!--            style="@style/Widget.Material3.Button.TextButton.Icon"-->
+<!--            app:icon = "@drawable/baseline_arrow_back_ios_24"-->
+<!--            />-->
+<!--        <TextView-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:id="@+id/headerTitle"-->
+<!--            android:text="Recently Deleted"-->
+<!--            android:textSize="25dp"-->
+<!--            android:textColor="@color/black"-->
+<!--            android:background="@color/purple_700"-->
+<!--            android:paddingTop="10dp"-->
+<!--            android:textAlignment="center"/>-->
     </LinearLayout>
     <TextView
         android:layout_width="match_parent"
