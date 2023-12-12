@@ -25,6 +25,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -116,7 +117,7 @@ public class SingleMediaActivity extends AppCompatActivity  {
 
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
-
+        String albumName = bundle.getString("albumName");
         MediaItem mediaItemIntent = (MediaItem) bundle.getSerializable("mediaItem");
 
 
@@ -130,39 +131,120 @@ public class SingleMediaActivity extends AppCompatActivity  {
         // Đây là biến dạng boolen để đảm bảo rằng việc di chuyển đến item đang được chọn chỉ được thực hiện 1 lần
         // Nếu không có biến này thì khi chúng ta thực hiện thao tác thay đổi trạng thái Favorite của item đang được chọn
         // thì nó sẽ tự động di chuyển đến item mà ta đã truyền vào trước đó gây mất đồng bộ
+
         final boolean[] isMoveToCurrentItem = {false};
-        MediaItemRepository.getInstance().getAllMediaItems().observe(this, new Observer<List<MediaItem>>() {
-            @Override
-            public void onChanged(List<MediaItem> mediaItems) {
-                //  System.out.println("SingleMediaActivity | OnCreate | onChanged all media items");
 
-                mediaItemsList = mediaItems;
+        if(albumName.equals("AllMedia")){
+            MediaItemRepository.getInstance().getAllMediaItems().observe(this, new Observer<List<MediaItem>>() {
+                @Override
+                public void onChanged(List<MediaItem> mediaItems) {
+                    //  System.out.println("SingleMediaActivity | OnCreate | onChanged all media items");
 
+                    List<MediaItem> tempList = new ArrayList<>(mediaItems);
 
-                viewPagerSingleMediaAdapter.setData(mediaItems);
-                int index = GetInDexOfHelper.getIndexOf(mediaItems, mediaItemIntent);
-
-                if (!isMoveToCurrentItem[0] && index >= 0 && index < mediaItems.size()) {
-                    // Lấy dữ liệu của MediaItem đang được chọn tra về LiveData
-                    mediaItemLiveData.setValue(mediaItems.get(index));
-                    //  System.out.println("SingleMediaActivity | OnCreate | onChanged all media items | 101");
-                    //  System.out.println("SingleMediaActivity | mediaItemLiveData = " + mediaItemLiveData.getValue());
-
-                    if (!isMoveToCurrentItem[0]) {
-                        Log.e("MyTag", "onChanged: " + index);
-                        //  System.out.println("SingleMediaActivity | OnCreate | onChanged all media items | 105");
-
-                        viewPager2.setCurrentItem(index, false);
-                        //  System.out.println("SingleMediaActivity | OnCreate | onChanged all media items | 108");
-                        isMoveToCurrentItem[0] = true;
-
+                    for(int i = 0; i < tempList.size() - 1; i++){
+                        for(int j = i + 1; j < tempList.size(); j++){
+                            if(tempList.get(i).getId() < tempList.get(j).getId()){
+                                MediaItem temp = tempList.get(i);
+                                tempList.set(i, tempList.get(j));
+                                tempList.set(j, temp);
+                            }
+                        }
                     }
 
+                    mediaItemsList = tempList;
+
+                    viewPagerSingleMediaAdapter.setData(tempList);
+                    int index = GetInDexOfHelper.getIndexOf(tempList, mediaItemIntent);
+
+                    if (!isMoveToCurrentItem[0] && index >= 0 && index < tempList.size()) {
+                        // Lấy dữ liệu của MediaItem đang được chọn tra về LiveData
+                        mediaItemLiveData.setValue(tempList.get(index));
+                        //  System.out.println("SingleMediaActivity | OnCreate | onChanged all media items | 101");
+                        //  System.out.println("SingleMediaActivity | mediaItemLiveData = " + mediaItemLiveData.getValue());
+
+                        if (!isMoveToCurrentItem[0]) {
+                            Log.e("MyTag", "onChanged: " + index);
+                            //  System.out.println("SingleMediaActivity | OnCreate | onChanged all media items | 105");
+
+                            viewPager2.setCurrentItem(index, false);
+                            //  System.out.println("SingleMediaActivity | OnCreate | onChanged all media items | 108");
+                            isMoveToCurrentItem[0] = true;
+
+                        }
+
+                    }
                 }
-            }
+            });
+        }
+        else if(albumName.equals("Favorite")){
+            MediaItemRepository.getInstance().getAllMediaItems().observe(this, new Observer<List<MediaItem>>() {
+                @Override
+                public void onChanged(List<MediaItem> mediaItems) {
+                    //  System.out.println("SingleMediaActivity | OnCreate | onChanged all media items");
 
 
-        });
+                    List<MediaItem> mediaItemsFavorite = getFavoriteMediaItems(mediaItems);
+
+
+                    mediaItemsList = mediaItemsFavorite;
+
+                    viewPagerSingleMediaAdapter.setData(mediaItemsFavorite);
+                    int index = GetInDexOfHelper.getIndexOf(mediaItemsFavorite, mediaItemIntent);
+
+                    if (!isMoveToCurrentItem[0] && index >= 0 && index < mediaItemsFavorite.size()) {
+                        // Lấy dữ liệu của MediaItem đang được chọn tra về LiveData
+                        mediaItemLiveData.setValue(mediaItemsFavorite.get(index));
+                        //  System.out.println("SingleMediaActivity | OnCreate | onChanged all media items | 101");
+                        //  System.out.println("SingleMediaActivity | mediaItemLiveData = " + mediaItemLiveData.getValue());
+
+                        if (!isMoveToCurrentItem[0]) {
+                            Log.e("MyTag", "onChanged: " + index);
+                            //  System.out.println("SingleMediaActivity | OnCreate | onChanged all media items | 105");
+
+                            viewPager2.setCurrentItem(index, false);
+                            //  System.out.println("SingleMediaActivity | OnCreate | onChanged all media items | 108");
+                            isMoveToCurrentItem[0] = true;
+
+                        }
+
+                    }
+                }
+            });
+        }
+        else{
+            MediaItemRepository.getInstance().getAllMediaItemsByAlbumName(albumName).observe(this, new Observer<List<MediaItem>>() {
+                @Override
+                public void onChanged(List<MediaItem> mediaItems) {
+                    //  System.out.println("SingleMediaActivity | OnCreate | onChanged all media items");
+
+                    mediaItemsList = mediaItems;
+
+
+                    viewPagerSingleMediaAdapter.setData(mediaItems);
+                    int index = GetInDexOfHelper.getIndexOf(mediaItems, mediaItemIntent);
+
+                    if (!isMoveToCurrentItem[0] && index >= 0 && index < mediaItems.size()) {
+                        // Lấy dữ liệu của MediaItem đang được chọn tra về LiveData
+                        mediaItemLiveData.setValue(mediaItems.get(index));
+                        //  System.out.println("SingleMediaActivity | OnCreate | onChanged all media items | 101");
+                        //  System.out.println("SingleMediaActivity | mediaItemLiveData = " + mediaItemLiveData.getValue());
+
+                        if (!isMoveToCurrentItem[0]) {
+                            Log.e("MyTag", "onChanged: " + index);
+                            //  System.out.println("SingleMediaActivity | OnCreate | onChanged all media items | 105");
+
+                            viewPager2.setCurrentItem(index, false);
+                            //  System.out.println("SingleMediaActivity | OnCreate | onChanged all media items | 108");
+                            isMoveToCurrentItem[0] = true;
+
+                        }
+
+                    }
+                }
+            });
+        }
+
 
         viewPagerSingleMediaAdapter.setOnVideoPreparedListener(new ViewPagerSingleMediaAdapter.OnVideoPreparedListener() {
             @Override
@@ -184,6 +266,9 @@ public class SingleMediaActivity extends AppCompatActivity  {
             @Override
             public void onPageSelected(int position) {
                 //  System.out.println("Single media activity | on page selected 143 | position : " + position);
+                if(position < 0 || position >= mediaItemsList.size()){
+                    return;
+                }
                 mediaItemLiveData.setValue(mediaItemsList.get(position));
 
                 currentIndex = position;
@@ -238,6 +323,16 @@ public class SingleMediaActivity extends AppCompatActivity  {
                         btnDelete.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
+                                // Getting albumName before move to bin and file path
+                                String albumName = mediaItemsList.get(position).getAlbumName();
+                                String deletedMediaItemPath = mediaItemsList.get(position).getPath();
+                                String newThumbnailPath = mediaItemsList.get(mediaItemsList.size() - 1).getPath();
+                                if(position == mediaItemsList.size() - 1){
+                                    if(mediaItemsList.size() > 1){
+                                        newThumbnailPath = mediaItemsList.get(mediaItemsList.size() - 2).getPath();
+                                    }
+                                }
+
                                 //move to bin
                                 MediaItemRepository.getInstance().updateMediaPreviousAlbum(mediaItemsList.get(position).getId(),mediaItemsList.get(position).getAlbumName());
                                 MediaItemRepository.getInstance().updateMediaItemAlbum(mediaItemsList.get(position).getId(),"Bin");
@@ -250,6 +345,29 @@ public class SingleMediaActivity extends AppCompatActivity  {
                                 mediaItemsList.get(position).setDeletedTs(currentDate);
                                 viewPagerSingleMediaAdapter.notifyDataSetChanged();
                                 InnerAlbumScreen.mediaItemAdapter.notifyDataSetChanged();
+
+
+                                //checking whether the item is coverphotopath of album or not
+
+                                String finalNewThumbnailPath = newThumbnailPath;
+                                AlbumRepository.getInstance().getAlbumByAlbumName(AppPreferencesHelper.getInstance().getCurrentUserId(), albumName).observe(SingleMediaActivity.this, new Observer<Album>() {
+                                    @Override
+                                    public void onChanged(Album album) {
+                                        if(album != null){
+                                            if(mediaItemsList.size() == 0){
+                                                //delete album
+                                                AlbumRepository.getInstance().deleteAlbum(AppPreferencesHelper.getInstance().getCurrentUserId(), album.getName());
+                                            }
+                                            else{
+//                                             //update album
+                                                AlbumRepository.getInstance().updateAlbumCoverPhotoPath(AppPreferencesHelper.getInstance().getCurrentUserId(), album.getName(), finalNewThumbnailPath);
+                                                album.setCoverPhotoPath(finalNewThumbnailPath);
+                                            }
+                                        }
+                                    }
+                                });
+
+
                                 dialog.dismiss();
                                 finish();
 
@@ -296,27 +414,6 @@ public class SingleMediaActivity extends AppCompatActivity  {
                         }
                         MediaItemRepository.getInstance().updateFavorite(selectedMediaItem.getId(), selectedMediaItem.isFavorite());
 
-
-
-//                        // Cập nhật thông tin trong MediaStore.Images.Media/MediaStores.Video.Media bằng cách sử dụng Pending Intent với createFavoriteRequest
-//                        List<Uri> uriList = new ArrayList<>();
-//                        uriList.add(Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, String.valueOf(selectedMediaItem.getId())));
-//
-//                        PendingIntent pendingIntent = null;
-//
-//                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-//                            pendingIntent = MediaStore.createFavoriteRequest(getContentResolver(), uriList, selectedMediaItem.isFavorite());
-//
-//                            if(pendingIntent != null){
-//                                try {
-//                                    startIntentSenderForResult(pendingIntent.getIntentSender(), REQUEST_MAKE_FAVORITE_ITEM, null, 0, 0, 0, null);
-//                                } catch (IntentSender.SendIntentException e) {
-//                                    throw new RuntimeException(e);
-//                                }
-//
-//                            }
-//                        }
-
                     }
                 });
 
@@ -333,6 +430,16 @@ public class SingleMediaActivity extends AppCompatActivity  {
 
         //  System.out.println("SingleMediaActivity | OnCreate | End");
 
+    }
+
+    private List<MediaItem> getFavoriteMediaItems(List<MediaItem> mediaItems) {
+        List<MediaItem> mediaItemsFavorite = new ArrayList<>();
+        for(MediaItem mediaItem : mediaItems){
+            if(mediaItem.isFavorite()){
+                mediaItemsFavorite.add(mediaItem);
+            }
+        }
+        return mediaItemsFavorite;
     }
 
     // Override lại hàm khởi tạo 1 menu, và gán menu đó cho biến mMenu. Có thể thao tác trong file xml cho menu
@@ -401,6 +508,9 @@ public class SingleMediaActivity extends AppCompatActivity  {
 //                }
 //            });
 
+        }
+        else if(id == R.id.media_note_media_item){
+            showNoteDialog();
         }
 
 
@@ -626,9 +736,12 @@ public class SingleMediaActivity extends AppCompatActivity  {
                     Album alb = new Album();
                     alb.setName(albumName);
                     alb.setUserID(AppPreferencesHelper.getInstance().getCurrentUserId());
+                    alb.setCoverPhotoPath(path); // TODO: Chưa thể cập nhật được cover photo cho lần đầu
                     AlbumRepository.getInstance().insert(alb);
                     Toast.makeText(App.getInstance(), "Album " + albumName + " created", Toast.LENGTH_SHORT).show();
                 }
+                AlbumRepository.getInstance().updateAlbumCoverPhotoPath(AppPreferencesHelper.getInstance().getCurrentUserId(), "Edited", path);
+
 
 
                 int width = options.outWidth;
@@ -721,5 +834,47 @@ public class SingleMediaActivity extends AppCompatActivity  {
         startActivity(Intent.createChooser(intent, "Share this image with..."));
         //  System.out.println("Share image : 347");
 
+    }
+    private void showNoteDialog() {
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_note_media_item);
+
+        Window window = dialog.getWindow();
+
+        if(window == null){
+            return;
+        }
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        window.setGravity(Gravity.CENTER);
+        window.setAttributes(window.getAttributes());
+
+        dialog.setCancelable(true);
+
+        // Anh xa cac view
+        EditText editText = dialog.findViewById(R.id.note_media_discription);
+        Button button_save = dialog.findViewById(R.id.save_button);
+        Button button_cancel = dialog.findViewById(R.id.cancel_button);
+
+        // Set du lieu cho editText tu database voi truong description
+        editText.setText(mediaItemsList.get(currentIndex).getDescription());
+
+        button_save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String description = editText.getText().toString();
+                MediaItemRepository.getInstance().updateMediaItemDescription(mediaItemsList.get(currentIndex).getId(), description);
+                dialog.dismiss();
+            }
+        });
+        button_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
     }
 }

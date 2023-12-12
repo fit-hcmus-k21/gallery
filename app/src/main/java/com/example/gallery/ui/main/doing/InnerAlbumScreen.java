@@ -2,18 +2,29 @@ package com.example.gallery.ui.main.doing;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
+import android.util.Log;
+import android.view.Gravity;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.app.Dialog;
 
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
+import android.widget.ViewFlipper;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -21,32 +32,56 @@ import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.gallery.R;
+import com.example.gallery.data.local.prefs.AppPreferencesHelper;
 import com.example.gallery.data.models.db.MediaItem;
+import com.example.gallery.data.repositories.models.Repository.AlbumRepository;
 import com.example.gallery.data.repositories.models.Repository.MediaItemRepository;
+import com.example.gallery.ui.custom.AddImageFromDevice;
 import com.example.gallery.ui.main.adapter.MediaItemAdapter;
 import com.example.gallery.utils.BytesToStringConverter;
 
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
 public class InnerAlbumScreen extends AppCompatActivity {
+    //TODO: Lướt ngược
+    private static final int REQUEST_IMAGE_PICK = 1;
+
     RecyclerView recyclerView;
     public static MediaItemAdapter mediaItemAdapter;
     MaterialToolbar topAppBar;
+    List<MediaItem> mediaItemList = new ArrayList<>();
+
+    // -----------
+    private FloatingActionButton btnPickFiles;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         //  System.out.println("InnerAlbumScreen  27: onCreate: ");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.inner_album_layout);
         topAppBar = findViewById(R.id.topAppBar);
+        btnPickFiles = findViewById(R.id.floating_pick_from_device_button_in_album);
+
+        // Lấy dữ liệu từ intent
+        Bundle bundle = getIntent().getExtras();
+        String albumName = bundle.getString("albumName");
 
 
-        // Khởi tạo viewModel
-
-        MaterialToolbar materialToolbar = findViewById(R.id.topAppBar);
+//        MaterialToolbar materialToolbar = findViewById(R.id.topAppBar);
+        //Toolbar here
+        Toolbar materialToolbar = findViewById(R.id.topAppBar);
+        setSupportActionBar(materialToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Album: " + albumName);
 
         // Ánh xạ các view
         recyclerView = findViewById(R.id.inner_album_recycler_view);
@@ -59,15 +94,12 @@ public class InnerAlbumScreen extends AppCompatActivity {
         mediaItemAdapter = new MediaItemAdapter();
         recyclerView.setAdapter(mediaItemAdapter);
 
-        // Lấy dữ liệu từ intent
-        Bundle bundle = getIntent().getExtras();
-        String albumName = bundle.getString("albumName");
 
         MediaItemRepository.getInstance().getAllMediaItems().observe(this, new Observer<List<MediaItem>>() {
             @Override
             public void onChanged(List<MediaItem> mediaItems) {
 
-                List<MediaItem> mediaItemList = getMediaItemsOfAlbum(mediaItems, albumName);
+                mediaItemList = getMediaItemsOfAlbum(mediaItems, albumName);
 //                Log.e("Mytag", "onChanged: " + mediaItemList.size());
                 //  System.out.println("InnerAlbumScreen  53: onChanged before set data: mediaItemList = " + mediaItems);
                 mediaItemAdapter.setData(mediaItemList);
@@ -83,8 +115,9 @@ public class InnerAlbumScreen extends AppCompatActivity {
                 Intent intent = new Intent(InnerAlbumScreen.this, SingleMediaActivity.class);
 
                 Bundle bundle = new Bundle();
-
+                bundle.putString("albumName", albumName);
                 bundle.putSerializable("mediaItem", mediaItem);
+
                 intent.putExtras(bundle);
 
                 startActivity(intent);
@@ -162,41 +195,67 @@ public class InnerAlbumScreen extends AppCompatActivity {
 
                 }
                 if(item.getItemId() == R.id.slideShow){
-                    Toast.makeText(InnerAlbumScreen.this,"SLIDESHOW",Toast.LENGTH_SHORT).show();
-                    //to do nothing
+                    slideShowDialog();
                 }
-                if(item.getItemId() == R.id.setting){
-                    Toast.makeText(InnerAlbumScreen.this,"SETTING",Toast.LENGTH_SHORT).show();
-
-                    //to do nothing
+                if(item.getItemId() == R.id.change_name){
+                    showRenameDialog(albumName);
+                }
+                else if(item.getItemId() == R.id.change_thumbnail){
+                    chooseThumnailDialog(albumName);
                 }
                 return true;
             }
         });
 
+        // add event for button
+        btnPickFiles.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                System.out.println("openAddImageFromDeviceActivity");
+                Intent intent = new Intent(InnerAlbumScreen.this, AddImageFromDevice.class);
+
+                Bundle sendBundle = new Bundle();
+                sendBundle.putString("albumName", albumName);
+                intent.putExtras(sendBundle);
+
+                startActivityForResult(intent, REQUEST_IMAGE_PICK);
+
+            }
+        });
     }
+
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if(item.getItemId() == android.R.id.home){
+            onBackPressed();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.top_appbar_inner_album_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
 
     private List<MediaItem> getMediaItemsOfAlbum(List<MediaItem> mediaItems, String albumName) {
         List<MediaItem> result = new ArrayList<>();
-
-//        if(albumName.equals("favoritePath")){ // Không nên dùng == để so sánh chuỗi hãy dùng equals
-//            for(MediaItem mediaItem : mediaItems){
-//                if(mediaItem.isFavorite()){
-//                    result.add(mediaItem);
-//                    Log.e("Mytag", "getMediaItemsOfAlbum: " + mediaItem.getName());
-//                }
-//            }
-//        }
-        {
+        if(albumName.equals("Favorite")) {
+            for(MediaItem mediaItem : mediaItems){
+                if(mediaItem.isFavorite()){
+                    result.add(mediaItem);
+                }
+            }
+        }
+        else{
             for(MediaItem mediaItem : mediaItems){
                 if(mediaItem.getAlbumName().equals(albumName)){
                     result.add(mediaItem);
                 }
             }
         }
-
-
-
         return result;
     }
     private void showStatisticDialog(){
@@ -221,5 +280,131 @@ public class InnerAlbumScreen extends AppCompatActivity {
 
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
+    }
+    private void slideShowDialog() {
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_slideshow);
+
+        Window window = dialog.getWindow();
+
+        if(window == null){
+            return;
+        }
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        window.setGravity(Gravity.TOP);
+        window.setAttributes(window.getAttributes());
+
+        dialog.setCancelable(true);
+
+        // Ánh xạ các view
+        ViewFlipper viewFlipper = dialog.findViewById(R.id.view_flipper);
+
+        for(MediaItem mediaItem : mediaItemList){
+            ImageView imageView = new ImageView(this);
+            Glide.with(this).load(mediaItem.getPath()).into(imageView);
+            viewFlipper.addView(imageView);
+            Log.e("Mytag2", "slideShow: " + mediaItem.getPath());
+        }
+        viewFlipper.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+    }
+    public void chooseThumnailDialog(String albumName){
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_choose_thumbnail);
+
+        Window window = dialog.getWindow();
+
+        if(window == null){
+            return;
+        }
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        window.setGravity(Gravity.TOP);
+        window.setAttributes(window.getAttributes());
+
+        dialog.setCancelable(true);
+
+        // Ánh xạ các view
+        RecyclerView rcvChooseThumbnail = dialog.findViewById(R.id.choose_thumbnail_recycler_view);
+
+        // Layoutmanager
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 3);
+        rcvChooseThumbnail.setLayoutManager(gridLayoutManager);
+
+        // Xu ly adapter
+        MediaItemAdapter mediaItemAdapter = new MediaItemAdapter();
+        mediaItemAdapter.setData(mediaItemList);
+        rcvChooseThumbnail.setAdapter(mediaItemAdapter);
+
+        mediaItemAdapter.setOnItemClickListener(new MediaItemAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(MediaItem mediaItem) {
+                String newThumbnailPath = mediaItem.getPath();
+                AlbumRepository.getInstance().updateAlbumCoverPhotoPath(AppPreferencesHelper.getInstance().getCurrentUserId(), albumName, newThumbnailPath);
+                Toast.makeText(InnerAlbumScreen.this, "Đổi ảnh đại diện thành công", Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
+    }
+
+    private void showRenameDialog(String oldAlbumName) {
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_rename_album);
+
+        Window window = dialog.getWindow();
+
+        if(window == null){
+            return;
+        }
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        window.setGravity(Gravity.CENTER);
+        window.setAttributes(window.getAttributes());
+
+        dialog.setCancelable(false);
+
+        // Ánh xạ các view
+        Button btnCancel = dialog.findViewById(R.id.btn_cancel_rename_album);
+        Button btnOke = dialog.findViewById(R.id.btn_ok_rename_album);
+        EditText editText = dialog.findViewById(R.id.edt_rename_album);
+
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        btnOke.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                String newAlbumName = editText.getText().toString();
+                if(newAlbumName.isEmpty()){
+                    Toast.makeText(InnerAlbumScreen.this, "Tên album không được để trống", Toast.LENGTH_SHORT).show();
+                }
+                else{
+
+                    AlbumRepository.getInstance().updateAlbumName(AppPreferencesHelper.getInstance().getCurrentUserId(), oldAlbumName, newAlbumName);
+                    MediaItemRepository.getInstance().updateAlbumName(oldAlbumName, newAlbumName);
+
+                    dialog.dismiss();
+                    finish();
+
+                }
+            }
+        });
+
+        dialog.show();
     }
 }

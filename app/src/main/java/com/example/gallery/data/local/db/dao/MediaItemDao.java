@@ -36,10 +36,10 @@ public interface MediaItemDao {
     @Query("SELECT COUNT(*) FROM media_items WHERE userID = :userID")
     LiveData<Integer> getNumberOfMediaItems(String userID);
 
-    @Query("SELECT id, userID, name, tag, description, path, width, height, fileSize, fileExtension, creationDate, location, albumName, url, favorite, deletedTs, parentPath FROM media_items WHERE userID = :userID ")
+    @Query("SELECT id, userID, name, tag, description, path, width, height, fileSize, fileExtension, creationDate, location, albumName, url, favorite, deletedTs, parentPath FROM media_items WHERE userID = :userID AND deletedTs = 0")
     LiveData<List<MediaItem>> getAllMediaItemsByUserID(String userID);
 
-    @Query("SELECT id, userID, name, tag, description, path, width, height, fileSize, fileExtension, creationDate, location, albumName, url, favorite, deletedTs, parentPath,previousAlbum FROM media_items WHERE userID = :userID ")
+    @Query("SELECT id, userID, name, tag, description, path, width, height, fileSize, fileExtension, creationDate, location, albumName, url, favorite, deletedTs, parentPath,previousAlbum FROM media_items WHERE deletedTs = 0 AND userID = :userID ")
     LiveData<List<MediaItem>> getAllMediaItems(String userID);
 
     @Query("SELECT id, userID, name, tag, description, path, width, height, fileSize, fileExtension, creationDate, location, albumName, url, favorite, deletedTs, parentPath,previousAlbum FROM media_items WHERE deletedTs = 0 AND path = :path  COLLATE NOCASE")
@@ -106,6 +106,17 @@ public interface MediaItemDao {
     @Query("SELECT * FROM media_items WHERE deletedTs = 0")
     LiveData<List<MediaItem>> loadAll();
 
+    @Query("UPDATE OR REPLACE media_items SET albumName = :newAlbumName WHERE userID = :userID AND albumName = :oldAlbumName COLLATE NOCASE")
+    void updateAlbumName(String userID, String oldAlbumName, String newAlbumName);
+
+    @Query("SELECT * FROM media_items WHERE deletedTs = 0 AND userID = :userID AND albumName = :albumName COLLATE NOCASE")
+    LiveData<List<MediaItem>> getAllMediaItemsByAlbumName(String userID, String albumName);
+
+    @Query("SELECT * FROM media_items WHERE userID = :userID AND deletedTs != 0 COLLATE NOCASE")
+    LiveData<List<MediaItem>> getDeletedMediaItems(String userID);
+
+    @Query("SELECT * FROM media_items WHERE userID = :userID AND deletedTs != 0 AND favorite = :favorite COLLATE NOCASE")
+    LiveData<List<MediaItem>> getAllFavoriteMediaItem(String userID, boolean favorite);
 
 }
 

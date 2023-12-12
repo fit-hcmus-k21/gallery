@@ -40,98 +40,10 @@ public class MainActivity extends AppCompatActivity {
         //  System.out.println("in oncreate main: 42");
 
 
-
-
-        //TODO kiêểm tra lại phần quyền truy cập
-//        if(RequestPermissionHelper.checkAndRequestPermission(this, 101)){
-//            //
-//        }
-
         fetchData();
 
-
-        // ****************************** End code tạm thời ******************************
-
     }
-//        // Ánh xạ các Widget
-//        viewPager2 = findViewById(R.id.viewPager2_main);
-//        bottomNavigationView = findViewById(R.id.bottomNavigation_main);
-//
-//        // Khởi tạo 1 Viewpager2 adapter
-//        MyViewPager2Adapter myViewPager2Adapter = new MyViewPager2Adapter(this);
-//        viewPager2.setAdapter(myViewPager2Adapter);
-//
-//        // Xử lý sự kiện khi click vào 1 item dưới bottom navigation sẽ chuyển fragment tương ứng
-//        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
-//            @Override
-//            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-//
-//                // Lấy ra id của phần từ được click và so sánh => chuyển đổi Viewpager tương ứng
-//                // 0: Photos; 1: Albums; 2: Finding; 3: Memory
-//                int id = item.getItemId();
-//                if(id == R.id.nav_photos){
-//                    viewPager2.setCurrentItem(0);
-//                }
-//                else if (id == R.id.nav_albums){
-//                    viewPager2.setCurrentItem(1);
-//                }
-//                else if (id == R.id.nav_finding){
-//                    viewPager2.setCurrentItem(2);
-//                }
-//                else if (id == R.id.nav_memories){
-//                    viewPager2.setCurrentItem(3);
-//                }
-//
-//                return true;
-//            }
-//        });
-//
-//        // Sử lý sự kiện lướt Viewpager2 sang trái hoặc phải
-//        viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
-//            // Override phương thức thứ 2, hàm callback sẽ trả về cho ta 1 postion
-//            // Sử lý postion với từng fragment cụ thể và đồng bộ cho bottomnavigation item
-//            @Override
-//            public void onPageSelected(int position) {
-//                super.onPageSelected(position);
-//
-//                switch (position)
-//                {
-//                    case 0:
-//                        bottomNavigationView.getMenu().findItem(R.id.nav_photos).setChecked(true);
-//                        break;
-//                    case 1:
-//                        bottomNavigationView.getMenu().findItem(R.id.nav_albums).setChecked(true);
-//                        break;
-//                    case 2:
-//                        bottomNavigationView.getMenu().findItem(R.id.nav_finding).setChecked(true);
-//                        break;
-//                    case 3:
-//                        bottomNavigationView.getMenu().findItem(R.id.nav_memories).setChecked(true);
-//                        break;
-//                }
-//
-//            }
-//        });
-
-//    }
-
     private void fetchData() {
-
-
-
-//         ******************************  Lấy dữ liệu từ external - Code tam thời ******************************
-//        userViewModel.insertUser(new User("1", "User1", "", "user1", "123",
-//                "user1@example.com", "", "", "", ""));
-//        userViewModel.insertUser(new User("10", "User2", "", "user2", "123",
-//                "user2@example.com", "", "", "", ""));
-
-// ******************************  Lấy dữ liệu từ external - Code tam thời ******************************
-
-
-
-
-
-
 
         // Ánh xạ các Widget
         viewPager2 = findViewById(R.id.viewPager2_main);

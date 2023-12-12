@@ -46,8 +46,8 @@ public interface AlbumDao {
     @Query("DELETE FROM albums WHERE path = :path COLLATE NOCASE")
     void deleteAlbumPath(String path);
 
-    @Query("UPDATE OR REPLACE albums SET coverPhotoPath = :newCoverPhotoPath WHERE path = :path COLLATE NOCASE")
-    void updateAlbumCoverPhotoPath(String path, String newCoverPhotoPath);
+    @Query("UPDATE OR REPLACE albums SET coverPhotoPath = :newCoverPhotoPath WHERE userID = :userID AND name = :albumName COLLATE NOCASE")
+    void updateAlbumCoverPhotoPath(String userID, String albumName, String newCoverPhotoPath);
 
     @Query("UPDATE albums SET name = :newName, coverPhotoPath = :newCoverPhotoPath, path = :newPath WHERE path = :oldPath COLLATE NOCASE")
     void updateAlbumAfterRename(String oldPath, String newName, String newCoverPhotoPath, String newPath);
@@ -65,7 +65,14 @@ public interface AlbumDao {
     LiveData<Integer> getNumberOfAlbums(String userID);
 
     @Query("SELECT COUNT(*) FROM albums WHERE userID = :userID AND name = :name COLLATE NOCASE")
-            LiveData<Integer> isExistAlbum(String userID, String name);
+    LiveData<Integer> isExistAlbum(String userID, String name);
 
+    @Query("UPDATE OR REPLACE albums SET name = :newAlbumName WHERE userID = :userID AND name = :oldAlbumName COLLATE NOCASE")
+    void updateAlbumName(String userID, String oldAlbumName, String newAlbumName);
 
+    @Query("SELECT * FROM albums WHERE userID = :userID AND name = :name COLLATE NOCASE")
+    LiveData<Album> getAlbumByAlbumName(String userID, String name);
+
+    @Query("DELETE FROM albums WHERE userID = :userID AND name = :name COLLATE NOCASE")
+    void deleteAlbumByName(String userID, String name);
 }

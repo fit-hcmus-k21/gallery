@@ -1,6 +1,9 @@
 package com.example.gallery.ui.main.fragment;
 
+import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -15,20 +18,37 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Environment;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
+import android.widget.ViewFlipper;
 
+import com.bumptech.glide.Glide;
 import com.example.gallery.R;
+import com.example.gallery.data.local.prefs.AppPreferencesHelper;
 import com.example.gallery.data.models.db.Album;
+import com.example.gallery.data.models.db.MediaItem;
 import com.example.gallery.data.repositories.models.Repository.AlbumRepository;
 import com.example.gallery.ui.main.adapter.AlbumAdapter;
 import com.example.gallery.ui.main.doing.DeleteActivity;
+import com.example.gallery.ui.main.doing.InnerAlbumScreen;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,7 +69,7 @@ public class AlbumFragment extends Fragment {
 
         // Actionbar
         setHasOptionsMenu(true);
-        Toolbar toolbar = mView.findViewById(R.id.toolbar_album);
+        Toolbar toolbar = mView.findViewById(R.id.toolbar_fragment_album);
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         activity.setSupportActionBar(toolbar);
         activity.getSupportActionBar().setTitle("Gallery - Album");
@@ -78,11 +98,6 @@ public class AlbumFragment extends Fragment {
         albumAdapter = new AlbumAdapter();
         recyclerView.setAdapter(albumAdapter);
 
-//        // Thêm Decorations cho RecyclerView là những đường kẻ ngang và dọc
-//        RecyclerView.ItemDecoration itemDecorationHorizontal = new DividerItemDecoration(getContext(), DividerItemDecoration.HORIZONTAL);
-//        RecyclerView.ItemDecoration itemDecorationVertical = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
-//        recyclerView.addItemDecoration(itemDecorationHorizontal);
-//        recyclerView.addItemDecoration(itemDecorationVertical);
 
         // Xử lý dữ liệu
         AlbumRepository.getInstance().getAlbums().observe(getViewLifecycleOwner(), new Observer<List<Album>>() {
@@ -117,10 +132,69 @@ public class AlbumFragment extends Fragment {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
 
-        if(id == android.R.id.home){
-            getActivity().onBackPressed();
+        if(id == R.id.media_create_album_item){
+            dialogCreateAlbum();
+        }
+        else if(id == R.id.favorite_album_item){
+            Intent intent = new Intent(getContext(), InnerAlbumScreen.class);
+            Bundle bundle = new Bundle();
+            bundle.putString("albumName", "Favorite");
+            intent.putExtras(bundle);
+            getContext().startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void dialogCreateAlbum() {
+        final Dialog dialog = new Dialog(this.getContext());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_add_new_album);
+
+        Window window = dialog.getWindow();
+
+        if(window == null){
+            return;
+        }
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        window.setGravity(Gravity.CENTER);
+        window.setAttributes(window.getAttributes());
+
+        dialog.setCancelable(false);
+
+        // Ánh xạ các view
+        Button btnCancel = dialog.findViewById(R.id.btn_cancel_create_album);
+        Button btnOke = dialog.findViewById(R.id.btn_ok_create_album);
+        EditText editText = dialog.findViewById(R.id.edt_create_album);
+
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        btnOke.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                String createAlbumName = editText.getText().toString();
+                if(createAlbumName.isEmpty()){
+                    Toast.makeText(AlbumFragment.this.getContext(), "Tên album không được để trống", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    Album album = new Album(createAlbumName, "",
+                            System.currentTimeMillis(), "",
+                            AppPreferencesHelper.getInstance().getCurrentUserId(),
+                            "",
+                            0);
+                    AlbumRepository.getInstance().insert(album);
+                    dialog.dismiss();
+
+                }
+            }
+        });
+
+        dialog.show();
     }
 }

@@ -247,12 +247,12 @@ public class AlbumRepository {
             }
         });
     }
-    public void updateAlbumCoverPhotoPath(String path, String newCoverPhotoPath){
+    public void updateAlbumCoverPhotoPath(String userID,String path, String newCoverPhotoPath){
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         executorService.execute(new Runnable() {
             @Override
             public void run() {
-                albumDao.updateAlbumCoverPhotoPath(path, newCoverPhotoPath);
+                albumDao.updateAlbumCoverPhotoPath(userID,path, newCoverPhotoPath);
             }
         });
     }
@@ -297,5 +297,25 @@ public class AlbumRepository {
     public LiveData<Integer> getNumberOfAlbums(){
         return albumDao.getNumberOfAlbums(AppPreferencesHelper.getInstance().getCurrentUserId());
     }
-
+    public void updateAlbumName(String userID, String oldAlbumName, String newAlbumName){
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                albumDao.updateAlbumName(userID, oldAlbumName, newAlbumName);
+            }
+        });
+    }
+    public LiveData<Album> getAlbumByAlbumName(String userID, String albumName){
+        return albumDao.getAlbumByAlbumName(userID, albumName);
+    }
+    public void deleteAlbum(String userID, String albumName){
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                albumDao.deleteAlbumByName(userID, albumName);
+            }
+        });
+    }
 }

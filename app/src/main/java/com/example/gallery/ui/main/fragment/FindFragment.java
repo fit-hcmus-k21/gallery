@@ -65,6 +65,7 @@ public class FindFragment extends Fragment implements View.OnClickListener {
         typeLocation = view.findViewById(R.id.typeLocation);
         typeTag = view.findViewById(R.id.typeTag);
         typeNote = view.findViewById(R.id.typeNote);
+
         typeDate.setOnClickListener(this);
         typeNote.setOnClickListener(this);
         typeTag.setOnClickListener(this);
@@ -85,11 +86,6 @@ public class FindFragment extends Fragment implements View.OnClickListener {
                 mediaItemAdapter.setData(mediaItems);
             }
         });
-
-
-
-
-
 
     }
 

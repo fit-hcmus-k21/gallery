@@ -46,9 +46,7 @@ public class AlbumViewModel extends AndroidViewModel {
     public void deleteAlbumPath(String path){
         albumRepository.deleteAlbumPath(path);
     }
-    public void updateAlbumCoverPhotoPath(String path, String newCoverPhotoPath){
-        albumRepository.updateAlbumCoverPhotoPath(path, newCoverPhotoPath);
-    }
+
     public void updateAlbumAfterRename(String oldPath, String newName, String newCoverPhotoPath, String newPath){
         albumRepository.updateAlbumAfterRename(oldPath, newName, newCoverPhotoPath, newPath);
     }
