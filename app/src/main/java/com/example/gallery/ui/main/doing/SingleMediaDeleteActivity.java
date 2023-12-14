@@ -2,6 +2,7 @@ package com.example.gallery.ui.main.doing;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -15,7 +16,10 @@ import androidx.lifecycle.Observer;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.gallery.R;
+import com.example.gallery.data.local.prefs.AppPreferencesHelper;
+import com.example.gallery.data.models.db.Album;
 import com.example.gallery.data.models.db.MediaItem;
+import com.example.gallery.data.repositories.models.Repository.AlbumRepository;
 import com.example.gallery.data.repositories.models.Repository.MediaItemRepository;
 import com.example.gallery.ui.main.adapter.ViewPagerSingleMediaAdapter;
 import com.example.gallery.utils.GetInDexOfHelper;
@@ -100,14 +104,34 @@ public class SingleMediaDeleteActivity extends AppCompatActivity {
                 bottomNavigationView.setOnNavigationItemReselectedListener(new BottomNavigationView.OnNavigationItemReselectedListener() {
                     @Override
                     public void onNavigationItemReselected(@NonNull MenuItem item) {
-                        if(item.getItemId() == R.id.btnRestore){                // failed 
-                            MediaItemRepository.getInstance().updateMediaItemAlbum(selectedMediaItem.getId(),selectedMediaItem.getPreviousAlbum());
-                            MediaItemRepository.getInstance().updateMediaPreviousAlbum(selectedMediaItem.getId(),"");
-                            MediaItemRepository.getInstance().updateMediaItemDeleteTs(selectedMediaItem.getId(),0);
-                            listMediaItem.remove(position);
-                            viewPagerSingleMediaAdapter.setData(listMediaItem);
-                            viewPagerSingleMediaAdapter.notifyDataSetChanged();
-                            finish();
+                        if(item.getItemId() == R.id.btnRestore){                // failed
+
+                            // Kiểm tra và tạo mới album nếu album chưa tồn tại
+                            AlbumRepository.getInstance().getAlbumByAlbumName(AppPreferencesHelper.getInstance().getCurrentUserId(), selectedMediaItem.getPreviousAlbum()).observe(SingleMediaDeleteActivity.this, new Observer<Album>() {
+                                @Override
+                                public void onChanged(Album album) {
+                                    if(album == null){
+                                        Album newAlbum = new Album();
+                                        newAlbum.setName(selectedMediaItem.getPreviousAlbum());
+                                        newAlbum.setUserID(AppPreferencesHelper.getInstance().getCurrentUserId());
+                                        newAlbum.setCoverPhotoPath(selectedMediaItem.getPath());
+                                        AlbumRepository.getInstance().insert(newAlbum);
+
+                                        Log.e("Mytask1", "selectedMediaItem.getPreviousAlbum() " + selectedMediaItem.getPreviousAlbum());
+                                    }
+                                    selectedMediaItem.setAlbumName(selectedMediaItem.getPreviousAlbum());
+                                    MediaItemRepository.getInstance().updateMediaItemAlbum(selectedMediaItem.getId(),selectedMediaItem.getPreviousAlbum());
+                                    MediaItemRepository.getInstance().updateMediaPreviousAlbum(selectedMediaItem.getId(),"");
+                                    MediaItemRepository.getInstance().updateMediaItemDeleteTs(selectedMediaItem.getId(),0);
+//                                    listMediaItem.remove(position);
+                                    viewPagerSingleMediaAdapter.setData(listMediaItem);
+                                    viewPagerSingleMediaAdapter.notifyDataSetChanged();
+                                    finish();
+
+                                }
+                            });
+
+
 
                         }
                         if(item.getItemId() == R.id.btnDelete){
