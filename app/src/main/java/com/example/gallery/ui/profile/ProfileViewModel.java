@@ -127,6 +127,9 @@ public class ProfileViewModel extends BaseViewModel<ProfileNavigator> {
     // define methods in ProfileViewModel
     public void logout() {
         //  System.out.println("logout");
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        mAuth.signOut();
+
         getDataManager().clearPreferences();
         getNavigator().openLoginActivity();
     }

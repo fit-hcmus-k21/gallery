@@ -2,13 +2,19 @@ package com.example.gallery.ui.login;
 
 import static androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG;
 import static androidx.biometric.BiometricManager.Authenticators.DEVICE_CREDENTIAL;
+import static androidx.constraintlayout.motion.utils.Oscillator.TAG;
 
 import static com.google.zxing.integration.android.IntentIntegrator.REQUEST_CODE;
 
 import android.app.Activity;
 import android.content.Intent;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.biometric.BiometricManager;
 import androidx.biometric.BiometricPrompt;
+
+import android.content.IntentSender;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -29,7 +35,23 @@ import com.example.gallery.ui.register.RegisterActivity;
 import com.example.gallery.ui.resetPassword.ResetPasswordActivity;
 import com.example.gallery.utils.ValidateText;
 import com.facebook.CallbackManager;
+import com.google.android.gms.auth.api.identity.BeginSignInRequest;
+import com.google.android.gms.auth.api.identity.BeginSignInResult;
+import com.google.android.gms.auth.api.identity.Identity;
+import com.google.android.gms.auth.api.identity.SignInClient;
+import com.google.android.gms.auth.api.identity.SignInCredential;
 import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.CommonStatusCodes;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
 
 /**
  * Created on 15/11/2023
@@ -61,6 +83,8 @@ public class LoginActivity extends BaseActivity<Slide02LoginScreenBinding, Login
     }
 
 
+    private SignInClient oneTapClient;
+    private BeginSignInRequest signInRequest;
 
 
 
@@ -122,37 +146,31 @@ public class LoginActivity extends BaseActivity<Slide02LoginScreenBinding, Login
                 // Hide the loading indicator
                 mLoginBinding.progressBar.setVisibility(View.GONE);
             }
+
+            //--------------------------------
+            // config for one tap sign-in
+
+
+            oneTapClient = Identity.getSignInClient(this);
+            signInRequest = BeginSignInRequest.builder()
+                    .setPasswordRequestOptions(BeginSignInRequest.PasswordRequestOptions.builder()
+                            .setSupported(true)
+                            .build())
+                    .setGoogleIdTokenRequestOptions(BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
+                            .setSupported(true)
+                            // Your server's client ID, not your Android client ID.
+                            .setServerClientId(getString(R.string.default_web_client_id))
+                            // Only show accounts previously used to sign in.
+                            .setFilterByAuthorizedAccounts(true)
+                            .build())
+                    // Automatically sign in when exactly one credential is retrieved.
+                    .setAutoSelectEnabled(true)
+                    .build();
+            // ...
+
+
         });
 
-
-
-        // set google sign in button text
-//        setGooglePlusButtonText(mLoginBinding.buttonGoogleLogin, "Continue with Google");
-
-
-//        BiometricManager biometricManager = BiometricManager.from(this);
-//        switch (biometricManager.canAuthenticate(BIOMETRIC_STRONG | DEVICE_CREDENTIAL)) {
-//            case BiometricManager.BIOMETRIC_SUCCESS:
-//                Log.d("MY_APP_TAG", "App can authenticate using biometrics.");
-//                mLoginBinding.buttonFingerprintLogin.setVisibility(View.VISIBLE);
-//                break;
-//            case BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE:
-//                Log.e("MY_APP_TAG", "No biometric features available on this device.");
-////                break;
-//            case BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE:
-//                Log.e("MY_APP_TAG", "Biometric features are currently unavailable.");
-////                break;
-//            case BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED:
-//                Toast.makeText(this, "Please setup fingerprint or face ID", Toast.LENGTH_SHORT).show();
-//                mLoginBinding.buttonFingerprintLogin.setVisibility(View.GONE);
-//                break;
-//            // Prompts the user to create credentials that your app accepts.
-////                final Intent enrollIntent = new Intent(Settings.ACTION_BIOMETRIC_ENROLL);
-////                enrollIntent.putExtra(Settings.EXTRA_BIOMETRIC_AUTHENTICATORS_ALLOWED,
-////                        BIOMETRIC_STRONG | DEVICE_CREDENTIAL);
-////                startActivityForResult(enrollIntent, REQUEST_CODE);
-////                break;
-//        }
 
     }
 
@@ -170,21 +188,104 @@ public class LoginActivity extends BaseActivity<Slide02LoginScreenBinding, Login
         startActivity(intent);
     }
 
-    protected void setGooglePlusButtonText(SignInButton signInButton, String buttonText) {
-        // Find the TextView that is inside of the SignInButton and set its text
-        for (int i = 0; i < signInButton.getChildCount(); i++) {
-            View v = signInButton.getChildAt(i);
 
-            if (v instanceof TextView) {
-                TextView tv = (TextView) v;
-                tv.setText(buttonText);
-                tv.setTextSize(12);
-                return;
+
+
+//    ----------------------------------------
+
+    private static final int REQ_ONE_TAP = 2;  // Can be any integer unique to the Activity.
+    private boolean showOneTapUI = true;
+    // ...
+
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+
+        try {
+            SignInCredential googleCredential = oneTapClient.getSignInCredentialFromIntent(data);
+            String idToken = googleCredential.getGoogleIdToken();
+            if (idToken != null) {
+                // Got an ID token from Google. Use it to authenticate
+                // with Firebase.
+                AuthCredential firebaseCredential = GoogleAuthProvider.getCredential(idToken, null);
+                mAuth.signInWithCredential(firebaseCredential)
+                        .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if (task.isSuccessful()) {
+                                    // Sign in success, update UI with the signed-in user's information
+                                    Log.d(TAG, "signInWithCredential:success");
+                                    FirebaseUser user = mAuth.getCurrentUser();
+                                    System.out.println("Auth with google ok !");
+                                    // ...
+
+
+                                } else {
+                                    // If sign in fails, display a message to the user.
+                                    Log.w(TAG, "signInWithCredential:failure", task.getException());
+
+                                    //...
+                                }
+                            }
+                        });
+
             }
         }
+            catch (ApiException e) {
+                                    // ...
+                    switch (e.getStatusCode()) {
+                        case CommonStatusCodes.CANCELED:
+                            Log.d(TAG, "One-tap dialog was closed.");
+                            // Don't re-prompt the user.
+                            showOneTapUI = false;
+                            break;
+                        case CommonStatusCodes.NETWORK_ERROR:
+                            Log.d(TAG, "One-tap encountered a network error.");
+                            // Try again or just ignore.
+                            break;
+                        default:
+                            Log.d(TAG, "Couldn't get credential from result."
+                                    + e.getLocalizedMessage());
+                            break;
+                    }
+            }
+
     }
 
+    @Override
+    public void loginWithGoogle() {
+        System.out.println("Login with google");
 
+        oneTapClient.beginSignIn(signInRequest)
+                .addOnSuccessListener(this, new OnSuccessListener<BeginSignInResult>() {
+                    @Override
+                    public void onSuccess(BeginSignInResult result) {
+                        try {
+                            startIntentSenderForResult(
+                                    result.getPendingIntent().getIntentSender(), REQ_ONE_TAP,
+                                    null, 0, 0, 0);
+                        } catch (IntentSender.SendIntentException e) {
+                            Log.e(TAG, "Couldn't start One Tap UI: " + e.getLocalizedMessage());
+                            System.out.println("Couldn't start One Tap UI: " + e.getLocalizedMessage());
+                        }
+                    }
+                })
+                .addOnFailureListener(this, new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // No saved credentials found. Launch the One Tap sign-up flow, or
+                        // do nothing and continue presenting the signed-out UI.
+//                        Log.d(TAG, e.getLocalizedMessage());
+                        System.out.println("No saved credentials found. Launch the One Tap sign-up flow, or do nothing and continue presenting the signed-out UI.");
+                        System.out.println("error: " + (e.getLocalizedMessage()));
+                        Toast.makeText(LoginActivity.this, "Please sign up first to use sign in one tap!", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
 
 
 

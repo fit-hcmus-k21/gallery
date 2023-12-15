@@ -199,7 +199,7 @@ public class LoginViewModel extends BaseViewModel<LoginNavigator> {
 
 
     public void onGoogleLoginClicked() {
-
+        getNavigator().loginWithGoogle();
     }
 
     public void onFingerprintLoginClicked() {
