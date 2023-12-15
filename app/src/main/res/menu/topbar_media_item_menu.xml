@@ -33,6 +33,11 @@
         android:title="Lọc ảnh trùng"
         app:showAsAction="never"
         />
+    <item
+        android:id="@+id/createStoryItem"
+        android:title="Tạo story"
+        app:showAsAction="never"
+        />
 
 
 

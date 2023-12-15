@@ -35,6 +35,9 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+    configurations.all {
+        resolutionStrategy.force ("com.google.code.findbugs:jsr305:3.0.2")
+    }
 
 
 //    -----------------------------------------------------------------
@@ -146,6 +149,11 @@ dependencies {
     implementation("com.drewnoakes:metadata-extractor:2.19.0")
 
     implementation("com.google.firebase:firebase-storage:latest")
+
+    // Jcodec
+    implementation ("org.jcodec:jcodec:0.2.5")
+    implementation ("org.jcodec:jcodec-android:0.2.5")
+
 
 
 
