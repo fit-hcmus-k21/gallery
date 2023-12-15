@@ -42,6 +42,7 @@ import com.example.gallery.data.local.prefs.AppPreferencesHelper;
 import com.example.gallery.data.models.db.Album;
 import com.example.gallery.data.models.db.MediaItem;
 import com.example.gallery.data.repositories.models.Repository.AlbumRepository;
+import com.example.gallery.data.repositories.models.Repository.MediaItemRepository;
 import com.example.gallery.ui.main.adapter.AlbumAdapter;
 import com.example.gallery.ui.main.doing.DeleteActivity;
 import com.example.gallery.ui.main.doing.InnerAlbumScreen;
@@ -50,6 +51,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class AlbumFragment extends Fragment {
@@ -118,6 +120,34 @@ public class AlbumFragment extends Fragment {
                 Intent intent = new Intent(getContext(), DeleteActivity.class);
                 startActivity(intent);
             }
+        });
+
+        albumAdapter.setOnItemClickListener(new AlbumAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Album album, int position) {
+                MediaItemRepository.getInstance().getAllMediaItemsByAlbumName(album.getName()).observe(getViewLifecycleOwner(), new Observer<List<MediaItem>>() {
+                    @Override
+                    public void onChanged(List<MediaItem> mediaItems) {
+                        for(MediaItem mediaItem : mediaItems){
+                            mediaItem.setPreviousAlbum(mediaItem.getAlbumName());
+                            MediaItemRepository.getInstance().updateMediaPreviousAlbum(mediaItem.getId(), mediaItem.getAlbumName());
+
+                            mediaItem.setAlbumName("Bin");
+                            MediaItemRepository.getInstance().updateMediaItemAlbum(mediaItem.getId(),"Bin");
+
+                            Calendar calendar = Calendar.getInstance();
+                            long currentDate = calendar.getTimeInMillis();
+                            MediaItemRepository.getInstance().updateMediaItemDeleteTs(mediaItem.getId(),currentDate);
+                            mediaItem.setDeletedTs(currentDate);
+                            albumAdapter.notifyItemChanged(position);
+
+                        }
+                    }
+                });
+                AlbumRepository.getInstance().deleteAlbum(AppPreferencesHelper.getInstance().getCurrentUserId(), album.getName());
+
+            }
+
         });
 
     }
@@ -197,4 +227,6 @@ public class AlbumFragment extends Fragment {
 
         dialog.show();
     }
+
+
 }
