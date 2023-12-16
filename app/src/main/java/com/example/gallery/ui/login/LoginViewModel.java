@@ -20,6 +20,7 @@ import com.example.gallery.data.local.db.AppDBHelper;
 import com.example.gallery.data.local.db.DBHelper;
 import com.example.gallery.data.models.db.User;
 import com.example.gallery.data.repositories.models.ViewModel.UserViewModel;
+import com.example.gallery.ui.backup.BackupManager;
 import com.example.gallery.ui.base.BaseViewModel;
 
 import com.facebook.AccessToken;
@@ -53,7 +54,6 @@ import java.util.concurrent.Executor;
  */
 
 public class LoginViewModel extends BaseViewModel<LoginNavigator> {
-    private CallbackManager callbackmanager;
 
     public void login(String email, String password) {
         setIsLoading(true);
@@ -102,6 +102,10 @@ public class LoginViewModel extends BaseViewModel<LoginNavigator> {
 
             AppDBHelper.getInstance().insertUser(user);
 
+            // TODO: fetch data from server
+//            Toast.makeText(App.getInstance(), "Đang đồng bộ dữ liệu, bạn chờ xíu nhé :))", Toast.LENGTH_SHORT).show();
+            BackupManager.RestoreCloudToLocal();
+
 
         }
 
@@ -111,47 +115,9 @@ public class LoginViewModel extends BaseViewModel<LoginNavigator> {
     // Method to perform Facebook login
 
     public void onFacebookLoginClicked() {
-        setIsLoading(true);
-        Toast.makeText(App.getInstance(), "Logging in with Facebook...", Toast.LENGTH_SHORT).show();
+        Toast.makeText(App.getInstance(), "Đang xử lý ...", Toast.LENGTH_SHORT).show();
 
-        callbackmanager = CallbackManager.Factory.create();
-
-        // Set permissions
-        LoginManager.getInstance().logInWithReadPermissions(getNavigator().getActivity(),
-                Arrays.asList("public_profile", "email"));
-
-        LoginManager.getInstance().registerCallback(callbackmanager,
-                new FacebookCallback<LoginResult>() {
-                    @Override
-                    public void onSuccess(LoginResult loginResult) {
-
-
-                        //  System.out.println("On Success");
-
-                        AccessToken accessToken = loginResult.getAccessToken();
-                        //  System.out.println("accessToken: " + accessToken.toString());
-
-                        handleFacebookAccessToken(accessToken);
-                        getNavigator().openMainActivity();
-
-                        setIsLoading(false); // Move setIsLoading(false) inside onSuccess
-
-                    }
-
-                    @Override
-                    public void onCancel() {
-                        setIsLoading(false); // Move setIsLoading(false) inside onCancel
-                        //  System.out.println("On Cancel");
-                    }
-
-                    @Override
-                    public void onError(FacebookException error) {
-                        setIsLoading(false); // Move setIsLoading(false) inside onError
-                        //  System.out.println( "On Error");
-                    }
-
-
-                });
+        getNavigator().loginWithFacebook();
 
 
 
@@ -162,44 +128,12 @@ public class LoginViewModel extends BaseViewModel<LoginNavigator> {
 
 
 
-    // Handle the Facebook access token to authenticate with your server or perform other actions
-    private void handleFacebookAccessToken(AccessToken accessToken) {
-        Toast.makeText(App.getInstance(), "Retrieving Information ", Toast.LENGTH_SHORT).show();
 
-        GraphRequest request = GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
-            @Override
-            public void onCompleted(JSONObject json, GraphResponse response) {
-                if (response.getError() != null) {
-                    // handle error
-                    //  System.out.println("ERROR");
-                } else {
-                    //  System.out.println("Success");
-                    try {
-                        String jsonResult = String.valueOf(json);
-                        //  System.out.println("JSON Result" + jsonResult);
 
-                        String strEmail = json.getString("email");
-                        String strId = json.getString("id");
-                        String strFirstName = json.getString("first_name");
-                        String strLastName = json.getString("last_name");
-
-                        // Now you can use strEmail, strId, strFirstName, and strLastName as needed
-                        // For example, you can pass these values to your server or update UI elements
-                        //  System.out.println( "ID: " + strId + ", Email: " + strEmail + ", FirstName: " + strFirstName + ", LastName: " + strLastName);
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        });
-
-        request.executeAsync();
-    }
 
 
     public void onGoogleLoginClicked() {
-
+        getNavigator().loginWithGoogle();
     }
 
     public void onFingerprintLoginClicked() {

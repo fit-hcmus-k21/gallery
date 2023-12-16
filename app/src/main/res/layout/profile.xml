@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         tools:context="com.example.gallery.ui.profile.ProfileFragment"
 
@@ -13,323 +12,193 @@
     </data>
 
 
-        <!-- TODO: Update blank fragment layout -->
-        <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:padding="6dp">
+    <!-- TODO: Update blank fragment layout -->
+    <RelativeLayout
 
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="6dp">
+
+
+
+
+
+
+        <!--            </LinearLayout>-->
+
+        <LinearLayout
+            android:id="@+id/LinearLayoutSyncAndBackup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+
+            <!-- Sync Button -->
             <com.google.android.material.button.MaterialButton
                 style="?attr/materialButtonOutlinedStyle"
-
-                android:id="@+id/btnAddFromDevice"
-                android:layout_width="match_parent"
+                android:id="@+id/btnSyncToRemote"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Upload from device"
+                android:text="Sync Data"
+                android:layout_marginTop="6dp"
                 android:layout_marginBottom="6dp"
-                android:backgroundTint="#C6E2FF"
-                android:onClick="@{()->viewModel.addImageFromDevice()}"
-                android:visibility="gone"
-
+                android:backgroundTint="#C6EF"
+                android:layout_weight="1"
+                android:onClick="@{()->viewModel.syncToCloudStorage()}"
                 />
 
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Download Status: "
-                android:textSize="16dp"
-                android:layout_marginTop="6dp"
-                android:id="@+id/txtDownloadStatus"
-                android:layout_below="@id/btnAddFromDevice"
-                android:textColor="@color/teal_700"
-                />
-
-            <EditText
-                android:id="@+id/editTextImageUrl"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Enter Image URL"
-                android:layout_below="@id/txtDownloadStatus"
-                android:layout_marginTop="6dp"
-                android:inputType="text"/>
-
+            <!-- Sync ProgressBar and TextView -->
             <LinearLayout
-                android:id="@+id/linearLayoutAddFromLink"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_below="@id/editTextImageUrl"
+                android:visibility="gone"
+                android:id="@+id/LinearLayoutSyncProgress"
+
                 >
-                <com.google.android.material.button.MaterialButton
-                    style="?attr/materialButtonOutlinedStyle"
 
-                    android:id="@+id/btnAddFromLink"
+                <ProgressBar
+                    android:id="@+id/seekBarSync"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:text="Download"
-                    android:layout_marginTop="6dp"
-                    android:layout_weight="1"
-                    android:backgroundTint="#C6E2FF"
-
-                    android:onClick="@{()->viewModel.addImageFromLink()}"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="4"
+                    android:visibility="visible"
                     />
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    />
-
-                <com.google.android.material.button.MaterialButton
-                    style="?attr/materialButtonOutlinedStyle"
-
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="6dp"
-                    android:layout_weight="1"
-                    android:backgroundTint="#C6E2FF"
-
-
-                    android:onClick="@{()->viewModel.clearText()}"
-                    android:text="Clear "
-
-                    />
-
-            </LinearLayout>
-
-            <ImageView
-                android:layout_width="200dp"
-                android:layout_height="200dp"
-                android:layout_below="@id/linearLayoutAddFromLink"
-                android:layout_marginTop="6dp"
-                android:id="@+id/imageViewDownloaded"
-                android:layout_centerHorizontal="true"
-                android:layout_marginBottom="6dp"
-                android:src="@drawable/ic_launcher_background"
-                android:visibility="gone"
-                />
-
-<!--            <LinearLayout-->
-<!--                android:id="@+id/LinearLayoutSyncAndBackup"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:orientation="vertical"-->
-<!--                android:layout_below="@id/imageViewDownloaded"-->
-<!--                >-->
-
-<!--                <com.google.android.material.button.MaterialButton-->
-<!--                    style="?attr/materialButtonOutlinedStyle"-->
-
-<!--                    android:id="@+id/btnSyncToRemote"-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:text="Sync Data"-->
-<!--                    android:layout_marginTop="6dp"-->
-<!--                    android:layout_marginBottom="6dp"-->
-<!--                    android:backgroundTint="#C6EF"-->
-<!--                    android:layout_weight="1"-->
-
-<!--                    android:onClick="@{()->viewModel.syncToCloudStorage()}"-->
-<!--                    />-->
-
-
-<!--                <TextView-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="match_parent"-->
-<!--                    android:layout_weight="1"-->
-<!--                    />-->
-
-<!--                <com.google.android.material.button.MaterialButton-->
-<!--                    style="?attr/materialButtonOutlinedStyle"-->
-
-<!--                    android:id="@+id/btnBackup"-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:text="Restore "-->
-<!--                    android:layout_marginTop="6dp"-->
-<!--                    android:layout_marginBottom="6dp"-->
-<!--                    android:backgroundTint="#C6E"-->
-<!--                    android:layout_weight="1"-->
-
-<!--                    android:onClick="@{()->viewModel.backup()}"-->
-<!--                    />-->
-
-
-
-
-
-
-<!--            </LinearLayout>-->
-
-            <LinearLayout
-                android:id="@+id/LinearLayoutSyncAndBackup"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_below="@id/imageViewDownloaded">
-
-                <!-- Sync Button -->
-                <com.google.android.material.button.MaterialButton
-                    style="?attr/materialButtonOutlinedStyle"
-                    android:id="@+id/btnSyncToRemote"
+                    android:id="@+id/textViewSyncProgress"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Sync Data"
-                    android:layout_marginTop="6dp"
-                    android:layout_marginBottom="6dp"
-                    android:backgroundTint="#C6EF"
                     android:layout_weight="1"
-                    android:onClick="@{()->viewModel.syncToCloudStorage()}"
+                    android:visibility="visible"
+                    android:hint="12/39"
+                    android:layout_marginStart="12dp"
                     />
-
-                <!-- Sync ProgressBar and TextView -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:visibility="gone"
-
-                    >
-
-                    <SeekBar
-                        android:id="@+id/seekBarSync"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="4"
-                        android:visibility="visible"/>
-
-                    <TextView
-                        android:id="@+id/textViewSyncProgress"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:visibility="visible"
-                        android:hint="12/39"
-                        android:layout_marginStart="8dp"
-                        />
-                </LinearLayout>
-
-
-                <!-- Restore Button -->
-                <com.google.android.material.button.MaterialButton
-                    style="?attr/materialButtonOutlinedStyle"
-                    android:id="@+id/btnBackup"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Restore"
-                    android:layout_marginTop="6dp"
-                    android:layout_marginBottom="6dp"
-                    android:backgroundTint="#C6E"
-                    android:layout_weight="1"
-                    android:onClick="@{()->viewModel.backup()}"
-                    />
-
-                <!-- Restore ProgressBar and TextView -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:visibility="gone"
-                    >
-
-                    <SeekBar
-                        android:id="@+id/progressBarRestore"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="4"
-                        android:visibility="visible"/>
-
-                    <TextView
-                        android:id="@+id/textViewRestoreProgress"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:visibility="visible"
-                        android:hint="22/100"
-                        android:layout_marginStart="8dp"
-                        />
-                </LinearLayout>
-
             </LinearLayout>
 
 
-
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Your name: "
-                android:textSize="20sp"
-                android:layout_marginTop="6dp"
-                android:id="@+id/txtName"
-                android:layout_below="@id/LinearLayoutSyncAndBackup"
-                />
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Your userId:  "
-                android:textSize="20sp"
-                android:layout_marginTop="6dp"
-                android:id="@+id/txtUserID"
-                android:layout_below="@id/txtName"
-                android:visibility="gone"
-
-                />
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Your Email:  "
-                android:textSize="20sp"
-                android:layout_marginTop="6dp"
-                android:id="@+id/txtEmail"
-                android:layout_below="@id/txtUserID"
-
-                />
-
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Number Albums:  "
-                android:textSize="20sp"
-                android:layout_marginTop="6dp"
-                android:id="@+id/txtNumAlbum"
-                android:layout_below="@id/txtEmail"
-
-                />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Number media items:  "
-                android:textSize="20sp"
-                android:layout_marginTop="6dp"
-                android:id="@+id/txtNumImg"
-                android:layout_below="@id/txtNumAlbum"
-
-                />
-
+            <!-- Restore Button -->
             <com.google.android.material.button.MaterialButton
                 style="?attr/materialButtonOutlinedStyle"
-
-                android:id="@+id/btnLogout"
-                android:layout_width="match_parent"
+                android:id="@+id/btnBackup"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Logout"
-                android:layout_below="@id/txtNumImg"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
-                android:backgroundTint="#C6E2FF"
-                android:layout_marginStart="40dp"
-                android:layout_marginEnd="40dp"
-
-                android:onClick="@{()->viewModel.logout()}"
+                android:text="Restore"
+                android:layout_marginTop="6dp"
+                android:layout_marginBottom="6dp"
+                android:backgroundTint="#C6E"
+                android:layout_weight="1"
+                android:onClick="@{()->viewModel.backup()}"
                 />
 
+            <!-- Restore ProgressBar and TextView -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:visibility="gone"
+                android:id="@+id/LinearLayoutRestoreProgress"
+
+                >
+
+                <ProgressBar
+                    android:id="@+id/progressBarRestore"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="4"
+                    android:visibility="visible"
+                    />
+
+                <TextView
+                    android:id="@+id/textViewRestoreProgress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:visibility="visible"
+                    android:hint="22/100"
+                    android:layout_marginStart="12dp"
+                    />
+            </LinearLayout>
+
+        </LinearLayout>
 
 
-        </RelativeLayout>
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Your name: "
+            android:textSize="20sp"
+            android:layout_marginTop="6dp"
+            android:id="@+id/txtName"
+            android:layout_below="@id/LinearLayoutSyncAndBackup"
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Your userId:  "
+            android:textSize="20sp"
+            android:layout_marginTop="6dp"
+            android:id="@+id/txtUserID"
+            android:layout_below="@id/txtName"
+            android:visibility="gone"
+
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Your Email:  "
+            android:textSize="20sp"
+            android:layout_marginTop="6dp"
+            android:id="@+id/txtEmail"
+            android:layout_below="@id/txtUserID"
+
+            />
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Number Albums:  "
+            android:textSize="20sp"
+            android:layout_marginTop="6dp"
+            android:id="@+id/txtNumAlbum"
+            android:layout_below="@id/txtEmail"
+
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Number media items:  "
+            android:textSize="20sp"
+            android:layout_marginTop="6dp"
+            android:id="@+id/txtNumImg"
+            android:layout_below="@id/txtNumAlbum"
+
+            />
+
+        <com.google.android.material.button.MaterialButton
+            style="?attr/materialButtonOutlinedStyle"
+
+            android:id="@+id/btnLogout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Logout"
+            android:layout_below="@id/txtNumImg"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="#C6E2FF"
+            android:layout_marginStart="40dp"
+            android:layout_marginEnd="40dp"
+
+            android:onClick="@{()->viewModel.logout()}"
+            />
+
+
+
+    </RelativeLayout>
 
 
 

@@ -40,6 +40,9 @@ public class MainActivity extends AppCompatActivity {
         //  System.out.println("in oncreate main: 42");
 
 
+        // TODO: Kiểm tra quyền truy cập cấp phép lấy hết ảnh trong điện thoại hay không
+//        RequestPermissionHelper.checkAndRequestPermission(this, 42);
+
         fetchData();
 
     }
@@ -125,13 +128,10 @@ public class MainActivity extends AppCompatActivity {
             executor.execute(() -> {
                   System.out.println("in executor main: " + requestCode);
 
-                new Handler(Looper.getMainLooper()).post(() -> MediaItemRepository.getInstance().fetchData());
+                new Handler(Looper.getMainLooper()).post(() -> MediaItemRepository.getInstance().fetchDataFromExternalStorage());
 
 
             });
-        } else {
-            System.out.println("else on result permission: " + requestCode);
-            fetchData();
         }
 
     }

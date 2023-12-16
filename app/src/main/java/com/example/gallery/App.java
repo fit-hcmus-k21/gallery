@@ -8,6 +8,10 @@ import com.example.gallery.data.DataManager;
 import com.example.gallery.data.repositories.models.ViewModel.UserViewModel;
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.identity.BeginSignInRequest;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.firebase.FirebaseApp;
 
 import retrofit2.Retrofit;
@@ -21,7 +25,6 @@ public class App extends Application {
     private static Retrofit retrofitInstance;
 
     private static DataManager dataManager;
-
 
     @Override
     public void onCreate() {
@@ -39,6 +42,7 @@ public class App extends Application {
         AppEventsLogger.activateApp(this);
 
         FirebaseApp.initializeApp(this);
+
 
     }
 

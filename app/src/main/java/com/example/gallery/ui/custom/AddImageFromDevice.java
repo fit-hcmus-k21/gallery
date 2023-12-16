@@ -152,18 +152,6 @@ public class AddImageFromDevice extends AppCompatActivity {
                                     item.setPath(path);
                                     item.setFileExtension("mp4");
 
-//                                    /*Temp. lastmodified attributes is represent for the real creation date*/
-//                                    String realMediaItemPath = getPathFromUri(uri, 1);
-//                                    try {
-//                                        ExifInterface exifInterface = new ExifInterface(realMediaItemPath);
-//                                        String lastModified = exifInterface.getAttribute(ExifInterface.TAG_DATETIME);
-//                                        item.setLastModified(12345L);
-//                                    } catch (IOException e) {
-//                                        item.setLastModified(12345L);
-//                                        throw new RuntimeException(e);
-//
-//                                    }
-
 
                                     MediaItemRepository.getInstance().insert(item);
 

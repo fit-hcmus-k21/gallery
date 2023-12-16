@@ -61,7 +61,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class InnerAlbumScreen extends AppCompatActivity {
-    //TODO: Lướt ngược
     private static final int REQUEST_IMAGE_PICK = 1;
 
     RecyclerView recyclerView;

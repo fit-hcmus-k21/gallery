@@ -11,4 +11,7 @@ public interface RegisterNavigator {
 
     void register();
 
+    void signUpWithGoogle();
+
+    void signUpWithFacebook();
 }

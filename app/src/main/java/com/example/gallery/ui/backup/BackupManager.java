@@ -61,7 +61,7 @@ public class BackupManager {
 
     private static final Object lock = new Object();    // Đối tượng lock để đồng bộ hóa
 
-    public static void restoreUerInfo() {
+    public static void restoreUserInfo() {
 
         Executors.newSingleThreadExecutor().execute(new Runnable() {
             @Override
@@ -180,6 +180,8 @@ public class BackupManager {
 
     }
 
+
+
     public static void restoreMediaItems() {
         Executors.newSingleThreadExecutor().execute(new Runnable() {
             @Override
@@ -204,10 +206,11 @@ public class BackupManager {
 
                                     // TODO: Tải file media item từ Cloud Storage về local storage theo url
                                     String cloudStoragePath = Utils.getStoragePathFile(mediaItem.getId() + "", mediaItem.getCreationDate(), mediaItem.getFileExtension());
+
                                     RestoreFile(cloudStoragePath, mediaItem.getPath());
+
                                     MediaItemRepository.getInstance().insert(mediaItem);
                                     System.out.println("Insert after restore media item completed " + mediaItem.getName());
-
 
                                 }
                             }
@@ -226,6 +229,8 @@ public class BackupManager {
                     @Override
                     public void run() {
                         // UI thread work here
+
+
                     }
                 });
             }
@@ -297,7 +302,7 @@ public class BackupManager {
             try {
                 System.out.println("Restore user info started");
                 // Thực hiện tác vụ 1
-                restoreUerInfo();
+                restoreUserInfo();
                 System.out.println("Restore user info completed");
             } catch (Exception e) {
                 e.printStackTrace();

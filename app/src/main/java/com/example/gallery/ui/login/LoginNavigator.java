@@ -20,6 +20,11 @@ public interface LoginNavigator {
     void openResetPasswordActivity();
 
 
+    void loginWithGoogle();
+
+    void loginWithFacebook();
+
+
 
 
 

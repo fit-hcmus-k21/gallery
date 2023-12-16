@@ -219,6 +219,8 @@
                     android:layout_marginRight="12dp"
                     android:background="@drawable/icon_google"
 
+                    android:onClick="@{()->viewModel.onGoogleSignUpClicked()}"
+
                     />
 
                 <ImageButton
@@ -226,6 +228,9 @@
                     android:layout_width="60dp"
                     android:layout_height="60dp"
                     android:background="@drawable/icon_facebook"
+
+                    android:onClick="@{()->viewModel.onFacebookSignUpClicked()}"
+
 
                     />
 
