@@ -42,6 +42,7 @@ public interface DataManager extends DBHelper, PreferencesHelper, ApiHelper {
             return mType;
         }
 
-
     }
+
+
 }

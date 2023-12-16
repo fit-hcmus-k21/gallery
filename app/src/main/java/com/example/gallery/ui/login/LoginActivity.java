@@ -446,7 +446,7 @@ public class LoginActivity extends BaseActivity<Slide02LoginScreenBinding, Login
                                 System.out.println("New user");
 
                                 FirebaseUser userFirebase = mAuth.getCurrentUser();
-                                System.out.println("Auth with google ok !");
+                                System.out.println("Auth with facebook ok !");
                                 // ...
                                 Toast.makeText(App.getInstance(), "Authentication success, " + userFirebase.getDisplayName() +".",
                                         Toast.LENGTH_SHORT).show();
@@ -505,8 +505,8 @@ public class LoginActivity extends BaseActivity<Slide02LoginScreenBinding, Login
                                 });
 
                                 mViewModel.setIsLoading(true);
-                                Toast.makeText(App.getInstance(), "Sign up with google successfully !", Toast.LENGTH_SHORT).show();
-                                System.out.println("Sign up with google successfully 314 !");
+                                Toast.makeText(App.getInstance(), "Sign in with facebook successfully !", Toast.LENGTH_SHORT).show();
+                                System.out.println("Sign up with facebook successfully 314 !");
                                 openMainActivity();
 
 
