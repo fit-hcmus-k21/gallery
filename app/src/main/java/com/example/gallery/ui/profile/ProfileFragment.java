@@ -15,13 +15,18 @@ import android.view.ViewGroup;
 
 import androidx.lifecycle.ViewModelProvider;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CircleCrop;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.gallery.BR;
 import com.example.gallery.R;
 
+import com.example.gallery.data.DataManager;
 import com.example.gallery.databinding.ProfileBinding;
 import com.example.gallery.ui.base.BaseFragment;
 import com.example.gallery.ui.custom.AddImageFromDevice;
 import com.example.gallery.ui.login.LoginActivity;
+import com.google.firebase.auth.FirebaseAuth;
 
 
 import javax.annotation.Nullable;
@@ -68,23 +73,21 @@ public class ProfileFragment extends BaseFragment<ProfileBinding, ProfileViewMod
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        //  System.out.println("On created view : " + mProfileBinding);
+
 
 //        ------------------------------
-        //  System.out.println("mViewModel: " + mViewModel);
+
         mViewModel.getNumberOfImages().observe(getViewLifecycleOwner(), new androidx.lifecycle.Observer<Integer>() {
             @Override
             public void onChanged(Integer integer) {
-                //  System.out.println("ProfileFragment 86: " + integer);
-                mProfileBinding.txtNumImg.setText("Number of media items: " + integer);
+                mProfileBinding.txtNumImg.setText("Tổng số ảnh: " + integer);
             }
         });
 
         mViewModel.getNumberOfAlbums().observe(getViewLifecycleOwner(), new androidx.lifecycle.Observer<Integer>() {
             @Override
             public void onChanged(Integer integer) {
-                //  System.out.println("ProfileFragment 86: " + integer);
-                mProfileBinding.txtNumAlbum.setText("Number of albums: " + integer);
+                mProfileBinding.txtNumAlbum.setText("Số bộ sưu tập: " + integer);
             }
         });
 
@@ -92,17 +95,42 @@ public class ProfileFragment extends BaseFragment<ProfileBinding, ProfileViewMod
         mViewModel.getUser().observe(getViewLifecycleOwner(), new androidx.lifecycle.Observer<com.example.gallery.data.models.db.User>() {
             @Override
             public void onChanged(com.example.gallery.data.models.db.User user) {
-                //  System.out.println("ProfileFragment 86: " + integer);
                 System.out.println("User : " + user);
             }
         });
 
 //        ------------------------------
 
-//        mProfileBinding.txtUserID.setText("Your userId: " + mViewModel.getDataManager().getCurrentUserId() + " ");
-        mProfileBinding.txtEmail.setText("Email: " + mViewModel.getDataManager().getCurrentUserEmail());
-        mProfileBinding.txtName.setText("Hello, " + mViewModel.getDataManager().getCurrentUserName());
-//        mProfileBinding.txtNumImg.setText("Number of images: " + UserViewModel.getInstance().getNumberOfItems().getValue()); // loi failed to open file '/data/data/com.example.gallery/code_cache
+        mProfileBinding.txtName.setText("" + mViewModel.getDataManager().getCurrentUserName());
+        int typeLogin = mViewModel.getDataManager().getCurrentUserLoggedInMode();
+        String txtAccountType = "";
+        switch (typeLogin) {
+            case 1:
+                txtAccountType = "Tài khoản Google";
+                break;
+            case 2:
+                txtAccountType = "Tài khoản Facebook";
+                break;
+            case 3:
+                txtAccountType = "Tài khoản Gallery";
+                break;
+        }
+        mProfileBinding.txtTypeAccount.setText(txtAccountType);
+
+        if (FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl() != null) {
+            Glide.with(this)
+                    .load(FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl())
+                    .apply(RequestOptions.bitmapTransform(new CircleCrop()))
+                    .into(mProfileBinding.imgAvatar);
+        }
+
+
+
+
+
+
+
+//        -----------------------
 
     }
 
