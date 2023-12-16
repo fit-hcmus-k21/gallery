@@ -1,0 +1,25 @@
+<!-- res/layout/dialog_layout.xml -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical"
+              android:padding="16dp">
+
+    <Button
+        android:id="@+id/btnLoadAllImages"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Tải hết ảnh từ điện thoại" />
+
+    <Button
+        android:id="@+id/btnAddSomeImages"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Thêm vài ảnh" />
+
+    <Button
+        android:id="@+id/btnLoadImagesFromUrl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Tải ảnh qua URL" />
+</LinearLayout>

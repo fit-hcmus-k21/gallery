@@ -6,13 +6,19 @@
 
     <TextView
         android:id="@+id/tv_rcv_item"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="TextView"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
-        android:textSize="18sp"
+        android:paddingRight="8dp"
+        android:paddingLeft="8dp"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp"
+        android:textSize="20dp"
+        android:textColor="#2F4F4F"
         android:textStyle="bold"
+        android:background="#E6E6FA"
         />
 
     <androidx.recyclerview.widget.RecyclerView

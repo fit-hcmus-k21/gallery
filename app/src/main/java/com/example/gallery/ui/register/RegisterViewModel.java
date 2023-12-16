@@ -211,6 +211,14 @@ public class RegisterViewModel extends BaseViewModel<RegisterNavigator> {
         getNavigator().openLoginActivity();
     }
 
+    public void onGoogleSignUpClicked() {
+        getNavigator().signUpWithGoogle();
+    }
+
+    public void onFacebookSignUpClicked() {
+        getNavigator().signUpWithFacebook();
+    }
+
 }
 
 
