@@ -86,13 +86,13 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="8dp"
+                    android:backgroundTint="#C6E2FF"
                     android:drawableStart="@drawable/outline_lock_24"
                     android:hint=" Password"
                     android:inputType="textPassword"
                     android:textColor="#333333"
-                    android:textSize="20dp"
 
-                    android:backgroundTint="#C6E2FF"
+                    android:textSize="20dp"
 
 
                     app:layout_constraintBottom_toBottomOf="@id/text_email"
@@ -100,8 +100,7 @@
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/text_password"
-                    app:layout_constraintVertical_bias="0.0"
-                    />
+                    app:layout_constraintVertical_bias="0.0" />
 
 
             </com.google.android.material.textfield.TextInputLayout>

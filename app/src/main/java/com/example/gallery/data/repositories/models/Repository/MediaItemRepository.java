@@ -414,4 +414,7 @@ public class MediaItemRepository {
     public LiveData<List<MediaItem>> getAllFavoriteMediaItem(String userID){
         return mediaItemDao.getAllFavoriteMediaItem(AppPreferencesHelper.getInstance().getCurrentUserId(), true);
     }
+    public LiveData<List<MediaItem>> getAllPublicMediaItem(String userID) {
+        return mediaItemDao.getAllPublicMediaItem(userID);
+    }
 }

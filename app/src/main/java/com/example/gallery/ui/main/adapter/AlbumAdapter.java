@@ -1,11 +1,13 @@
 package com.example.gallery.ui.main.adapter;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.content.DialogInterface;
+
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,21 +18,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.gallery.R;
-import com.example.gallery.data.local.prefs.AppPreferencesHelper;
 import com.example.gallery.data.models.db.Album;
-import com.example.gallery.data.models.db.MediaItem;
-import com.example.gallery.data.repositories.models.Repository.AlbumRepository;
-import com.example.gallery.data.repositories.models.Repository.MediaItemRepository;
 import com.example.gallery.ui.main.doing.InnerAlbumScreen;
-import com.example.gallery.ui.main.doing.SingleMediaActivity;
+import com.google.android.material.textfield.TextInputEditText;
+
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHolder> {
@@ -69,16 +66,23 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //  System.out.println("Album Adapter | onBindViewHolder: onClick: album = " + album);
-                Intent intent = new Intent(holder.itemView.getContext(), InnerAlbumScreen.class);
-
-                Bundle bundle = new Bundle();
-
-                bundle.putString("albumName", album.getName());
-                //  System.out.println( "onClick album name: " + album.getName());
-                intent.putExtras(bundle);
-
-                holder.itemView.getContext().startActivity(intent);
+                if(album.isPrivateAlb()){
+                    View view = LayoutInflater.from(holder.itemView.getContext()).inflate(R.layout.private_album_password, null);
+                    TextInputEditText inputEditText = view.findViewById(R.id.password_album);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(holder.itemView.getContext());
+                    builder.setTitle("Nhập mật khẩu")
+                        .setView(view)
+                        .setPositiveButton("OK", (dialog, which) -> {
+                            if(album.getPassword().equals(inputEditText.getText().toString()))
+                                navigateToInnerAlbumScreen(holder.itemView.getContext(),album);
+                            else Toast.makeText(holder.itemView.getContext(), "Mật khẩu không chính xác", Toast.LENGTH_SHORT).show();
+                        })
+                            .setNegativeButton("Hủy", null);
+                    builder.create().show();
+                }
+                else {
+                    navigateToInnerAlbumScreen(holder.itemView.getContext(),album);
+                }
             }
         });
 
@@ -128,7 +132,13 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
         popupMenu.show();
 
     }
-
+    private void navigateToInnerAlbumScreen(Context context, Album album) {
+        Intent intent = new Intent(context, InnerAlbumScreen.class);
+        Bundle bundle = new Bundle();
+        bundle.putString("albumName", album.getName());
+        intent.putExtras(bundle);
+        context.startActivity(intent);
+    }
     @Override
     public int getItemCount() {
         if(albums != null) {
@@ -136,7 +146,6 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
         }
         return 0;
     }
-
     public class AlbumViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
         TextView textView;
@@ -151,6 +160,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
 
         }
     }
+
 
 
     public void setOnItemClickListener(OnItemClickListener listener) {

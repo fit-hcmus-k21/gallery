@@ -67,7 +67,7 @@ public class AlbumFromExternalStorage {
                         String folderPathFav = coverPhotoPathFav.substring(0, coverPhotoPathFav.lastIndexOf(File.separator));
 
                         //TODO xem xét để hình ảnh là hình trái tym
-                        albums.add(new Album("Favorite", "",creationDateFav , coverPhotoPathFav, AppPreferencesHelper.getInstance().getCurrentUserId(), "favoritePath", 0));
+                        albums.add(new Album("Favorite", "",creationDateFav , coverPhotoPathFav, AppPreferencesHelper.getInstance().getCurrentUserId(), "favoritePath", 0,false,""));
 
                         isFavoriteAlbumExist = true;
                     }
@@ -86,7 +86,7 @@ public class AlbumFromExternalStorage {
 
                     long creationDate = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_ADDED)) * 1000L; // convert to millisecond. Must multiply by 1000L
 
-                    albums.add(new Album(folderName, "", creationDate, coverPhotoPath, AppPreferencesHelper.getInstance().getCurrentUserId(), folderPath, 0));
+                    albums.add(new Album(folderName, "", creationDate, coverPhotoPath, AppPreferencesHelper.getInstance().getCurrentUserId(), folderPath, 0,false,""));
                 }
             }while(cursor.moveToNext());
         }
@@ -120,7 +120,7 @@ public class AlbumFromExternalStorage {
 
                     long creationDate = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATE_ADDED)) * 1000L; // convert to millisecond. Must multiply by 1000L
 
-                    albums.add(new Album(folderName, "", creationDate, coverPhotoPath, AppPreferencesHelper.getInstance().getCurrentUserId(), folderPath, 0));
+                    albums.add(new Album(folderName, "", creationDate, coverPhotoPath, AppPreferencesHelper.getInstance().getCurrentUserId(), folderPath, 0,false,""));
                 }
             }while(cursor.moveToNext());
         }
