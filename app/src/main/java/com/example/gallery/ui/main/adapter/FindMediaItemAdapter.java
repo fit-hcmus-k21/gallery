@@ -94,6 +94,7 @@ public class FindMediaItemAdapter extends RecyclerView.Adapter<FindMediaItemAdap
                 data.putString("albumName",mediaItem.getAlbumName());
                 intent.putExtras(data);
                 holder.itemView.getContext().startActivity(intent);
+//                notifyDataSetChanged();
 
             }
         });
