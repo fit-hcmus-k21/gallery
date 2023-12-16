@@ -5,19 +5,22 @@ import static androidx.browser.customtabs.CustomTabsClient.getPackageName;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
@@ -25,42 +28,54 @@ import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.gallery.App;
 import com.example.gallery.R;
 import com.example.gallery.data.local.prefs.AppPreferencesHelper;
+import com.example.gallery.data.models.db.Album;
 import com.example.gallery.data.models.db.MediaItem;
 
 import com.example.gallery.data.repositories.models.Repository.AlbumRepository;
 import com.example.gallery.data.repositories.models.Repository.MediaItemRepository;
 import com.example.gallery.ui.custom.AddImageFromDevice;
+import com.example.gallery.ui.custom.AnimatedGIFWriter;
+import com.example.gallery.ui.main.adapter.CreateStoryAdapter;
 import com.example.gallery.ui.main.adapter.MainMediaItemAdapter;
 
 import com.example.gallery.utils.BytesToStringConverter;
 import com.example.gallery.ui.main.doing.DuplicationActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import org.jcodec.api.android.AndroidSequenceEncoder;
+
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class MediaItemFragment extends Fragment {
 
@@ -275,14 +290,125 @@ public class MediaItemFragment extends Fragment {
             Intent intent = new Intent(getContext(), DuplicationActivity.class);
             startActivityForResult(intent,REQUEST_SIMILAR_PHOTO);
         }
-
         else if(id == R.id.statistic){
             showStatisticDialog();
+        }
+        else if(id == R.id.createStoryItem){
+            showCreateStoryDialog();
         }
 
         return super.onOptionsItemSelected(item);
     }
 
+    private void showCreateStoryDialog() {
+        final Dialog dialog = new Dialog(this.getContext());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.create_story_dialog);
+
+        Window window = dialog.getWindow();
+
+        if(window == null){
+            return;
+        }
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        window.setGravity(Gravity.CENTER);
+        window.setAttributes(window.getAttributes());
+
+        dialog.setCancelable(true);
+
+        // Anh xa cac view
+        RecyclerView recyclerView = dialog.findViewById(R.id.rcv_story_item);
+        Button btnCreateStory = dialog.findViewById(R.id.btn_create_story);
+        Button btnCancelCreateStory = dialog.findViewById(R.id.btn_cancel_create_story);
+
+        // Layout manager
+        GridLayoutManager gridLayoutManager1 = new GridLayoutManager(getContext(), 3);
+        recyclerView.setLayoutManager(gridLayoutManager1);
+
+        // Adapter
+        CreateStoryAdapter createStoryAdapter = new CreateStoryAdapter();
+        recyclerView.setAdapter(createStoryAdapter);
+
+        // Data
+        MediaItemRepository.getInstance().getAllMediaItems().observe(getViewLifecycleOwner(), new Observer<List<MediaItem>>() {
+            @Override
+            public void onChanged(List<MediaItem> mediaItems) {
+                if(mediaItems == null) {
+                    return;
+                }
+                List<MediaItem> data = new ArrayList<>();
+                for(MediaItem iterator : mediaItems)
+                    if(!iterator.getAlbumName().equals("Bin"))
+                        data.add(iterator);
+                createStoryAdapter.setData(data);
+            }
+        });
+
+        // Event
+        btnCancelCreateStory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        btnCreateStory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                List<MediaItem> list = createStoryAdapter.getCheckedItems();
+                if(list.size() > 0){
+                    File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/DCIM/GIF_Story/");
+                    if(!file.exists()){
+                        file.mkdir();
+//                        Album album = new Album();
+//                        album.setUserID(AppPreferencesHelper.getInstance().getCurrentUserId());
+//                        album.setAlbumName("GIF_Story");
+//                        album.setCoverPhotoPath(list.get(0).getPath());
+//                        AlbumRepository.getInstance().insert(album);
+                    }
+                    String outputFilePath = file.getPath() + "/" + System.currentTimeMillis() + "story.gif";
+
+                    try {
+                        File fileDestination = new File(outputFilePath);
+                        OutputStream outputStream = new FileOutputStream(fileDestination);
+
+                        AnimatedGIFWriter animatedGIFWriter = new AnimatedGIFWriter(true);
+                        animatedGIFWriter.prepareForWrite(outputStream, -1,-1);
+                        for(MediaItem item : list){
+                            Bitmap bitmap = BitmapFactory.decodeFile(item.getPath());
+                            animatedGIFWriter.writeFrame(outputStream, bitmap, 1000);
+                        }
+                        AlbumRepository.getInstance().updateAlbumCoverPhotoPath(AppPreferencesHelper.getInstance().getCurrentUserId(), "GIF_Story", list.get(0).getPath());
+
+                        animatedGIFWriter.finishWrite(outputStream);
+                        MediaItem mediaItem = new MediaItem();
+                        mediaItem.setUserID(AppPreferencesHelper.getInstance().getCurrentUserId());
+                        mediaItem.setPath(outputFilePath);
+                        mediaItem.setAlbumName("GIF_Story");
+                        mediaItem.setCreationDate(new Date().getTime());
+                        mediaItem.setFileSize(fileDestination.length());
+                        mediaItem.setFileExtension("gif");
+                        MediaItemRepository.getInstance().insert(mediaItem);
+
+                        if(AlbumRepository.getInstance().isExistAlbum("GIF_Story") == false) {
+                            Album alb = new Album();
+                            alb.setName("GIF_Story");
+                            alb.setUserID(AppPreferencesHelper.getInstance().getCurrentUserId());
+                            alb.setCoverPhotoPath(list.get(0).getPath());
+                            AlbumRepository.getInstance().insert(alb);
+                        }
+                        AlbumRepository.getInstance().updateAlbumCoverPhotoPath(AppPreferencesHelper.getInstance().getCurrentUserId(), "Edited", list.get(0).getPath());
+                    }
+                    catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+                Toast.makeText(getContext(), "Create story succeed", Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+    }
 
 
     private String currentPhotoPath;
@@ -373,7 +499,6 @@ public class MediaItemFragment extends Fragment {
                 item.setCreationDate(new Date().getTime());
 
                 // Update thumbnail for "All" Album
-                //TODO: chưa cập nhật được lần đâu cho Camera về thumbnail
                 AlbumRepository.getInstance().updateAlbumCoverPhotoPath(AppPreferencesHelper.getInstance().getCurrentUserId(), "Camera", currentPhotoPath);
 
                 MediaItemRepository.getInstance().insert(item);

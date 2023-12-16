@@ -81,13 +81,6 @@ public class DeleteActivity extends AppCompatActivity {
                 deleteAdapter.setData(listMediaItemToDisplay);
             }
         });
-
-//        btnReturn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                finish();
-//            }
-//        });
     }
 
     @Override
