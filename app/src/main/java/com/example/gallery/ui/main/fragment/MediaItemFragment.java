@@ -29,6 +29,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Gravity;
@@ -41,6 +43,8 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.gallery.App;
@@ -49,6 +53,7 @@ import com.example.gallery.data.local.prefs.AppPreferencesHelper;
 import com.example.gallery.data.models.db.Album;
 import com.example.gallery.data.models.db.MediaItem;
 
+import com.example.gallery.data.repositories.models.HelperFunction.RequestPermissionHelper;
 import com.example.gallery.data.repositories.models.Repository.AlbumRepository;
 import com.example.gallery.data.repositories.models.Repository.MediaItemRepository;
 import com.example.gallery.ui.custom.AddImageFromDevice;
@@ -56,6 +61,7 @@ import com.example.gallery.ui.custom.AnimatedGIFWriter;
 import com.example.gallery.ui.main.adapter.CreateStoryAdapter;
 import com.example.gallery.ui.main.adapter.MainMediaItemAdapter;
 
+import com.example.gallery.ui.main.doing.MainActivity;
 import com.example.gallery.utils.BytesToStringConverter;
 import com.example.gallery.ui.main.doing.DuplicationActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -71,6 +77,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 public class MediaItemFragment extends Fragment {
 
@@ -134,8 +142,7 @@ public class MediaItemFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 System.out.println("openAddImageFromDeviceActivity");
-                Intent intent = new Intent(getActivity(), AddImageFromDevice.class);
-                startActivityForResult(intent, REQUEST_IMAGE_PICK);
+                showOptionsDialog();
 
             }
         });
@@ -408,8 +415,6 @@ public class MediaItemFragment extends Fragment {
 
     private String currentPhotoPath;
 
-
-
     private void requestCameraPermissionAndTakePhoto() {
 
         if (ContextCompat.checkSelfPermission(App.getInstance(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
@@ -554,6 +559,108 @@ public class MediaItemFragment extends Fragment {
 
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
+    }
+
+
+    // Hàm để hiển thị dialog
+    private void showOptionsDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.add_img_dialog, null);
+        builder.setView(dialogView);
+
+        // Lấy các button từ dialog layout
+        Button btnLoadAllImages = dialogView.findViewById(R.id.btnLoadAllImages);
+        Button btnAddSomeImages = dialogView.findViewById(R.id.btnAddSomeImages);
+        Button btnLoadImagesFromUrl = dialogView.findViewById(R.id.btnLoadImagesFromUrl);
+
+        // Thiết lập sự kiện click cho các button
+
+        // Tạo dialog hiện tại
+        final AlertDialog currentDialog = builder.create();
+        btnLoadAllImages.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Xử lý khi người dùng chọn tùy chọn 1
+                // ...
+                // Dismiss dialog nếu cần
+                RequestPermissionHelper.checkAndRequestPermission(getActivity(), 42);
+                currentDialog.dismiss();
+
+            }
+        });
+
+        btnAddSomeImages.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Xử lý khi người dùng chọn tùy chọn 2
+                // ...
+                // Dismiss dialog nếu cần
+                Intent intent = new Intent(getActivity(), AddImageFromDevice.class);
+                startActivityForResult(intent, REQUEST_IMAGE_PICK);
+
+                currentDialog.dismiss();
+
+            }
+        });
+
+        btnLoadImagesFromUrl.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Xử lý khi người dùng chọn tùy chọn 3
+                // ...
+                // Dismiss dialog nếu cần
+                showCustomDialog();
+                currentDialog.dismiss();
+
+            }
+        });
+
+        // Tạo và hiển thị AlertDialog
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    // Hàm để hiển thị dialog
+    private void showCustomDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.download_img_url, null);
+        builder.setView(dialogView);
+
+        // Lấy các view từ dialog layout
+        TextView tvStatus = dialogView.findViewById(R.id.tvStatus);
+        EditText etUrl = dialogView.findViewById(R.id.etUrl);
+        Button btnDownload = dialogView.findViewById(R.id.btnDownload);
+        Button btnClear = dialogView.findViewById(R.id.btnClear);
+
+        // Thiết lập sự kiện click cho nút "Download"
+        btnDownload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Xử lý khi người dùng nhấn nút "Download"
+                String url = etUrl.getText().toString();
+                // Thực hiện download
+                // ...
+
+                // Cập nhật trạng thái
+                tvStatus.setText("Status: Downloading from " + url);
+            }
+        });
+
+        // Thiết lập sự kiện click cho nút "Clear"
+        btnClear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Xử lý khi người dùng nhấn nút "Clear"
+                etUrl.setText("");
+                tvStatus.setText("Status: Cleared");
+            }
+        });
+
+        // Tạo và hiển thị AlertDialog
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
 }

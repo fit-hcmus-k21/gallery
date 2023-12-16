@@ -22,6 +22,8 @@ public interface LoginNavigator {
 
     void loginWithGoogle();
 
+    void loginWithFacebook();
+
 
 
 

@@ -54,4 +54,26 @@ public class RequestPermissionHelper {
         return true;
     }
 
+    public static boolean requestPermission(Activity activity, final int REQUEST_PERMISSION_CODE) {
+        List<String> listPermissionNeeded = new ArrayList<>();
+
+            listPermissionNeeded.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+
+            listPermissionNeeded.add(Manifest.permission.READ_MEDIA_IMAGES);
+
+            listPermissionNeeded.add(Manifest.permission.READ_MEDIA_AUDIO);
+
+            listPermissionNeeded.add(Manifest.permission.READ_MEDIA_VIDEO);
+
+            listPermissionNeeded.add(Manifest.permission.CAMERA);
+
+            listPermissionNeeded.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+        if (!listPermissionNeeded.isEmpty()) {
+            ActivityCompat.requestPermissions(activity, listPermissionNeeded.toArray(new String[listPermissionNeeded.size()]), REQUEST_PERMISSION_CODE);
+            return false;
+        }
+        return true;
+    }
+
 }

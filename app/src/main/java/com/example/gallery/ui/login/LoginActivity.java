@@ -41,7 +41,12 @@ import com.example.gallery.ui.main.Slide07_PhotosGridviewScreenActivity;
 import com.example.gallery.ui.register.RegisterActivity;
 import com.example.gallery.ui.resetPassword.ResetPasswordActivity;
 import com.example.gallery.utils.ValidateText;
+import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
 import com.google.android.gms.auth.api.identity.BeginSignInRequest;
 import com.google.android.gms.auth.api.identity.BeginSignInResult;
 import com.google.android.gms.auth.api.identity.Identity;
@@ -56,13 +61,16 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.Arrays;
 import java.util.Date;
+import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 /**
@@ -71,6 +79,9 @@ import java.util.concurrent.Executors;
 
 
 public class LoginActivity extends BaseActivity<Slide02LoginScreenBinding, LoginViewModel> implements LoginNavigator {
+
+
+    private CallbackManager mCallbackManager;
 
     private Slide02LoginScreenBinding mLoginBinding;
 
@@ -217,6 +228,13 @@ public class LoginActivity extends BaseActivity<Slide02LoginScreenBinding, Login
         System.out.println("onActivityResult");
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
+        if (requestCode != REQ_ONE_TAP) {
+            System.out.println("requestCode: " + requestCode + " data: " + data);
+            mCallbackManager.onActivityResult(requestCode, resultCode, data);
+            return;
+        }
+
+        // requestCode == GOOGLE_LOGIN_REQUEST_CODE
         try {
             System.out.println("requestCode: " + requestCode + " data: " + data);
             SignInCredential googleCredential = oneTapClient.getSignInCredentialFromIntent(data);
@@ -398,7 +416,183 @@ public class LoginActivity extends BaseActivity<Slide02LoginScreenBinding, Login
                 });
     }
 
+    // Handle the Facebook access token to authenticate with your server or perform other actions
+    private void handleFacebookAccessToken(AccessToken token) {
+        Toast.makeText(App.getInstance(), "Retrieving Information ", Toast.LENGTH_SHORT).show();
 
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+
+        if (token == null) {
+            System.out.println("token is null");
+            return;
+        } else {
+            System.out.println("token is not null");
+        }
+        AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
+        System.out.println("credential: " + credential + " auth: " + mAuth);
+        mAuth.signInWithCredential(credential)
+                .addOnCompleteListener( this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            System.out.println("signInWithCredential:success");
+
+
+
+                            if (task.getResult().getAdditionalUserInfo().isNewUser()) {
+                                // Nếu đây là lần đăng nhập đầu tiên, thực hiện các bước tạo tài khoản mới ở đây
+                                // Ví dụ: Lưu thông tin mới vào cơ sở dữ liệu
+                                System.out.println("New user");
+
+                                FirebaseUser userFirebase = mAuth.getCurrentUser();
+                                System.out.println("Auth with google ok !");
+                                // ...
+                                Toast.makeText(App.getInstance(), "Authentication success, " + userFirebase.getDisplayName() +".",
+                                        Toast.LENGTH_SHORT).show();
+
+
+                                User user = new User();
+                                user.setId(mAuth.getCurrentUser().getUid());
+                                user.setFullName(userFirebase.getDisplayName());
+                                user.setEmail(userFirebase.getEmail());
+                                user.setAvatarURL(userFirebase.getPhotoUrl().toString());
+                                user.setCreationDate(new Date().getTime());
+
+
+                                // Write a message to the database
+                                FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+
+                                DatabaseReference usersRef = database.getReference("users");
+                                usersRef.child(mAuth.getCurrentUser().getUid() ).child("user_info").setValue(user)
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                // Ghi dữ liệu thành công
+                                                System.out.println("Ghi dữ liệu user_info thành công");
+
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                // Xử lý lỗi
+                                                System.out.println("Xử lý lỗi khi ghi dữ liệu user_info" + e.toString());
+                                            }
+                                        });
+
+                                //                set logged in mode in prefs, userID
+                                AppPreferencesHelper.getInstance().setCurrentUserId(mAuth.getCurrentUser().getUid());
+                                AppPreferencesHelper.getInstance().setCurrentUserLoggedInMode(DataManager.LoggedInMode.LOGGED_IN_MODE_FB);
+                                AppPreferencesHelper.getInstance().setCurrentUserName(userFirebase.getDisplayName());
+                                AppPreferencesHelper.getInstance().setCurrentUserEmail(userFirebase.getEmail());
+
+                                // insert user, default albums  to room/
+                                Executors.newSingleThreadExecutor().execute(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        // background work here
+
+                                        UserRepository.getInstance().insertUser(user);
+                                        new Handler(Looper.getMainLooper()).post(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                // UI thread work here
+                                            }
+                                        });
+                                    }
+                                });
+
+                                mViewModel.setIsLoading(true);
+                                Toast.makeText(App.getInstance(), "Sign up with google successfully !", Toast.LENGTH_SHORT).show();
+                                System.out.println("Sign up with google successfully 314 !");
+                                openMainActivity();
+
+
+
+
+
+                            } else {
+                                System.out.println("Old user");
+
+                                // Nếu đây là lần đăng nhập lại, thực hiện các bước đăng nhập ở đây
+                                // Ví dụ: Hiển thị màn hình chính của ứng dụng
+
+                                Toast.makeText(App.getInstance(), "Login success", Toast.LENGTH_SHORT).show();
+
+                                // set login mode to LoggedInMode.LOGGED_IN_MODE_SERVER
+                                AppPreferencesHelper.getInstance().setCurrentUserLoggedInMode(DataManager.LoggedInMode.LOGGED_IN_MODE_SERVER);
+                                // set userID
+                                AppPreferencesHelper.getInstance().setCurrentUserId(mAuth.getCurrentUser().getUid());
+                                AppPreferencesHelper.getInstance().setCurrentUserEmail(mAuth.getCurrentUser().getEmail());
+                                AppPreferencesHelper.getInstance().setCurrentUserName(mAuth.getCurrentUser().getDisplayName());
+
+                                //  System.out.println("in login 69");
+
+                                // open main activity
+                                mViewModel.startSeeding();
+                                openMainActivity();
+
+                            }
+
+
+
+
+
+                        } else {
+                            System.out.println("signInWithCredential:failure " + task.getException());
+                            // If sign in fails, display a message to the user.
+                            Toast.makeText(App.getInstance(), "Authentication failed. " + task.getException().getMessage(),
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+
+                });
+
+
+    }
+
+    @Override
+    public void loginWithFacebook() {
+
+        // Initialize Facebook Login button
+        mCallbackManager = CallbackManager.Factory.create();
+
+        // Set permissions
+        LoginManager.getInstance().logInWithReadPermissions(getActivity(),
+                Arrays.asList("public_profile", "email"));
+
+        LoginManager.getInstance().registerCallback(mCallbackManager,
+                new FacebookCallback<LoginResult>() {
+                    @Override
+                    public void onSuccess(LoginResult loginResult) {
+
+
+                        AccessToken accessToken = loginResult.getAccessToken();
+                        System.out.println("On Success " + accessToken);
+
+                        handleFacebookAccessToken(accessToken);
+
+
+                    }
+
+                    @Override
+                    public void onCancel() {
+                        mViewModel.setIsLoading(false); // Move setIsLoading(false) inside onCancel
+                        //  System.out.println("On Cancel");
+                    }
+
+                    @Override
+                    public void onError(FacebookException error) {
+                        mViewModel.setIsLoading(false); // Move setIsLoading(false) inside onError
+                        System.out.println( "On Error");
+                    }
+
+
+                });
+    }
 
 }
 
