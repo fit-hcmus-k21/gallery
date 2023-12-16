@@ -640,6 +640,7 @@ public class MediaItemFragment extends Fragment {
             public void onClick(View v) {
                 // Xử lý khi người dùng nhấn nút "Download"
                 addImageFromLink(tvStatus, etUrl, imageView, btnDownload, btnClear);
+
             }
         });
 
