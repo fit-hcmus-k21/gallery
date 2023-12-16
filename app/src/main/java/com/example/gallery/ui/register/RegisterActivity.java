@@ -232,8 +232,13 @@ public class RegisterActivity extends BaseActivity<Slide03RegisterScreenBinding,
     public void showOneTapDialog() {
 //        System.out.println("come here 234 !");
         // Cấu hình và hiển thị One Tap dialog
+
+        // set progress bar visible
+        mRegisterBinding.progressBar.setVisibility(android.view.View.VISIBLE);
+
         oneTapClient.beginSignIn(signUpRequest)
                 .addOnSuccessListener(this, result -> {
+                    mRegisterBinding.progressBar.setVisibility(android.view.View.GONE);
 
                         // Mở One Tap dialog và chờ người dùng chọn
                         startIntentSenderForResultLauncher.launch(new IntentSenderRequest.Builder(result.getPendingIntent().getIntentSender()).build());
@@ -250,124 +255,127 @@ public class RegisterActivity extends BaseActivity<Slide03RegisterScreenBinding,
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
+
+        // set progress bar gone
         System.out.println("come here 252!");
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
-//        try {
-//            System.out.println("inside try block 257!");
-//            SignInCredential googleCredential = oneTapClient.getSignInCredentialFromIntent(data);
-//            String idToken = googleCredential.getGoogleIdToken();
-//
-//            if (idToken != null) {
-//                System.out.println("inside try block 257: " + idToken + " ");
-//
-//                // Got an ID token from Google. Use it to authenticate
-//                // with Firebase.
-//                AuthCredential firebaseCredential = GoogleAuthProvider.getCredential(idToken, null);
-//                mAuth.signInWithCredential(firebaseCredential)
-//                        .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-//                            @Override
-//                            public void onComplete(@NonNull Task<AuthResult> task) {
-//                                if (task.isSuccessful()) {
-//                                    // Sign in success, update UI with the signed-in user's information
-//                                    Log.d(TAG, "signInWithCredential:success");
-//                                    FirebaseUser userFirebase = mAuth.getCurrentUser();
-//                                    System.out.println("Auth with google ok !");
-//                                    // ...
-//                                    // Update user profile
+        try {
+            System.out.println("inside try block 257!");
+            SignInCredential googleCredential = oneTapClient.getSignInCredentialFromIntent(data);
+            String idToken = googleCredential.getGoogleIdToken();
+
+            if (idToken != null) {
+//                System.out.println("inside try block 262: " + idToken + " ");
+
+                // Got an ID token from Google. Use it to authenticate
+                // with Firebase.
+                AuthCredential firebaseCredential = GoogleAuthProvider.getCredential(idToken, null);
+                mAuth.signInWithCredential(firebaseCredential)
+                        .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if (task.isSuccessful()) {
+                                    // Sign in success, update UI with the signed-in user's information
+                                    Log.d(TAG, "signInWithCredential:success");
+                                    FirebaseUser userFirebase = mAuth.getCurrentUser();
+                                    System.out.println("Auth with google ok !");
+                                    // ...
+                                    // Update user profile
 //                                    userFirebase.updateProfile(new com.google.firebase.auth.UserProfileChangeRequest.Builder()
 //                                            .setDisplayName(userFirebase.getDisplayName())
 //                                            .setPhotoUri(userFirebase.getPhotoUrl())
 //                                            .build()
 //                                    );
-//
-//                                    User user = new User();
-//                                    user.setId(mAuth.getCurrentUser().getUid());
-//                                    user.setFullName(userFirebase.getDisplayName());
-//                                    user.setEmail(userFirebase.getEmail());
-//                                    user.setAvatarURL(userFirebase.getPhotoUrl().toString());
-//                                    user.setCreationDate(new Date().getTime());
-//
-//
-//                                    // Write a message to the database
-//                                    FirebaseDatabase database = FirebaseDatabase.getInstance();
-//
-//
-//                                    DatabaseReference usersRef = database.getReference("users");
-//                                    usersRef.child(mAuth.getCurrentUser().getUid() ).child("user_info").setValue(user)
-//                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                                                @Override
-//                                                public void onSuccess(Void aVoid) {
-//                                                    // Ghi dữ liệu thành công
-//                                                    System.out.println("Ghi dữ liệu user_info thành công");
-//
-//                                                }
-//                                            })
-//                                            .addOnFailureListener(new OnFailureListener() {
-//                                                @Override
-//                                                public void onFailure(@NonNull Exception e) {
-//                                                    // Xử lý lỗi
-//                                                    System.out.println("Xử lý lỗi khi ghi dữ liệu user_info" + e.toString());
-//                                                }
-//                                            });
-//
-//                                    //                set logged in mode in prefs, userID
-//                                    AppPreferencesHelper.getInstance().setCurrentUserId(mAuth.getCurrentUser().getUid());
-//                                    AppPreferencesHelper.getInstance().setCurrentUserLoggedInMode(DataManager.LoggedInMode.LOGGED_IN_MODE_SERVER);
-//                                    AppPreferencesHelper.getInstance().setCurrentUserName(userFirebase.getDisplayName());
-//                                    AppPreferencesHelper.getInstance().setCurrentUserEmail(userFirebase.getEmail());
-//
-//                                    // insert user, default albums  to room/
-//                                    Executors.newSingleThreadExecutor().execute(new Runnable() {
-//                                        @Override
-//                                        public void run() {
-//                                            // background work here
-//
-//                                            UserRepository.getInstance().insertUser(user);
-//                                            new Handler(Looper.getMainLooper()).post(new Runnable() {
-//                                                @Override
-//                                                public void run() {
-//                                                    // UI thread work here
-//                                                }
-//                                            });
-//                                        }
-//                                    });
-//
-//                                    mViewModel.setIsLoading(true);
-//                                    Toast.makeText(App.getInstance(), "Sign up with google successfully !", Toast.LENGTH_SHORT).show();
-//                                    System.out.println("Sign up with google successfully 314 !");
-//                                    openMainActivity();
-//
-//
-//                                } else {
-//                                    // If sign in fails, display a message to the user.
-//                                    Log.w(TAG, "signInWithCredential:failure", task.getException());
-//                                    System.out.println("Auth with google not ok 321!");
-//
-//                                    //...
-//                                }
-//                            }
-//                        });
-//
-//            }
-//        }
-//        catch (ApiException e) {
-//            // ...
-//            switch (e.getStatusCode()) {
-//                case CommonStatusCodes.CANCELED:
-//                    Log.d(TAG, "One-tap dialog was closed.");
-//                    // Don't re-prompt the user.
-//                    break;
-//                case CommonStatusCodes.NETWORK_ERROR:
-//                    Log.d(TAG, "One-tap encountered a network error.");
-//                    // Try again or just ignore.
-//                    break;
-//                default:
-//                    Log.d(TAG, "Couldn't get credential from result."
-//                            + e.getLocalizedMessage());
-//                    break;
-//            }
-//        }
+
+                                    User user = new User();
+                                    user.setId(mAuth.getCurrentUser().getUid());
+                                    user.setFullName(userFirebase.getDisplayName());
+                                    user.setEmail(userFirebase.getEmail());
+                                    user.setAvatarURL(userFirebase.getPhotoUrl().toString());
+                                    user.setCreationDate(new Date().getTime());
+
+
+                                    // Write a message to the database
+                                    FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+
+                                    DatabaseReference usersRef = database.getReference("users");
+                                    usersRef.child(mAuth.getCurrentUser().getUid() ).child("user_info").setValue(user)
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    // Ghi dữ liệu thành công
+                                                    System.out.println("Ghi dữ liệu user_info thành công");
+
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    // Xử lý lỗi
+                                                    System.out.println("Xử lý lỗi khi ghi dữ liệu user_info" + e.toString());
+                                                }
+                                            });
+
+                                    //                set logged in mode in prefs, userID
+                                    AppPreferencesHelper.getInstance().setCurrentUserId(mAuth.getCurrentUser().getUid());
+                                    AppPreferencesHelper.getInstance().setCurrentUserLoggedInMode(DataManager.LoggedInMode.LOGGED_IN_MODE_GOOGLE);
+                                    AppPreferencesHelper.getInstance().setCurrentUserName(userFirebase.getDisplayName());
+                                    AppPreferencesHelper.getInstance().setCurrentUserEmail(userFirebase.getEmail());
+
+                                    // insert user, default albums  to room/
+                                    Executors.newSingleThreadExecutor().execute(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            // background work here
+
+                                            UserRepository.getInstance().insertUser(user);
+                                            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    // UI thread work here
+                                                }
+                                            });
+                                        }
+                                    });
+
+                                    mViewModel.setIsLoading(true);
+                                    Toast.makeText(App.getInstance(), "Sign up with google successfully !", Toast.LENGTH_SHORT).show();
+                                    System.out.println("Sign up with google successfully 314 !");
+                                    openMainActivity();
+
+
+                                } else {
+                                    // If sign in fails, display a message to the user.
+                                    System.out.println( "signInWithCredential:failure "  +  task.getException());
+                                    System.out.println("Auth with google not ok 321!");
+
+                                    //...
+                                }
+                            }
+                        });
+
+            }
+        }
+        catch (ApiException e) {
+            // ...
+            switch (e.getStatusCode()) {
+                case CommonStatusCodes.CANCELED:
+                    System.out.println( "One-tap dialog was closed.");
+                    // Don't re-prompt the user.
+                    break;
+                case CommonStatusCodes.NETWORK_ERROR:
+                    System.out.println( "One-tap encountered a network error.");
+                    // Try again or just ignore.
+                    break;
+                default:
+                    System.out.println( "Couldn't get credential from result."
+                            + e.getLocalizedMessage());
+                    break;
+            }
+        }
 
     }
 

@@ -16,6 +16,8 @@ import androidx.biometric.BiometricPrompt;
 
 import android.content.IntentSender;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
@@ -25,8 +27,13 @@ import android.widget.Toast;
 
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.gallery.App;
 import com.example.gallery.BR;
 import com.example.gallery.R;
+import com.example.gallery.data.DataManager;
+import com.example.gallery.data.local.prefs.AppPreferencesHelper;
+import com.example.gallery.data.models.db.User;
+import com.example.gallery.data.repositories.models.Repository.UserRepository;
 import com.example.gallery.databinding.Slide02LoginScreenBinding;
 import com.example.gallery.ui.base.BaseActivity;
 import com.example.gallery.ui.main.doing.MainActivity;
@@ -52,6 +59,11 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.Date;
+import java.util.concurrent.Executors;
 
 /**
  * Created on 15/11/2023
@@ -161,7 +173,7 @@ public class LoginActivity extends BaseActivity<Slide02LoginScreenBinding, Login
                             // Your server's client ID, not your Android client ID.
                             .setServerClientId(getString(R.string.default_web_client_id))
                             // Only show accounts previously used to sign in.
-                            .setFilterByAuthorizedAccounts(true)
+                            .setFilterByAuthorizedAccounts(false)
                             .build())
                     // Automatically sign in when exactly one credential is retrieved.
                     .setAutoSelectEnabled(true)
@@ -194,7 +206,6 @@ public class LoginActivity extends BaseActivity<Slide02LoginScreenBinding, Login
 //    ----------------------------------------
 
     private static final int REQ_ONE_TAP = 2;  // Can be any integer unique to the Activity.
-    private boolean showOneTapUI = true;
     // ...
 
 
@@ -203,11 +214,15 @@ public class LoginActivity extends BaseActivity<Slide02LoginScreenBinding, Login
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        System.out.println("onActivityResult");
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
         try {
+            System.out.println("requestCode: " + requestCode + " data: " + data);
             SignInCredential googleCredential = oneTapClient.getSignInCredentialFromIntent(data);
+            System.out.println("googleCredential: " + googleCredential);
             String idToken = googleCredential.getGoogleIdToken();
+//            System.out.println("idToken: " + idToken);
             if (idToken != null) {
                 // Got an ID token from Google. Use it to authenticate
                 // with Firebase.
@@ -217,16 +232,106 @@ public class LoginActivity extends BaseActivity<Slide02LoginScreenBinding, Login
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (task.isSuccessful()) {
-                                    // Sign in success, update UI with the signed-in user's information
-                                    Log.d(TAG, "signInWithCredential:success");
-                                    FirebaseUser user = mAuth.getCurrentUser();
-                                    System.out.println("Auth with google ok !");
+                                    if (task.getResult().getAdditionalUserInfo().isNewUser()) {
+                                        // Nếu đây là lần đăng nhập đầu tiên, thực hiện các bước tạo tài khoản mới ở đây
+                                        // Ví dụ: Lưu thông tin mới vào cơ sở dữ liệu
+                                        System.out.println("New user");
+
+                                        FirebaseUser userFirebase = mAuth.getCurrentUser();
+                                        System.out.println("Auth with google ok !");
+                                        // ...
+
+
+                                        User user = new User();
+                                        user.setId(mAuth.getCurrentUser().getUid());
+                                        user.setFullName(userFirebase.getDisplayName());
+                                        user.setEmail(userFirebase.getEmail());
+                                        user.setAvatarURL(userFirebase.getPhotoUrl().toString());
+                                        user.setCreationDate(new Date().getTime());
+
+
+                                        // Write a message to the database
+                                        FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+
+                                        DatabaseReference usersRef = database.getReference("users");
+                                        usersRef.child(mAuth.getCurrentUser().getUid() ).child("user_info").setValue(user)
+                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void aVoid) {
+                                                        // Ghi dữ liệu thành công
+                                                        System.out.println("Ghi dữ liệu user_info thành công");
+
+                                                    }
+                                                })
+                                                .addOnFailureListener(new OnFailureListener() {
+                                                    @Override
+                                                    public void onFailure(@NonNull Exception e) {
+                                                        // Xử lý lỗi
+                                                        System.out.println("Xử lý lỗi khi ghi dữ liệu user_info" + e.toString());
+                                                    }
+                                                });
+
+                                        //                set logged in mode in prefs, userID
+                                        AppPreferencesHelper.getInstance().setCurrentUserId(mAuth.getCurrentUser().getUid());
+                                        AppPreferencesHelper.getInstance().setCurrentUserLoggedInMode(DataManager.LoggedInMode.LOGGED_IN_MODE_GOOGLE);
+                                        AppPreferencesHelper.getInstance().setCurrentUserName(userFirebase.getDisplayName());
+                                        AppPreferencesHelper.getInstance().setCurrentUserEmail(userFirebase.getEmail());
+
+                                        // insert user, default albums  to room/
+                                        Executors.newSingleThreadExecutor().execute(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                // background work here
+
+                                                UserRepository.getInstance().insertUser(user);
+                                                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        // UI thread work here
+                                                    }
+                                                });
+                                            }
+                                        });
+
+                                        mViewModel.setIsLoading(true);
+                                        Toast.makeText(App.getInstance(), "Sign up with google successfully !", Toast.LENGTH_SHORT).show();
+                                        System.out.println("Sign up with google successfully 314 !");
+                                        openMainActivity();
+
+
+
+
+
+                        } else {
+                                        System.out.println("Old user");
+
+                                        // Nếu đây là lần đăng nhập lại, thực hiện các bước đăng nhập ở đây
+                                        // Ví dụ: Hiển thị màn hình chính của ứng dụng
+
+                                        Toast.makeText(App.getInstance(), "Login success", Toast.LENGTH_SHORT).show();
+
+                                        // set login mode to LoggedInMode.LOGGED_IN_MODE_SERVER
+                                        AppPreferencesHelper.getInstance().setCurrentUserLoggedInMode(DataManager.LoggedInMode.LOGGED_IN_MODE_SERVER);
+                                        // set userID
+                                        AppPreferencesHelper.getInstance().setCurrentUserId(mAuth.getCurrentUser().getUid());
+                                        AppPreferencesHelper.getInstance().setCurrentUserEmail(mAuth.getCurrentUser().getEmail());
+                                        AppPreferencesHelper.getInstance().setCurrentUserName(mAuth.getCurrentUser().getDisplayName());
+
+                                        //  System.out.println("in login 69");
+
+                                        // open main activity
+                                        mViewModel.startSeeding();
+                                        openMainActivity();
+
+                                    }
+
                                     // ...
 
 
                                 } else {
                                     // If sign in fails, display a message to the user.
-                                    Log.w(TAG, "signInWithCredential:failure", task.getException());
+                                    System.out.println(  "signInWithCredential:failure | " + task.getException());
 
                                     //...
                                 }
@@ -239,16 +344,16 @@ public class LoginActivity extends BaseActivity<Slide02LoginScreenBinding, Login
                                     // ...
                     switch (e.getStatusCode()) {
                         case CommonStatusCodes.CANCELED:
-                            Log.d(TAG, "One-tap dialog was closed.");
+                            System.out.println( "One-tap dialog was closed.");
                             // Don't re-prompt the user.
-                            showOneTapUI = false;
                             break;
                         case CommonStatusCodes.NETWORK_ERROR:
-                            Log.d(TAG, "One-tap encountered a network error.");
+                            System.out.println(  "One-tap encountered a network error.");
                             // Try again or just ignore.
                             break;
                         default:
-                            Log.d(TAG, "Couldn't get credential from result."
+
+                            System.out.println("Couldn't get credential from result."
                                     + e.getLocalizedMessage());
                             break;
                     }
@@ -260,11 +365,17 @@ public class LoginActivity extends BaseActivity<Slide02LoginScreenBinding, Login
     public void loginWithGoogle() {
         System.out.println("Login with google");
 
+        // set progress bar visible
+        mViewModel.setIsLoading(true);
+
         oneTapClient.beginSignIn(signInRequest)
                 .addOnSuccessListener(this, new OnSuccessListener<BeginSignInResult>() {
                     @Override
                     public void onSuccess(BeginSignInResult result) {
+                        System.out.println("onSuccess");
                         try {
+                            mViewModel.setIsLoading(false);
+
                             startIntentSenderForResult(
                                     result.getPendingIntent().getIntentSender(), REQ_ONE_TAP,
                                     null, 0, 0, 0);

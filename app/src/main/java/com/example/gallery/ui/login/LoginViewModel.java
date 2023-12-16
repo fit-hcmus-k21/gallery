@@ -20,6 +20,7 @@ import com.example.gallery.data.local.db.AppDBHelper;
 import com.example.gallery.data.local.db.DBHelper;
 import com.example.gallery.data.models.db.User;
 import com.example.gallery.data.repositories.models.ViewModel.UserViewModel;
+import com.example.gallery.ui.backup.BackupManager;
 import com.example.gallery.ui.base.BaseViewModel;
 
 import com.facebook.AccessToken;
@@ -101,6 +102,10 @@ public class LoginViewModel extends BaseViewModel<LoginNavigator> {
             user.setEmail(getDataManager().getCurrentUserEmail());
 
             AppDBHelper.getInstance().insertUser(user);
+
+            // TODO: fetch data from server
+//            Toast.makeText(App.getInstance(), "Đang đồng bộ dữ liệu, bạn chờ xíu nhé :))", Toast.LENGTH_SHORT).show();
+            BackupManager.RestoreCloudToLocal();
 
 
         }

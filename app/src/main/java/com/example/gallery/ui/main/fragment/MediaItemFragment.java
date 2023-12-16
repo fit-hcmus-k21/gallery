@@ -1,6 +1,5 @@
 package com.example.gallery.ui.main.fragment;
 
-import static androidx.browser.customtabs.CustomTabsClient.getPackageName;
 
 import android.Manifest;
 import android.app.Activity;
@@ -61,10 +60,8 @@ import com.example.gallery.utils.BytesToStringConverter;
 import com.example.gallery.ui.main.doing.DuplicationActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import org.jcodec.api.android.AndroidSequenceEncoder;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -74,8 +71,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class MediaItemFragment extends Fragment {
 
