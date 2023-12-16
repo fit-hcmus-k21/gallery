@@ -3,23 +3,68 @@
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:orientation="vertical"
-              android:padding="16dp">
-
-    <Button
-        android:id="@+id/btnLoadAllImages"
+              android:padding="24dp"
+              android:layout_marginLeft="20dp"
+              android:layout_marginRight="20dp"
+              android:background="#FFF0F5"
+    >
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Tải hết ảnh từ điện thoại" />
+        android:text="Thêm ảnh"
+        android:textSize="22dp"
+        android:gravity="center"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:layout_marginBottom="12dp"
+        android:textColor="#473C8B"
+        android:background="#C6E2FF"
+        android:textAllCaps="true"
+
+        />
 
     <Button
-        android:id="@+id/btnAddSomeImages"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Thêm vài ảnh" />
 
-    <Button
         android:id="@+id/btnLoadImagesFromUrl"
+
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="4dp"
+        android:layout_marginLeft="8dp"
+        android:textSize="18dp"
+        android:textAllCaps="false"
+        android:backgroundTint="#F0FFF0"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Tải ảnh qua URL" />
+
+
+
+    <Button
+        android:id="@+id/btnAddSomeImages"
+
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="4dp"
+        android:layout_marginLeft="8dp"
+        android:textSize="18dp"
+        android:textAllCaps="false"
+        android:backgroundTint="#F0FFF0"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Tùy chọn từ thiết bị" />
+
+    <Button
+
+        android:id="@+id/btnLoadAllImages"
+
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="4dp"
+        android:layout_marginLeft="8dp"
+        android:textSize="18dp"
+        android:textAllCaps="false"
+        android:backgroundTint="#F0FFF0"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Thêm tất cả ảnh từ thiết bị" />
+
+
 </LinearLayout>

@@ -19,96 +19,7 @@
         android:layout_height="match_parent"
         android:padding="6dp">
 
-        <com.google.android.material.button.MaterialButton
-            style="?attr/materialButtonOutlinedStyle"
 
-            android:id="@+id/btnAddFromDevice"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Upload from device"
-            android:layout_marginBottom="6dp"
-            android:backgroundTint="#C6E2FF"
-            android:onClick="@{()->viewModel.addImageFromDevice()}"
-            android:visibility="gone"
-
-            />
-
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Download Status: "
-            android:textSize="16dp"
-            android:layout_marginTop="6dp"
-            android:id="@+id/txtDownloadStatus"
-            android:layout_below="@id/btnAddFromDevice"
-            android:textColor="@color/teal_700"
-            />
-
-        <EditText
-            android:id="@+id/editTextImageUrl"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Enter Image URL"
-            android:layout_below="@id/txtDownloadStatus"
-            android:layout_marginTop="6dp"
-            android:inputType="text"/>
-
-        <LinearLayout
-            android:id="@+id/linearLayoutAddFromLink"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_below="@id/editTextImageUrl"
-            >
-            <com.google.android.material.button.MaterialButton
-                style="?attr/materialButtonOutlinedStyle"
-
-                android:id="@+id/btnAddFromLink"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="Download"
-                android:layout_marginTop="6dp"
-                android:layout_weight="1"
-                android:backgroundTint="#C6E2FF"
-
-                android:onClick="@{()->viewModel.addImageFromLink()}"
-                />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                />
-
-            <com.google.android.material.button.MaterialButton
-                style="?attr/materialButtonOutlinedStyle"
-
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginTop="6dp"
-                android:layout_weight="1"
-                android:backgroundTint="#C6E2FF"
-
-
-                android:onClick="@{()->viewModel.clearText()}"
-                android:text="Clear "
-
-                />
-
-        </LinearLayout>
-
-        <ImageView
-            android:layout_width="200dp"
-            android:layout_height="200dp"
-            android:layout_below="@id/linearLayoutAddFromLink"
-            android:layout_marginTop="6dp"
-            android:id="@+id/imageViewDownloaded"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="6dp"
-            android:src="@drawable/ic_launcher_background"
-            android:visibility="gone"
-            />
 
 
 
@@ -120,7 +31,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_below="@id/imageViewDownloaded">
+            >
 
             <!-- Sync Button -->
             <com.google.android.material.button.MaterialButton
