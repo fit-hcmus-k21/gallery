@@ -1,6 +1,12 @@
 package com.example.gallery.ui.main.fragment;
 
 
+import static com.example.gallery.utils.Utils.addRandomNumberToFileName;
+import static com.example.gallery.utils.Utils.getFileExtension;
+import static com.example.gallery.utils.Utils.getFileNameFromUrl;
+import static com.example.gallery.utils.Utils.isImageContentType;
+import static com.example.gallery.utils.Utils.isValidUrl;
+
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -44,9 +50,11 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.gallery.App;
 import com.example.gallery.R;
 import com.example.gallery.data.local.prefs.AppPreferencesHelper;
@@ -56,6 +64,7 @@ import com.example.gallery.data.models.db.MediaItem;
 import com.example.gallery.data.repositories.models.HelperFunction.RequestPermissionHelper;
 import com.example.gallery.data.repositories.models.Repository.AlbumRepository;
 import com.example.gallery.data.repositories.models.Repository.MediaItemRepository;
+import com.example.gallery.data.repositories.models.ViewModel.MediaItemViewModel;
 import com.example.gallery.ui.custom.AddImageFromDevice;
 import com.example.gallery.ui.custom.AnimatedGIFWriter;
 import com.example.gallery.ui.main.adapter.CreateStoryAdapter;
@@ -79,6 +88,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class MediaItemFragment extends Fragment {
 
@@ -583,9 +598,8 @@ public class MediaItemFragment extends Fragment {
             public void onClick(View v) {
                 // Xử lý khi người dùng chọn tùy chọn 1
                 // ...
-                // Dismiss dialog nếu cần
-                RequestPermissionHelper.checkAndRequestPermission(getActivity(), 42);
                 currentDialog.dismiss();
+                RequestPermissionHelper.checkAndRequestPermission(getActivity(), 42);
 
             }
         });
@@ -595,11 +609,11 @@ public class MediaItemFragment extends Fragment {
             public void onClick(View v) {
                 // Xử lý khi người dùng chọn tùy chọn 2
                 // ...
-                // Dismiss dialog nếu cần
+                currentDialog.dismiss();
+
                 Intent intent = new Intent(getActivity(), AddImageFromDevice.class);
                 startActivityForResult(intent, REQUEST_IMAGE_PICK);
 
-                currentDialog.dismiss();
 
             }
         });
@@ -609,9 +623,9 @@ public class MediaItemFragment extends Fragment {
             public void onClick(View v) {
                 // Xử lý khi người dùng chọn tùy chọn 3
                 // ...
-                // Dismiss dialog nếu cần
-                showCustomDialog();
                 currentDialog.dismiss();
+                showCustomDialog();
+
 
             }
         });
@@ -633,18 +647,14 @@ public class MediaItemFragment extends Fragment {
         EditText etUrl = dialogView.findViewById(R.id.etUrl);
         Button btnDownload = dialogView.findViewById(R.id.btnDownload);
         Button btnClear = dialogView.findViewById(R.id.btnClear);
+        ImageView imageView = dialogView.findViewById(R.id.imgVDownloaded);
 
         // Thiết lập sự kiện click cho nút "Download"
         btnDownload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Xử lý khi người dùng nhấn nút "Download"
-                String url = etUrl.getText().toString();
-                // Thực hiện download
-                // ...
-
-                // Cập nhật trạng thái
-                tvStatus.setText("Status: Downloading from " + url);
+                addImageFromLink(tvStatus, etUrl, imageView, btnDownload, btnClear);
             }
         });
 
@@ -654,7 +664,8 @@ public class MediaItemFragment extends Fragment {
             public void onClick(View v) {
                 // Xử lý khi người dùng nhấn nút "Clear"
                 etUrl.setText("");
-                tvStatus.setText("Status: Cleared");
+                tvStatus.setText("Download Status:");
+                imageView.setVisibility(View.GONE);
             }
         });
 
@@ -662,5 +673,115 @@ public class MediaItemFragment extends Fragment {
         AlertDialog dialog = builder.create();
         dialog.show();
     }
+
+    // tải ảnh qua url
+    public  void addImageFromLink(TextView tvStatus, EditText etUrl, ImageView imageView, Button btnDownload, Button btnClear) {
+
+        tvStatus.setText("Downloaded Status: downloading");
+        tvStatus.setTextColor(Color.parseColor("#808080"));
+
+        String imageUrl = etUrl.getText().toString();
+
+        //  System.out.println("Image Url: " + imageUrl);
+        if (!isValidUrl(imageUrl)) {
+            tvStatus.setText("Error: Invalid URL");
+            tvStatus.setTextColor(Color.parseColor("#FF0000"));
+
+            return;
+        }
+
+
+        OkHttpClient client = new OkHttpClient();
+
+        Request request = new Request.Builder()
+                .url(imageUrl)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+                // Handle OkHttp failure...
+                //  System.out.println("Have something wrong ");
+                tvStatus.setText("Downloaded Status: failed");
+                tvStatus.setTextColor(Color.parseColor("#FF0000"));
+
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    // Get the file extension from the Content-Type header
+                    String contentType = response.header("Content-Type");
+                    String fileExtension = getFileExtension(contentType);
+                    if (!isImageContentType(contentType)) {
+                        tvStatus.setText("Error: Invalid image URL");
+                        tvStatus.setTextColor(Color.parseColor("#FF0000"));
+
+                        return;
+                    }
+
+                    //  System.out.println("Content Type: " + contentType);
+
+                    // Get the file name from the URL
+                    String fileName = addRandomNumberToFileName(getFileNameFromUrl(imageUrl)) + fileExtension;
+                    //  System.out.println("File name from url: " + fileName);
+
+                    // Save the image to a file
+                    File appDirectory = new File(App.getInstance().getExternalFilesDir(null), "Images/FromUrls");
+                    if (!appDirectory.exists()) {
+                        appDirectory.mkdirs();
+                    }
+
+                    File imageFile = new File(appDirectory, fileName);
+
+                    try (OutputStream stream = new FileOutputStream(imageFile)) {
+                        stream.write(response.body().bytes());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    // Get image path
+                    String imgPath = imageFile.getAbsolutePath();
+                    //  System.out.println("Image path: " + imgPath);
+
+
+                    // Save media item info to database
+                    MediaItem item = new MediaItem();
+                    item.setPath(imgPath);
+                    item.setOrigin(imageUrl);
+                    item.setCreationDate(Date.parse(new Date().toString()));
+//                    item.setId(new Random().nextInt(10000));
+                    item.setUserID(AppPreferencesHelper.getInstance().getCurrentUserId());
+                    item.setAlbumName("Download");
+
+                    // check if album not exist in table albums
+
+                    MediaItemViewModel.getInstance().insert(item);
+//                    Toast.makeText(App.getInstance(), "Insert successfully", Toast.LENGTH_SHORT).show();
+                    //  System.out.println("Insert media item success from profile view model");
+
+
+
+                    // Get the number of rows in the database
+//                    //  System.out.println("Number of media items after download image: " + MediaItemViewModel.getInstance().getNumberOfMediaItems().getValue());
+
+                    tvStatus.setText("Status: download a " + fileExtension +" successfully!");
+                    tvStatus.setTextColor(Color.parseColor("#008000"));
+                }
+            }
+        });
+
+        // display image
+        Glide.with(App.getInstance())
+                .asBitmap()
+                .load(imageUrl)
+                .into(imageView);
+        imageView.setVisibility(View.VISIBLE);
+
+
+    }
+
 
 }
