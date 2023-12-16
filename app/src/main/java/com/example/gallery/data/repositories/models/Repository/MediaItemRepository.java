@@ -202,6 +202,28 @@ public class MediaItemRepository {
     }
 
     public  void insertAll(List<MediaItem> mediaItems) {
+        Set<String> uniqueAlbumNames = new HashSet<>();
+
+        // Lấy ra danh sách albumName và thêm vào uniqueAlbumNames
+        for (MediaItem mediaItem : mediaItems) {
+            String albumName = mediaItem.getAlbumName();
+            uniqueAlbumNames.add(albumName);
+        }
+
+        // Kiểm tra và chèn album nếu không tồn tại
+        for (String albumName : uniqueAlbumNames) {
+            boolean albumExists = AlbumRepository.getInstance().isExistAlbum(albumName);
+
+            if (!albumExists) {
+                // Album does not exist, create and insert
+                Album album = new Album();
+                album.setUserID(AppPreferencesHelper.getInstance().getCurrentUserId());
+                album.setName(albumName);
+
+                AlbumRepository.getInstance().insert(album);
+            }
+        }
+
 
         ExecutorService executorService = Executors.newSingleThreadExecutor();
 
@@ -235,27 +257,7 @@ public class MediaItemRepository {
             }
         });
 
-        Set<String> uniqueAlbumNames = new HashSet<>();
 
-        // Lấy ra danh sách albumName và thêm vào uniqueAlbumNames
-        for (MediaItem mediaItem : mediaItems) {
-            String albumName = mediaItem.getAlbumName();
-            uniqueAlbumNames.add(albumName);
-        }
-
-        // Kiểm tra và chèn album nếu không tồn tại
-        for (String albumName : uniqueAlbumNames) {
-            boolean albumExists = AlbumRepository.getInstance().isExistAlbum(albumName);
-
-            if (!albumExists) {
-                // Album does not exist, create and insert
-                Album album = new Album();
-                album.setUserID(AppPreferencesHelper.getInstance().getCurrentUserId());
-                album.setName(albumName);
-
-                AlbumRepository.getInstance().insert(album);
-            }
-        }
 
 
     }
@@ -281,14 +283,36 @@ public class MediaItemRepository {
         return mediaItemDao.getMediaFromPath(path);
     }
 
-    public void updateMediaItemAlbum(int id, String newAlbum){
+    public synchronized void updateMediaItemAlbum(int id, String newAlbum){
+
+        // Check if album name exists
+        boolean albumExists = AlbumRepository.getInstance().isExistAlbum(newAlbum);
+
+        if (!albumExists) {
+            // Album does not exist, create and insert
+            Album album = new Album();
+            album.setUserID(AppPreferencesHelper.getInstance().getCurrentUserId());
+            album.setName(newAlbum);
+
+            AlbumRepository.getInstance().insert(album);
+        }
+
+
         ExecutorService executorService = Executors.newSingleThreadExecutor();
-        executorService.execute(new Runnable() {
-            @Override
-            public void run() {
-                mediaItemDao.updateMediaItemAlbum(id,newAlbum);
+        executorService.execute(() -> {
+            // Use synchronized block to ensure proper order of insertions
+            synchronized (this) {
+                mediaItemDao.updateMediaItemAlbum(id, newAlbum);
             }
+            executorService.shutdown();
         });
+//        ExecutorService executorService = Executors.newSingleThreadExecutor();
+//        executorService.execute(new Runnable() {
+//            @Override
+//            public void run() {
+//                mediaItemDao.updateMediaItemAlbum(id,newAlbum);
+//            }
+//        });
     }
 
     public void updateMediaItemDeleteTs(int id, long newTime){
