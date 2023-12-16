@@ -40,7 +40,7 @@ public interface AlbumDao {
     @Query("SELECT * FROM albums WHERE userID = :userID")
     LiveData<List<Album>> getAllAlbumsByUserID (String userID);
 
-    @Query("SELECT id, name, description, creationDate, coverPhotoPath, userID, path, deletedTs FROM albums WHERE userID = :userID")
+    @Query("SELECT id, name, description, creationDate, coverPhotoPath, userID, path, deletedTs,isPrivateAlb,password FROM albums WHERE userID = :userID")
     LiveData<List<Album>> getAllAlbums(String userID);
 
     @Query("DELETE FROM albums WHERE path = :path COLLATE NOCASE")
@@ -75,4 +75,13 @@ public interface AlbumDao {
 
     @Query("DELETE FROM albums WHERE userID = :userID AND name = :name COLLATE NOCASE")
     void deleteAlbumByName(String userID, String name);
+
+    @Query("SELECT * FROM albums WHERE id = :id")
+    LiveData<Album> getAlbumById(int id);
+    @Query("SELECT * FROM albums WHERE id = :id")
+    Album getAlbumByIdNoLive(int id);
+
+
+    @Query("UPDATE albums SET isPrivateAlb = :isPrivate, password = :password WHERE userID = :userId and name = :albName")
+    void updateAlbumIsPrivate(String userId, String albName, int isPrivate, String password);
 }

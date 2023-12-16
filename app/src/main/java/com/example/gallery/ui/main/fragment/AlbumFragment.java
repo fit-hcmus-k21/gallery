@@ -187,10 +187,9 @@ public class AlbumFragment extends Fragment {
                             System.currentTimeMillis(), "",
                             AppPreferencesHelper.getInstance().getCurrentUserId(),
                             "",
-                            0);
+                            0,false,"");
                     AlbumRepository.getInstance().insert(album);
                     dialog.dismiss();
-
                 }
             }
         });

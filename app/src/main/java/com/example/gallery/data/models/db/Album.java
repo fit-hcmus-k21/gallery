@@ -52,12 +52,16 @@ public class Album {
         @ColumnInfo(name = "deletedTs")
         private long deletedTs;
 
+        @ColumnInfo(name = "isPrivateAlb")
+        private boolean isPrivateAlb;
+        @ColumnInfo(name = "password")
+        private String password;
         // constructor
 
         public Album() {
         }
 
-        public Album( String name, String description, Long creationDate, String coverPhotoPath, String userID, String path, long deletedTs) {
+        public Album( String name, String description, Long creationDate, String coverPhotoPath, String userID, String path, long deletedTs, boolean isPrivateAlb, String password) {
                 this.name = name;
                 this.description = description;
                 this.creationDate = creationDate;
@@ -65,6 +69,8 @@ public class Album {
                 this.userID = userID;
                 this.path = path;
                 this.deletedTs = deletedTs;
+                this.isPrivateAlb = isPrivateAlb;
+                this.password = password;
         }
 
         // setters and getters
@@ -143,5 +149,37 @@ public class Album {
 
         public void setDeletedTs(long deletedTs) {
                 this.deletedTs = deletedTs;
+        }
+
+        public boolean isPrivateAlb() {
+                return isPrivateAlb;
+        }
+
+        public void setPrivateAlb(boolean personalAlb) {
+                isPrivateAlb = personalAlb;
+        }
+
+        public String getPassword() {
+                return password;
+        }
+
+        public void setPassword(String password) {
+                this.password = password;
+        }
+
+        @Override
+        public String toString() {
+                return "Album{" +
+                        "id=" + id +
+                        ", name='" + name + '\'' +
+                        ", description='" + description + '\'' +
+                        ", creationDate=" + creationDate +
+                        ", coverPhotoPath='" + coverPhotoPath + '\'' +
+                        ", coverPhotoURL='" + coverPhotoURL + '\'' +
+                        ", userID='" + userID + '\'' +
+                        ", path='" + path + '\'' +
+                        ", deletedTs=" + deletedTs +
+                        ", isPrivateAlb=" + isPrivateAlb +
+                        '}';
         }
 }

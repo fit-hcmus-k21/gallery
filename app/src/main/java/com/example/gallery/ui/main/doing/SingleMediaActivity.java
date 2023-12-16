@@ -498,16 +498,6 @@ public class SingleMediaActivity extends AppCompatActivity  {
         }
         else if(id == R.id.media_convert_text_item){
             textRecognition(mediaItemLiveData.getValue());
-//            mediaItemLiveData.observe(this, new Observer<MediaItem>() {
-//                @Override
-//                public void onChanged(MediaItem mediaItem) {
-////                    showOCRResultDialog(mediaItem.getPath());
-//                    //  System.out.println("Single Media Activity | On changed 260 " + mediaItem );
-//                    textRecognition(mediaItem);
-//
-//                }
-//            });
-
         }
         else if(id == R.id.media_note_media_item){
             showNoteDialog();
@@ -821,9 +811,9 @@ public class SingleMediaActivity extends AppCompatActivity  {
     private void shareImageToInternet(MediaItem mediaItem){
         //  System.out.println("Share image : 337 | mediaitem: " + mediaItem + " | path: " + mediaItem.getPath());
 
-        Uri uri = FileProvider.getUriForFile(this, getPackageName() + ".provider", new File(mediaItem.getPath()));
+//        Uri uri = FileProvider.getUriForFile(this, getPackageName() + ".provider", new File(mediaItem.getPath()));
 
-//        Uri uri = Uri.parse(mediaItem.getPath());
+        Uri uri = Uri.parse(mediaItem.getPath());
         //  System.out.print("Uri: "  + uri);
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("image/*");

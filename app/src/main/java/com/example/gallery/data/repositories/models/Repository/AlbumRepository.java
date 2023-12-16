@@ -306,8 +306,21 @@ public class AlbumRepository {
             }
         });
     }
+    public void updateAlbumIsPrivate(String uid,String albName, boolean isPrivate, String password){
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                albumDao.updateAlbumIsPrivate(uid, albName, isPrivate?1:0, password);
+            }
+        });
+
+    }
     public LiveData<Album> getAlbumByAlbumName(String userID, String albumName){
         return albumDao.getAlbumByAlbumName(userID, albumName);
+    }
+    public LiveData<Album> getAlbumById(int id){
+        return albumDao.getAlbumById(id);
     }
     public void deleteAlbum(String userID, String albumName){
         ExecutorService executorService = Executors.newSingleThreadExecutor();

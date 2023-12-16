@@ -1,13 +1,16 @@
 package com.example.gallery.ui.main.doing;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.app.Dialog;
@@ -24,10 +27,13 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -35,6 +41,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.gallery.R;
 import com.example.gallery.data.local.prefs.AppPreferencesHelper;
+import com.example.gallery.data.models.db.Album;
 import com.example.gallery.data.models.db.MediaItem;
 import com.example.gallery.data.repositories.models.Repository.AlbumRepository;
 import com.example.gallery.data.repositories.models.Repository.MediaItemRepository;
@@ -44,6 +51,8 @@ import com.example.gallery.utils.BytesToStringConverter;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.io.File;
 import java.io.IOException;
@@ -59,10 +68,9 @@ public class InnerAlbumScreen extends AppCompatActivity {
     public static MediaItemAdapter mediaItemAdapter;
     MaterialToolbar topAppBar;
     List<MediaItem> mediaItemList = new ArrayList<>();
-
+    String albumName;
     // -----------
     private FloatingActionButton btnPickFiles;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         //  System.out.println("InnerAlbumScreen  27: onCreate: ");
@@ -73,9 +81,7 @@ public class InnerAlbumScreen extends AppCompatActivity {
 
         // Lấy dữ liệu từ intent
         Bundle bundle = getIntent().getExtras();
-        String albumName = bundle.getString("albumName");
-
-
+        albumName = bundle.getString("albumName");
 //        MaterialToolbar materialToolbar = findViewById(R.id.topAppBar);
         //Toolbar here
         Toolbar materialToolbar = findViewById(R.id.topAppBar);
@@ -94,7 +100,6 @@ public class InnerAlbumScreen extends AppCompatActivity {
         mediaItemAdapter = new MediaItemAdapter();
         recyclerView.setAdapter(mediaItemAdapter);
 
-
         MediaItemRepository.getInstance().getAllMediaItems().observe(this, new Observer<List<MediaItem>>() {
             @Override
             public void onChanged(List<MediaItem> mediaItems) {
@@ -106,6 +111,7 @@ public class InnerAlbumScreen extends AppCompatActivity {
                 //  System.out.println("InnerAlbumScreen  55: onChanged: after set data  " );
             }
         });
+
 
         mediaItemAdapter.setOnItemClickListener(new MediaItemAdapter.OnItemClickListener() {
             @Override
@@ -123,12 +129,6 @@ public class InnerAlbumScreen extends AppCompatActivity {
                 startActivity(intent);
                 //  System.out.println("On Item Click | Inner Album Screen after");
             }
-        });
-        materialToolbar.setOnMenuItemClickListener(item -> {
-            if(item.getItemId() == R.id.statistic){
-                showStatisticDialog();
-            }
-            return true;
         });
 
         topAppBar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
@@ -170,7 +170,6 @@ public class InnerAlbumScreen extends AppCompatActivity {
                             }
                             else{
                                 //get album name
-                                String albumName = bundle.getString("albumName");
                                 albumName = albumName.substring(albumName.lastIndexOf('/')+1);
                                 Intent arrange = new Intent(InnerAlbumScreen.this, ArrangementAction.class);
                                 Bundle data = new Bundle();
@@ -202,6 +201,15 @@ public class InnerAlbumScreen extends AppCompatActivity {
                 }
                 else if(item.getItemId() == R.id.change_thumbnail){
                     chooseThumnailDialog(albumName);
+                }
+                else if(item.getItemId() == R.id.statistic){
+                    showStatisticDialog();
+                }
+                else if(item.getItemId() == R.id.set_private_album){
+                    changePrivateAlbumProperty(0, "Đặt mật khẩu");
+                }
+                else if(item.getItemId() == R.id.unset_private_album){
+                    changePrivateAlbumProperty(1, "Nhập mật khẩu");
                 }
                 return true;
             }
@@ -236,6 +244,22 @@ public class InnerAlbumScreen extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.top_appbar_inner_album_menu, menu);
+        AlbumRepository.getInstance().getAlbumByAlbumName(AppPreferencesHelper.getInstance().getCurrentUserId(), albumName)
+            .observe(this, new Observer<Album>() {
+                @Override
+                public void onChanged(Album album) {
+                    if(album != null){
+                        if (album.getName().equals("Favorite")) {
+                            menu.findItem(R.id.set_private_album).setVisible(false);
+                            menu.findItem(R.id.unset_private_album).setVisible(false);
+                        }else {
+                            menu.findItem(R.id.set_private_album).setVisible(!album.isPrivateAlb());
+                            menu.findItem(R.id.unset_private_album).setVisible(album.isPrivateAlb());
+                        }
+                    }
+                }
+            });
+
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -259,20 +283,19 @@ public class InnerAlbumScreen extends AppCompatActivity {
         return result;
     }
     private void showStatisticDialog(){
-        List<MediaItem> list = mediaItemAdapter.getData();
         long folderSize = 0;
         int imageCnt = 0;
         int videoCnt = 0;
-        for(int i = 0 ; i < list.size();i++){
-            folderSize += list.get(i).getFileSize();
-            if(list.get(i).getFileExtension().equals("mp4"))
+        for(int i = 0 ; i < mediaItemList.size();i++){
+            folderSize += mediaItemList.get(i).getFileSize();
+            if(mediaItemList.get(i).getFileExtension().equals("mp4"))
                 videoCnt++;
             else imageCnt++;
         }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Thống kê")
-                .setMessage("Số ảnh và video: " + list.size() +"\n"
+                .setMessage("Số ảnh và video: " + mediaItemList.size() +"\n"
                         + "Số ảnh: " + imageCnt + "\n"
                         + "Số video: " + videoCnt + "\n"
                         + "Kích thước: " + BytesToStringConverter.longToString(folderSize))
@@ -394,10 +417,8 @@ public class InnerAlbumScreen extends AppCompatActivity {
                     Toast.makeText(InnerAlbumScreen.this, "Tên album không được để trống", Toast.LENGTH_SHORT).show();
                 }
                 else{
-
                     AlbumRepository.getInstance().updateAlbumName(AppPreferencesHelper.getInstance().getCurrentUserId(), oldAlbumName, newAlbumName);
                     MediaItemRepository.getInstance().updateAlbumName(oldAlbumName, newAlbumName);
-
                     dialog.dismiss();
                     finish();
 
@@ -406,5 +427,39 @@ public class InnerAlbumScreen extends AppCompatActivity {
         });
 
         dialog.show();
+    }
+
+    // type: 0 -> set private album
+    // type: 1 -> unset private album
+    private void changePrivateAlbumProperty(int type, String title){
+        View view = LayoutInflater.from(this).inflate(R.layout.private_album_password, null);
+        TextInputEditText inputEditText = view.findViewById(R.id.password_album);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(title)
+            .setView(view)
+            .setPositiveButton("OK", (dialog, which) -> {
+                String uid = AppPreferencesHelper.getInstance().getCurrentUserId();
+                if(type == 0){
+                    AlbumRepository.getInstance().updateAlbumIsPrivate(uid,albumName, true,inputEditText.getText().toString());
+                }else if(type == 1) {
+
+                    LiveData<Album> liveData = AlbumRepository.getInstance().getAlbumByAlbumName(uid, albumName);
+                    Observer<Album> observer = new Observer<Album>() {
+                        @Override
+                        public void onChanged(Album album) {
+                            if (album != null) {
+                                if (album.getPassword().equals(inputEditText.getText().toString()))
+                                    AlbumRepository.getInstance().updateAlbumIsPrivate(uid, album.getName(), false, "");
+                                else
+                                    Toast.makeText(InnerAlbumScreen.this, "Mật khẩu không chính xác", Toast.LENGTH_SHORT).show();
+                            }
+                            liveData.removeObserver(this);
+                        }
+                    };
+                    liveData.observe(InnerAlbumScreen.this, observer);
+                }
+            })
+            .setNegativeButton("Hủy", null);
+        builder.create().show();
     }
 }

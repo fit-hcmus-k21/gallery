@@ -21,4 +21,12 @@
         android:id="@+id/change_thumbnail"
         android:title="Đổi ảnh bìa"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/set_private_album"
+        android:title="Riêng tư"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/unset_private_album"
+        android:title="Hủy riêng tư"
+        app:showAsAction="never" />
 </menu>

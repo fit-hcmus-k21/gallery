@@ -157,7 +157,7 @@ public class MediaItemFragment extends Fragment {
         recyclerView.setAdapter(mainMediaItemAdapter);
 
         // Data from viewModel
-        MediaItemRepository.getInstance().getAllMediaItems().observe(getViewLifecycleOwner(), new Observer<List<MediaItem>>() {
+        MediaItemRepository.getInstance().getAllPublicMediaItem(AppPreferencesHelper.getInstance().getCurrentUserId()).observe(getViewLifecycleOwner(), new Observer<List<MediaItem>>() {
 
             @Override
             public void onChanged(List<MediaItem> mediaItems) {
@@ -171,31 +171,16 @@ public class MediaItemFragment extends Fragment {
 
                 for(MediaItem mediaItem : filterData){
                     System.out.println("MediaItemFragment 001: onViewCreated: getAllMediaItems: onChanged: in loop");
-
-
                     mediaItem.setTypeDisplay(mCurrentType);
                 }
 
                 mediaItemGroupByDate = setMediaItemGroupByDate(filterData);
 
-//                 mediaItemsLíst= mediaItems;
-
-
                 mainMediaItemAdapter.setData(filterData, mediaItemGroupByDate, dateListString); // trong adapter có hàm setData và có notifydatasetchanged
                 System.out.println("on observe : " + mediaItems.size() + " before set hash map");
-
-
                 HashMap<String, List<MediaItem>> mediaItemGroupByDate = setMediaItemGroupByDate(filterData);
 
-                //  System.out.println("on observe : after set hash map , before set data");
-
-
                 mainMediaItemAdapter.setData(filterData, mediaItemGroupByDate, dateListString); // trong adapter có hàm setData và có notifydatasetchanged
-
-                //  System.out.println("on observe : after set hash map , after set data");
-
-
-
             }
         });
 
