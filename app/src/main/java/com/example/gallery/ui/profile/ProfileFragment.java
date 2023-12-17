@@ -131,10 +131,12 @@ public class ProfileFragment extends BaseFragment<ProfileBinding, ProfileViewMod
         mProfileBinding.txtTypeAccount.setText(txtAccountType);
 
         if (FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl() != null) {
-            Glide.with(this)
-                    .load(FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl())
-                    .apply(RequestOptions.bitmapTransform(new CircleCrop()))
-                    .into(mProfileBinding.imgAvatar);
+
+                Glide.with(this)
+                        .load(FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl())
+                        .apply(RequestOptions.bitmapTransform(new CircleCrop()))
+                        .into(mProfileBinding.imgAvatar);
+
         }
 
 

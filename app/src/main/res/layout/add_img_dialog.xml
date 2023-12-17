@@ -9,14 +9,15 @@
               android:background="#FFF0F5"
     >
     <TextView
+        android:layout_marginTop="12dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Thêm ảnh/Video"
         android:textSize="22dp"
         android:gravity="center"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"
-        android:layout_marginBottom="12dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
+        android:layout_marginBottom="20dp"
         android:textColor="#473C8B"
         android:background="#C6E2FF"
         android:textAllCaps="true"
@@ -69,7 +70,6 @@
         android:id="@+id/btnLoadAllImages"
 
         android:layout_marginRight="8dp"
-        android:layout_marginBottom="4dp"
         android:layout_marginLeft="8dp"
         android:textSize="18dp"
         android:textAllCaps="false"

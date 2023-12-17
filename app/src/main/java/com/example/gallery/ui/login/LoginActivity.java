@@ -418,6 +418,8 @@ public class LoginActivity extends BaseActivity<Slide02LoginScreenBinding, Login
 
     // Handle the Facebook access token to authenticate with your server or perform other actions
     private void handleFacebookAccessToken(AccessToken token) {
+        mViewModel.setIsLoading(true);
+
         Toast.makeText(App.getInstance(), "Retrieving Information ", Toast.LENGTH_SHORT).show();
 
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
@@ -450,6 +452,7 @@ public class LoginActivity extends BaseActivity<Slide02LoginScreenBinding, Login
                                 // ...
                                 Toast.makeText(App.getInstance(), "Authentication success, " + userFirebase.getDisplayName() +".",
                                         Toast.LENGTH_SHORT).show();
+
 
 
                                 User user = new User();

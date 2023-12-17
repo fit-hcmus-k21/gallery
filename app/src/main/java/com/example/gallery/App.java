@@ -38,7 +38,6 @@ public class App extends Application {
                 .build();
 
         FacebookSdk.sdkInitialize(getApplicationContext());
-        FacebookSdk.setClientToken("4c91713335cb507f5cf44bd15057bd6e");
         AppEventsLogger.activateApp(this);
 
         FirebaseApp.initializeApp(this);
