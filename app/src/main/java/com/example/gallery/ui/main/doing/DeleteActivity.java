@@ -38,7 +38,6 @@ public class DeleteActivity extends AppCompatActivity {
         super.onCreate(saveInstanceState);
         setContentView(R.layout.delete_layout);
         recyclerDelete = findViewById(R.id.rcv_delete_item);
-//        btnReturn = findViewById(R.id.btnReturn);
         deleteAdapter = new DeleteAdapter();
 
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this,3,GridLayoutManager.VERTICAL,false);

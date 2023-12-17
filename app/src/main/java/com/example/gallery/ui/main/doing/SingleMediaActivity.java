@@ -123,12 +123,6 @@ public class SingleMediaActivity extends AppCompatActivity  {
         key = bundle.getString("key");
 
 
-//        editImageView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intentEdit = new Intent(SingleMediaActivity.this,)
-//            }
-//        });
 
         // Đây là biến dạng boolen để đảm bảo rằng việc di chuyển đến item đang được chọn chỉ được thực hiện 1 lần
         // Nếu không có biến này thì khi chúng ta thực hiện thao tác thay đổi trạng thái Favorite của item đang được chọn
@@ -293,12 +287,13 @@ public class SingleMediaActivity extends AppCompatActivity  {
                 if(mediaItemsList.get(position).getFileExtension() != null && !mediaItemsList.get(position).getFileExtension().equals("mp4")){
                     //  System.out.println("SingleMediaActivity | File extension = " + mediaItemsList.get(position).getFileExtension() + " | position = " + position);
 
-                    editImageView.setVisibility(View.VISIBLE);
+
+//                    editImageView.setVisibility(View.VISIBLE);
                     editImageView.setEnabled(true);
                     editImageView.setClickable(true);
                 }
                 else{
-                    editImageView.setVisibility(View.GONE);
+//                    editImageView.setVisibility(View.GONE);
                     editImageView.setEnabled(false);
                     editImageView.setClickable(false);
                 }

@@ -127,6 +127,7 @@ public class FindFragment extends Fragment implements View.OnClickListener {
     public void onResume(){
         super.onResume();
         listMediaItemFind.clear();
+        listMediaItemFind = null;
         listMediaItemFind = new ArrayList<>();
         mediaItemAdapter.notifyDataSetChanged();
     }

@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
+import androidx.media3.exoplayer.ExoPlayer;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.gallery.R;
@@ -35,7 +36,7 @@ public class SingleMediaDeleteActivity extends AppCompatActivity {
     List<MediaItem> listMediaItem = new ArrayList<>();
     BottomNavigationView bottomNavigationView;
     int currentIndex = -1;
-
+    List<ExoPlayer> exoPlayerList = new ArrayList<>();
     @Override
     public void onCreate(Bundle saveInstanceState){
         super.onCreate(saveInstanceState);
@@ -84,6 +85,13 @@ public class SingleMediaDeleteActivity extends AppCompatActivity {
                 }
             }
         });
+        viewPagerSingleMediaAdapter.setOnVideoPreparedListener(new ViewPagerSingleMediaAdapter.OnVideoPreparedListener() {
+            @Override
+            public void onVideoPrepared(ExoPlayer exoPlayer) {
+                exoPlayerList.add(exoPlayer);
+                Log.e("MyTag", "count: " + exoPlayerList.size());
+            }
+        });
 
         deletePic.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
@@ -125,7 +133,7 @@ public class SingleMediaDeleteActivity extends AppCompatActivity {
                                     MediaItemRepository.getInstance().updateMediaItemDeleteTs(selectedMediaItem.getId(),0);
 //                                    listMediaItem.remove(position);
                                     viewPagerSingleMediaAdapter.setData(listMediaItem);
-                                    viewPagerSingleMediaAdapter.notifyDataSetChanged();
+//                                    viewPagerSingleMediaAdapter.notifyDataSetChanged();
                                     finish();
 
                                 }
