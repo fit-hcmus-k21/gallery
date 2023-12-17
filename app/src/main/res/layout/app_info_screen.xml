@@ -17,7 +17,7 @@
         tools:ignore="MissingConstraints">
         <androidx.appcompat.widget.AppCompatImageButton
             android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_height="match_parent"
             android:backgroundTint="@color/white"
             android:id="@+id/btnBack"
             android:layout_marginLeft="5dp"
@@ -72,9 +72,9 @@
             android:lineSpacingExtra="3dp"
             android:textSize="15dp"
             android:text="Quản lý hình ảnh đơn giản và nhanh chóng với Gallery App.
-            \nGallery app là ứng dụng miễn phí cho mọi thiết bị android
+            \nGallery App là ứng dụng miễn phí cho mọi thiết bị Android
             \nBạn có thể dễ dàng xem, tổ chức, chỉnh sửa những hình ảnh, video được lưu bên trong ứng dụng
-            \nDownload ứng dụng quản lý ảnh Gallery và bạn có thể quản lý các file ảnh của mình ở bất cứ đâu"/>
+           "/>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -86,15 +86,20 @@
             android:layout_width="match_parent"
             android:layout_height="20dp"
             app:startIconDrawable="@drawable/baseline_star_24"
-            android:gravity="center|bottom"
+
+            app:prefixTextAppearance="@style/Widget.Design.TextInputLayout"
+            android:gravity="center"
             app:prefixText="Quản lý ảnh và video dễ dàng"
+
             />
         <com.google.android.material.textfield.TextInputLayout
             android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="20dp"
             app:startIconDrawable="@drawable/baseline_star_24"
-            android:gravity="center|bottom"
+            app:prefixTextAppearance="@style/Widget.Design.TextInputLayout"
+
+            android:gravity="center"
             app:prefixText="Chỉnh sửa ảnh miễn phí"
             />
         <com.google.android.material.textfield.TextInputLayout
@@ -102,7 +107,9 @@
             android:layout_height="20dp"
             android:layout_marginTop="10dp"
             app:startIconDrawable="@drawable/baseline_star_24"
-            android:gravity="center|bottom"
+            android:gravity="center"
+            app:prefixTextAppearance="@style/Widget.Design.TextInputLayout"
+
             app:prefixText="Chia sẽ ảnh qua các nền tảng trực tuyến"
             />
         <com.google.android.material.textfield.TextInputLayout
@@ -110,7 +117,9 @@
             android:layout_height="20dp"
             android:layout_marginTop="10dp"
             app:startIconDrawable="@drawable/baseline_star_24"
-            android:gravity="center|bottom"
+            android:gravity="center"
+            app:prefixTextAppearance="@style/Widget.Design.TextInputLayout"
+
             app:prefixText="Bảo mật hình ảnh và video an toàn"
             />
         <com.google.android.material.textfield.TextInputLayout
@@ -118,16 +127,20 @@
             android:layout_height="20dp"
             android:layout_marginTop="10dp"
             app:startIconDrawable="@drawable/baseline_star_24"
-            android:gravity="center|bottom"
+            android:gravity="center"
             app:prefixText="Hỗ trợ tìm kiếm và sắp xếp nhanh chóng"
+            app:prefixTextAppearance="@style/Widget.Design.TextInputLayout"
+
             />
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="20dp"
             android:layout_marginTop="10dp"
             app:startIconDrawable="@drawable/baseline_star_24"
-            android:gravity="center|bottom"
+            android:gravity="center"
             app:prefixText="Tự do sáng tạo video"
+            app:prefixTextAppearance="@style/TextAppearanceInputLayout"
+
             />
     </LinearLayout>
     <View

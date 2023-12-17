@@ -119,7 +119,6 @@
         <activity android:name=".ui.main.doing.InnerAlbumScreen"/>
 
         <activity android:name=".ui.main.Slide35_QRCodeActivity"/>
-        <activity android:name=".ui.main.doing.VerifyPasswordActivity"/>
     </application>
 
 </manifest>

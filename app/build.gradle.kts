@@ -1,4 +1,4 @@
-import com.android.build.gradle.internal.tasks.factory.dependsOn
+
 
 plugins {
     id("com.android.application")
@@ -58,7 +58,6 @@ android {
         resources.excludes.add("META-INF/LICENSE")
         resources.excludes.add("META-INF/LICENSE.txt")
     }
-    buildToolsVersion = "33.0.1"
 
 
 }
