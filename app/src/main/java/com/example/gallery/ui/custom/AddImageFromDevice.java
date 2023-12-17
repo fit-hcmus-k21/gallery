@@ -68,64 +68,7 @@ public class AddImageFromDevice extends AppCompatActivity {
         openImagePicker();
     }
 
-    private String currentPhotoPath;
 
-
-    // Function to open the image picker
-//    private void openImagePicker() {
-//
-//        int maxSelection = 10;
-//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R && android.os.ext.SdkExtensions.getExtensionVersion(android.os.Build.VERSION_CODES.R) >= 2) {
-//            maxSelection = MediaStore.getPickImagesMaxLimit();
-//        }
-//
-//        // Registers a photo picker activity launcher in multi-select mode.
-//        ActivityResultLauncher<PickVisualMediaRequest> pickMultipleMedia =
-//                registerForActivityResult(new ActivityResultContracts.PickMultipleVisualMedia(maxSelection), uris -> {
-//                    // Callback is invoked after the user selects media items or closes the
-//                    // photo picker.
-//                    // TODO: này chỉ mới xử l thêm ảnh từ device, chưa thêm video
-//                    if (!uris.isEmpty()) {
-//                        Log.d("PhotoPicker", "Number of items selected: " + uris.size());
-//
-//                        // Handle the selected URIs (e.g., save to database, display in UI)
-//                        for (Uri uri : uris) {
-//                            // Perform actions with each selected URI
-//                            String path = saveImageToInternalStorage(uri);
-//                            if (path != null) {
-//                                // Your code to save or process the URI
-//                                MediaItem item = new MediaItem();
-//                                item.setCreationDate(System.currentTimeMillis());
-//                                item.setUserID(AppPreferencesHelper.getInstance().getCurrentUserId());
-//                                item.setAlbumName("All");
-//                                item.setPath(path);
-//
-//
-//                                MediaItemRepository.getInstance().insert(item);
-//                                System.out.println("add img from device success : " + item.getPath());
-//                            }
-//
-//                            // Log the path for demonstration
-//                            Log.d("PhotoPicker", "Selected URI: " + path);
-//                        }
-//                        Toast.makeText(this, "Add files from device successfully !", Toast.LENGTH_SHORT).show();
-//
-//                        finish();
-//                    } else {
-//                        Log.d("PhotoPicker", "No media selected");
-//                    }
-//                });
-//
-//// For this example, launch the photo picker and let the user choose images
-//// and videos. If you want the user to select a specific type of media file,
-//// use the overloaded versions of launch(), as shown in the section about how
-//// to select a single media item.
-//        pickMultipleMedia.launch(new PickVisualMediaRequest.Builder()
-//                .setMediaType(ActivityResultContracts.PickVisualMedia.ImageAndVideo.INSTANCE)
-//                .build());
-//
-//    }
-//
 
 
 //    --------------------
@@ -167,20 +110,20 @@ public class AddImageFromDevice extends AppCompatActivity {
                                     MediaItem item = new MediaItem();
                                     item.setCreationDate(System.currentTimeMillis());
                                     item.setUserID(AppPreferencesHelper.getInstance().getCurrentUserId());
-                                    item.setAlbumName(albumNameFromIntent != null && !albumNameFromIntent.isEmpty() ? albumNameFromIntent : "All");
+                                    item.setAlbumName(albumNameFromIntent != null && !albumNameFromIntent.isEmpty() ? albumNameFromIntent : "Tất cả");
                                     item.setPath(path);
 
                                     MediaItemRepository.getInstance().insert(item);
 
                                     // Update thumbnail for "All" Album
-                                    AlbumRepository.getInstance().updateAlbumCoverPhotoPath(AppPreferencesHelper.getInstance().getCurrentUserId(), albumNameFromIntent != null && !albumNameFromIntent.isEmpty() ? albumNameFromIntent : "All", path);
+                                    AlbumRepository.getInstance().updateAlbumCoverPhotoPath(AppPreferencesHelper.getInstance().getCurrentUserId(), albumNameFromIntent != null && !albumNameFromIntent.isEmpty() ? albumNameFromIntent : "Tất cả", path);
 
                                     System.out.println("add image from device success: " + item.getPath());
                                 }
                             }
                         }
 
-                        Toast.makeText(this, "Add files from device successfully!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Thêm ảnh thành công !", Toast.LENGTH_SHORT).show();
                         finish();
                     } else {
                         Log.d("PhotoPicker", "No media selected");

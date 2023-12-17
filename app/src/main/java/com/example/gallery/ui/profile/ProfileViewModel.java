@@ -134,11 +134,6 @@ public class ProfileViewModel extends BaseViewModel<ProfileNavigator> {
         getNavigator().openLoginActivity();
     }
 
-    public void addImageFromDevice() {
-        getNavigator().openAddImageFromDeviceActivity();
-    }
-
-
 
 
     public void backup() {
@@ -148,7 +143,56 @@ public class ProfileViewModel extends BaseViewModel<ProfileNavigator> {
     }
 
 
-    private MutableLiveData<User> currentUser = new MutableLiveData<>();
+
+    // cái hàm này đúng ra là backup, nhưng mà mình đặt tên là syncToCloudStorage tại nhầm mà lười sửa lại hihi :))
+    // TODO: tạo bản sao lưu dữ liệu trên thiết bị lên cloud storage
+    private static int totalTask = 0;
+    private static MutableLiveData<Integer> currentTask;
+
+    public MutableLiveData<Integer> getCurrentTask() {
+
+        if (currentTask == null) {
+            currentTask = new MutableLiveData<>();
+        }
+        return currentTask;
+    }
+
+    public int getTotalTask() {
+        return totalTask;
+    }
+
+    // AsyncTask để thực hiện công việc nền và cập nhật UI
+    private class BackgroundTask extends AsyncTask<Void, String, Void> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            // Thực hiện trước khi luồng nền bắt đầu (nếu có)
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            // Thực hiện công việc nền ở đây
+            totalTask = 1 + MediaItemRepository.getInstance().getStaticNumItems() + AlbumRepository.getInstance().getStaticNumAlbs();
+            System.out.println("totalTask " + totalTask);
+            return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(String... values) {
+            super.onProgressUpdate(values);
+            // Cập nhật UI với thông tin từ công việc nền
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            // Thực hiện sau khi luồng nền kết thúc (nếu có)
+            getNavigator().getmProfileBinding().seekBarSync.setMax(totalTask);
+
+        }
+    }
+
     public void syncToCloudStorage() {
         // TODO: upload all images, albums and user info to cloud storage
         FirebaseStorage storage = FirebaseStorage.getInstance();
@@ -166,21 +210,32 @@ public class ProfileViewModel extends BaseViewModel<ProfileNavigator> {
             return;
         }
 
+        // TODO: giả sử số lượng công việc cần làm là tổng số ảnh + tổng số album + 1 (lưu thông tin user)
+
+        new BackgroundTask().execute();
+        currentTask.postValue(0);
+
+
         usersRef.child("user_info").setValue(getUser().getValue())
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
                         // Ghi dữ liệu thành công
-                        System.out.println("Đã đồng bộ và ghi dữ liệu xong | user_info");
+                        System.out.println("Đã sao lưu dữ liệu xong | user_info");
+                        currentTask.postValue(1);
+
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         // Xử lý lỗi
-                        System.out.println("Có lỗi khi đồng bộ và ghi dữ liệu | user_info " + e.toString());
+                        System.out.println("Có lỗi khi sao lưu dữ liệu | user_info " + e.toString());
+                        currentTask.postValue(1);
+
                     }
                 });
+
 
 
 
@@ -201,20 +256,35 @@ public class ProfileViewModel extends BaseViewModel<ProfileNavigator> {
                                 @Override
                                 public void onSuccess(Void aVoid) {
                                     // Ghi dữ liệu thành công
-                                    System.out.println("đồng bộ và ghi dữ liệu thành công | album");
+                                    System.out.println("sao lưu dữ liệu thành công | album");
+
+
                                 }
                             })
                             .addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
                                     // Xử lý lỗi
-                                    System.out.println("Có lỗi khi đồng bộ và ghi dữ liệu | album " + e.toString());
+                                    System.out.println("Có lỗi khi sao lưu dữ liệu | album " + e.toString());
+
                                 }
-                            });
+                            })
+                     .addOnCompleteListener(new OnCompleteListener<Void>() {
+                         @Override
+                         public void onComplete(@NonNull com.google.android.gms.tasks.Task<Void> task) {
+                             currentTask.postValue(currentTask.getValue() + 1);
+                             System.out.println("currentTask " + currentTask.getValue() + " totalTask " + totalTask);
+
+
+                         }
+
+
+                    });
                 }
-                System.out.println("Đã đồng bộ và ghi dữ liệu xong | album");
+                System.out.println("Đã sao lưu dữ liệu xong | album");
             }
         });
+
 
         executorService.execute(new Runnable() {
             @Override
@@ -250,14 +320,25 @@ public class ProfileViewModel extends BaseViewModel<ProfileNavigator> {
                                                 @Override
                                                 public void onSuccess(Void aVoid) {
                                                     // Ghi dữ liệu thành công
-                                                    System.out.println("đồng bộ và ghi dữ liệu thành công | mediaItems");
+                                                    System.out.println("sao lưu dữ liệu thành công | mediaItems");
+
                                                 }
                                             })
                                             .addOnFailureListener(new OnFailureListener() {
                                                 @Override
                                                 public void onFailure(@NonNull Exception e) {
                                                     // Xử lý lỗi
-                                                    System.out.println("Có lỗi khi đồng bộ và ghi dữ liệu | mediaItems " + e.toString());
+                                                    System.out.println("Có lỗi khi sao lưu dữ liệu | mediaItems " + e.toString());
+
+                                                }
+                                            })
+                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull com.google.android.gms.tasks.Task<Void> task) {
+                                                    currentTask.postValue(currentTask.getValue() + 1);
+                                                    System.out.println("currentTask " + currentTask.getValue() + " totalTask " + totalTask);
+
+
                                                 }
                                             });
 
@@ -285,14 +366,24 @@ public class ProfileViewModel extends BaseViewModel<ProfileNavigator> {
                                             @Override
                                             public void onSuccess(Void aVoid) {
                                                 // Ghi dữ liệu thành công
-                                                System.out.println("đồng bộ và ghi dữ liệu thành công | mediaItems");
+                                                System.out.println("sao lưu dữ liệu thành công | mediaItems");
+
                                             }
                                         })
                                         .addOnFailureListener(new OnFailureListener() {
                                             @Override
                                             public void onFailure(@NonNull Exception e) {
                                                 // Xử lý lỗi
-                                                System.out.println("Có lỗi khi đồng bộ và ghi dữ liệu | mediaItems " + e.toString());
+                                                System.out.println("Có lỗi khi sao lưu dữ liệu | mediaItems " + e.toString());
+
+                                            }
+                                        })
+                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull com.google.android.gms.tasks.Task<Void> task) {
+                                                currentTask.postValue(currentTask.getValue() + 1);
+                                                System.out.println("currentTask " + currentTask.getValue() + " totalTask " + totalTask);
+
                                             }
                                         });
 
@@ -308,12 +399,12 @@ public class ProfileViewModel extends BaseViewModel<ProfileNavigator> {
 
 
 
+
                 }
-                System.out.println("Đã đồng bộ và ghi dữ liệu xong | images");
+                System.out.println("Đã sao lưu dữ liệu xong | images");
             }
         });
 
-        // TODO: ghi dữ liệu avatarURL của User và coverPhotoURL của Album lên database, nếu có
 
     }
 

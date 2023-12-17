@@ -156,7 +156,7 @@ public class MediaItemFragment extends Fragment {
         btnPickFiles.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                System.out.println("openAddImageFromDeviceActivity");
+//                System.out.println("openAddImageFromDeviceActivity");
                 showOptionsDialog();
 
             }
@@ -202,14 +202,14 @@ public class MediaItemFragment extends Fragment {
                         filterData.add(iterator);
 
                 for(MediaItem mediaItem : filterData){
-                    System.out.println("MediaItemFragment 001: onViewCreated: getAllMediaItems: onChanged: in loop");
+//                    System.out.println("MediaItemFragment 001: onViewCreated: getAllMediaItems: onChanged: in loop");
                     mediaItem.setTypeDisplay(mCurrentType);
                 }
 
                 mediaItemGroupByDate = setMediaItemGroupByDate(filterData);
 
                 mainMediaItemAdapter.setData(filterData, mediaItemGroupByDate, dateListString); // trong adapter có hàm setData và có notifydatasetchanged
-                System.out.println("on observe : " + mediaItems.size() + " before set hash map");
+//                System.out.println("on observe : " + mediaItems.size() + " before set hash map");
                 HashMap<String, List<MediaItem>> mediaItemGroupByDate = setMediaItemGroupByDate(filterData);
 
                 mainMediaItemAdapter.setData(filterData, mediaItemGroupByDate, dateListString); // trong adapter có hàm setData và có notifydatasetchanged
@@ -250,18 +250,6 @@ public class MediaItemFragment extends Fragment {
             }
         }
 
-        // sort dateListString desc
-//        for(int i = 0 ; i < dateListString.size() - 1; i++){
-//            for(int j = i + 1; j < dateListString.size(); j++){
-//                String date1 = dateListString.get(i);
-//                String date2 = dateListString.get(j);
-//                if(date1.compareTo(date2) < 0){
-//                    String temp = date1;
-//                    dateListString.set(i, date2);
-//                    dateListString.set(j, temp);
-//                }
-//            }
-//        }
 
         return result;
     }
@@ -442,15 +430,15 @@ public class MediaItemFragment extends Fragment {
             if (photoFile != null) {
                 Uri uri = FileProvider.getUriForFile(App.getInstance(), App.getProcessName() + ".provider", new File(photoFile.getPath()));
 
-                System.out.println("MediaItemFragment : takeAPicture: uri: " + uri);
+//                System.out.println("MediaItemFragment : takeAPicture: uri: " + uri);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-                System.out.println("MediaItemFragment : before startActivityForResult: ");
+//                System.out.println("MediaItemFragment : before startActivityForResult: ");
 
                     startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
 
 
 
-                System.out.println("MediaItemFragment : after startActivityForResult: ");
+//                System.out.println("MediaItemFragment : after startActivityForResult: ");
 
             }
         }
@@ -663,7 +651,7 @@ public class MediaItemFragment extends Fragment {
     // tải ảnh qua url
     public  void addImageFromLink(TextView tvStatus, EditText etUrl, ImageView imageView, Button btnDownload, Button btnClear) {
 
-        tvStatus.setText("Downloaded Status: downloading");
+        tvStatus.setText("Status: đang tải ảnh ...");
         tvStatus.setTextColor(Color.parseColor("#808080"));
 
         String imageUrl = etUrl.getText().toString();
@@ -753,7 +741,7 @@ public class MediaItemFragment extends Fragment {
                     // Get the number of rows in the database
 //                    //  System.out.println("Number of media items after download image: " + MediaItemViewModel.getInstance().getNumberOfMediaItems().getValue());
 
-                    tvStatus.setText("Status: download a " + fileExtension +" successfully!");
+                    tvStatus.setText("Status: Tải ảnh " + fileExtension +" thành công !");
                     tvStatus.setTextColor(Color.parseColor("#008000"));
                 }
             }

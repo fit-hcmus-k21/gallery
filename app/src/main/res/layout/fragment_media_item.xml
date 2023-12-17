@@ -15,16 +15,21 @@
       <com.google.android.material.appbar.AppBarLayout
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-          android:paddingBottom="10dp">
+          android:background="#8B658B"
+
+          android:paddingBottom="2dp"
+          android:paddingTop="2dp"
+          >
 
 
          <androidx.appcompat.widget.Toolbar
              android:id="@+id/toolbar_media_item"
              android:layout_width="match_parent"
-             android:layout_height="?attr/actionBarSize"
-             android:background="@color/purple_700"
-             app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+             android:layout_height="46dp"
+             android:background="#B2DFEE"
+             app:titleTextAppearance="@style/ToolbarTitle"
+
+             />
       </com.google.android.material.appbar.AppBarLayout>
 
       <androidx.recyclerview.widget.RecyclerView
@@ -32,7 +37,9 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_marginStart="10dp"
-          android:layout_marginBottom="10dp" />
+          android:layout_marginBottom="10dp"
+          android:layout_marginTop="6dp"
+          />
 
    </LinearLayout>
 

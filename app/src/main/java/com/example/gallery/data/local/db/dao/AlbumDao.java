@@ -84,4 +84,7 @@ public interface AlbumDao {
 
     @Query("UPDATE albums SET isPrivateAlb = :isPrivate, password = :password WHERE userID = :userId and name = :albName")
     void updateAlbumIsPrivate(String userId, String albName, int isPrivate, String password);
+
+    @Query("SELECT COUNT(*) FROM albums WHERE userID = :userID ")
+    Integer getStaticNumAlbs(String userID);
 }

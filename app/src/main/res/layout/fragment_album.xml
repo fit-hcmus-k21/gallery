@@ -10,18 +10,22 @@
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="10dp"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        android:paddingBottom="2dp"
+        android:paddingTop="2dp"
+        android:background="#8B658B"
+
         tools:ignore="MissingConstraints"
         android:id="@+id/header">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar_fragment_album"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/purple_700"
+            android:layout_height="46dp"
+            android:background="#B2DFEE"
             app:menu="@menu/top_appbar_album_menu"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:titleTextAppearance="@style/ToolbarTitle"
+            />
     </com.google.android.material.appbar.AppBarLayout>
 
 

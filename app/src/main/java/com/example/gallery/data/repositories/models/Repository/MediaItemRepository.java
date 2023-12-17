@@ -56,8 +56,10 @@ public class MediaItemRepository {
         totalMediaItems = mediaItemDao.getNumberOfMediaItems(AppPreferencesHelper.getInstance().getCurrentUserId());
         //  System.out.println("on media repos 52");
 
+    }
 
-
+    public int getStaticNumItems(){
+        return mediaItemDao.getStaticNumItems(AppPreferencesHelper.getInstance().getCurrentUserId());
     }
 
     public void fetchData(LifecycleOwner lifecycleOwner) {

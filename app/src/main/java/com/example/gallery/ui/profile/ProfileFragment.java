@@ -91,6 +91,19 @@ public class ProfileFragment extends BaseFragment<ProfileBinding, ProfileViewMod
             }
         });
 
+        mViewModel.getCurrentTask().observe(getViewLifecycleOwner(), new androidx.lifecycle.Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+                mProfileBinding.seekBarSync.setProgress(integer);
+                int max = mViewModel.getTotalTask();
+                mProfileBinding.seekBarSync.setMax(max);
+                System.out.println("Max: " + max);
+                int percent = (int) (integer * 100.0 / max);
+                mProfileBinding.textViewSyncProgress.setText(  percent + "%" );
+                mProfileBinding.textViewSyncProgress.setVisibility(View.VISIBLE);
+            }
+        });
+
 
         mViewModel.getUser().observe(getViewLifecycleOwner(), new androidx.lifecycle.Observer<com.example.gallery.data.models.db.User>() {
             @Override
@@ -182,14 +195,7 @@ public class ProfileFragment extends BaseFragment<ProfileBinding, ProfileViewMod
 //---------------------------
 
     private static final int REQUEST_IMAGE_PICK = 1;
-    @Override
-    public void openAddImageFromDeviceActivity() {
-        System.out.println("openAddImageFromDeviceActivity");
-        Intent intent = new Intent(getActivity(), AddImageFromDevice.class);
-        startActivityForResult(intent, REQUEST_IMAGE_PICK);
 
-
-    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
