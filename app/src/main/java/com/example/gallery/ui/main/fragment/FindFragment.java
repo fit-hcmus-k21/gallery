@@ -1,5 +1,12 @@
 package com.example.gallery.ui.main.fragment;
 
+import static android.app.Activity.RESULT_OK;
+
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -13,6 +20,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Ignore;
 
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
@@ -27,8 +35,10 @@ import com.example.gallery.data.models.db.MediaItem;
 import com.example.gallery.data.repositories.models.Repository.MediaItemRepository;
 import com.example.gallery.ui.main.adapter.FindMediaItemAdapter;
 import com.example.gallery.ui.main.adapter.MediaItemAdapter;
+import com.example.gallery.ui.main.doing.EditActivity;
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -42,10 +52,10 @@ public class FindFragment extends Fragment implements View.OnClickListener {
     TextInputEditText txtKey;
     RecyclerView rcvFindItem;
 
-    Button btnReturn, btnSearch;
+    Button btnSearch;
     TextView typeDes,typeDate,typeLocation,typeTag,typeExtension;
-    List<MediaItem> listMediaItemFind,listMediaItemDescription, listmediaItemDate,listMediaItemLocation,listMediaItemTag,listMediaItemExtension;
-    FindMediaItemAdapter mediaItemAdapter;
+    public static List<MediaItem> listMediaItemFind = new ArrayList<>();
+    public static FindMediaItemAdapter mediaItemAdapter;
     String keyword="";
     public String FLAG = "Description";
 
@@ -61,13 +71,13 @@ public class FindFragment extends Fragment implements View.OnClickListener {
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         activity.setSupportActionBar(toolbar);
         activity.getSupportActionBar().setTitle("Gallery - Find");
-
         return mView;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState){
         super.onViewCreated(view,savedInstanceState);
+
 
         typeDate = view.findViewById(R.id.typeDate);
         typeDes =view.findViewById(R.id.typeDescription);
@@ -112,7 +122,14 @@ public class FindFragment extends Fragment implements View.OnClickListener {
 
     }
 
-
+    @SuppressLint("NotifyDataSetChanged")
+    @Override
+    public void onResume(){
+        super.onResume();
+        listMediaItemFind.clear();
+        listMediaItemFind = new ArrayList<>();
+        mediaItemAdapter.notifyDataSetChanged();
+    }
 
     @Override
     public void onClick(View v) {
@@ -240,4 +257,5 @@ public class FindFragment extends Fragment implements View.OnClickListener {
             }
         });
     }
+
 }

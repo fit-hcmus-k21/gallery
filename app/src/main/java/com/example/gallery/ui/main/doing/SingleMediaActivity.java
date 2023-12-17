@@ -50,6 +50,7 @@ import com.example.gallery.data.repositories.models.Repository.AlbumRepository;
 import com.example.gallery.data.repositories.models.Repository.MediaItemRepository;
 import com.example.gallery.data.repositories.models.ViewModel.QRCodeViewModel;
 import com.example.gallery.ui.main.adapter.ViewPagerSingleMediaAdapter;
+import com.example.gallery.ui.main.fragment.FindFragment;
 import com.example.gallery.utils.GetInDexOfHelper;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -84,7 +85,7 @@ public class SingleMediaActivity extends AppCompatActivity  {
     Menu mMenu;
     List<ExoPlayer> exoPlayerList = new ArrayList<>();
     int currentIndex = -1;
-
+    String key ="";
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         //  System.out.println("SingleMediaActivity | OnCreate");
@@ -119,6 +120,7 @@ public class SingleMediaActivity extends AppCompatActivity  {
         Bundle bundle = intent.getExtras();
         String albumName = bundle.getString("albumName");
         MediaItem mediaItemIntent = (MediaItem) bundle.getSerializable("mediaItem");
+        key = bundle.getString("key");
 
 
 //        editImageView.setOnClickListener(new View.OnClickListener() {
@@ -344,7 +346,9 @@ public class SingleMediaActivity extends AppCompatActivity  {
                                 MediaItemRepository.getInstance().updateMediaItemDeleteTs(mediaItemsList.get(position).getId(),currentDate);
                                 mediaItemsList.get(position).setDeletedTs(currentDate);
                                 viewPagerSingleMediaAdapter.notifyDataSetChanged();
-                                InnerAlbumScreen.mediaItemAdapter.notifyDataSetChanged();
+//                                InnerAlbumScreen.mediaItemAdapter.notifyDataSetChanged();
+
+
 
 
                                 //checking whether the item is coverphotopath of album or not
@@ -366,7 +370,10 @@ public class SingleMediaActivity extends AppCompatActivity  {
                                         }
                                     }
                                 });
-
+//                                if(!key.isEmpty() && key.equals("Find")){
+//                                    Intent response = new Intent(SingleMediaActivity.this, FindFragment.class);
+//                                    setResult(RESULT_OK);
+//                                }
 
                                 dialog.dismiss();
                                 finish();
