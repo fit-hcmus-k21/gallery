@@ -29,6 +29,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -79,6 +80,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -649,6 +651,7 @@ public class MediaItemFragment extends Fragment {
     }
 
     // tải ảnh qua url
+    private MutableLiveData<Boolean> isGif = new MutableLiveData<>(false);
     public  void addImageFromLink(TextView tvStatus, EditText etUrl, ImageView imageView, Button btnDownload, Button btnClear) {
 
         tvStatus.setText("Status: đang tải ảnh ...");
@@ -689,6 +692,11 @@ public class MediaItemFragment extends Fragment {
                     // Get the file extension from the Content-Type header
                     String contentType = response.header("Content-Type");
                     String fileExtension = getFileExtension(contentType);
+
+                    if (fileExtension.equals(".gif")) {
+                        isGif.postValue(true);
+                    }
+
                     if (!isImageContentType(contentType)) {
                         tvStatus.setText("Error: Invalid image URL");
                         tvStatus.setTextColor(Color.parseColor("#FF0000"));
@@ -710,8 +718,15 @@ public class MediaItemFragment extends Fragment {
 
                     File imageFile = new File(appDirectory, fileName);
 
-                    try (OutputStream stream = new FileOutputStream(imageFile)) {
-                        stream.write(response.body().bytes());
+                    try (InputStream inputStream = response.body().byteStream();
+                         OutputStream outputStream = new FileOutputStream(imageFile)) {
+
+                        byte[] buffer = new byte[4096];
+                        int bytesRead;
+                        while ((bytesRead = inputStream.read(buffer)) != -1) {
+                            outputStream.write(buffer, 0, bytesRead);
+                        }
+
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -747,13 +762,24 @@ public class MediaItemFragment extends Fragment {
             }
         });
 
-        // display image
-        Glide.with(App.getInstance())
-                .asBitmap()
-                .load(imageUrl)
-                .into(imageView);
-        imageView.setVisibility(View.VISIBLE);
-
+        isGif.observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if(aBoolean){
+                    Glide.with(App.getInstance())
+                            .asGif()
+                            .load(imageUrl)
+                            .into(imageView);
+                    imageView.setVisibility(View.VISIBLE);
+                }else{
+                    Glide.with(App.getInstance())
+                            .asBitmap()
+                            .load(imageUrl)
+                            .into(imageView);
+                    imageView.setVisibility(View.VISIBLE);
+                }
+            }
+        });
 
     }
 

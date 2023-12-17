@@ -3,7 +3,7 @@
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:orientation="vertical"
-              android:padding="24dp"
+              android:padding="20dp"
               android:layout_marginLeft="20dp"
               android:layout_marginRight="20dp"
               android:background="#FFF0F5"
@@ -11,7 +11,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Thêm ảnh"
+        android:text="Thêm ảnh/Video"
         android:textSize="22dp"
         android:gravity="center"
         android:paddingTop="8dp"
@@ -37,7 +37,19 @@
         android:layout_height="wrap_content"
         android:text="Tải ảnh qua URL" />
 
+    <Button
 
+        android:id="@+id/btnLoadVideosFromUrl"
+
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="4dp"
+        android:layout_marginLeft="8dp"
+        android:textSize="18dp"
+        android:textAllCaps="false"
+        android:backgroundTint="#F0FFF0"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Tải video qua URL" />
 
     <Button
         android:id="@+id/btnAddSomeImages"
@@ -64,7 +76,9 @@
         android:backgroundTint="#F0FFF0"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Thêm tất cả ảnh từ thiết bị" />
+        android:text="Thêm tất cả từ thiết bị" />
+
+
 
 
 </LinearLayout>

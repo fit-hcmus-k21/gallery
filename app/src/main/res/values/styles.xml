@@ -33,4 +33,11 @@
         <!-- Add other styling attributes as needed -->
     </style>
 
+    <style name="AppBarTitle" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:paddingBottom">2dp</item>
+        <item name="android:paddingTop">2dp</item>
+        <item name="android:background">"#8B658B"</item>
+
+    </style>
+
  </resources>

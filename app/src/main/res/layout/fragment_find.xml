@@ -14,9 +14,7 @@
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="2dp"
-        android:paddingTop="2dp"
-        android:background="#8B658B"
+        style="@style/AppBarTitle"
         tools:ignore="MissingConstraints"
         android:id="@+id/header">
 

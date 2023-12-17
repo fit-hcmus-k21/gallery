@@ -17,7 +17,6 @@
         android:paddingBottom="2dp"
         android:textSize="20dp"
         android:textColor="#2F4F4F"
-        android:textStyle="bold"
         android:background="#E6E6FA"
         />
 

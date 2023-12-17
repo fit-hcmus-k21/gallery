@@ -14,15 +14,16 @@
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="10dp"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            style="@style/AppBarTitle"
             tools:ignore="MissingConstraints">
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar_deleted_activity"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="@color/purple_700"
+                app:titleTextAppearance="@style/ToolbarTitle"
+                android:background="#B2DFEE"
+
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
         </com.google.android.material.appbar.AppBarLayout>
 <!--        <Button-->
