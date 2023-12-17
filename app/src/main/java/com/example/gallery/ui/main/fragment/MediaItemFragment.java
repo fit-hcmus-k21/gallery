@@ -25,6 +25,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
@@ -288,6 +289,10 @@ public class MediaItemFragment extends Fragment {
         else if(id == R.id.createStoryItem){
             showCreateStoryDialog();
         }
+        else if(id == R.id.app_information){
+            showAppInfoDialog();
+//            Toast.makeText(getContext(),"get app info",Toast.LENGTH_SHORT).show();
+        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -312,7 +317,7 @@ public class MediaItemFragment extends Fragment {
         // Anh xa cac view
         RecyclerView recyclerView = dialog.findViewById(R.id.rcv_story_item);
         Button btnCreateStory = dialog.findViewById(R.id.btn_create_story);
-        Button btnCancelCreateStory = dialog.findViewById(R.id.btn_cancel_create_story);
+//        Button btnCancelCreateStory = dialog.findViewById(R.id.btn_cancel_create_story);
 
         // Layout manager
         GridLayoutManager gridLayoutManager1 = new GridLayoutManager(getContext(), 3);
@@ -338,12 +343,12 @@ public class MediaItemFragment extends Fragment {
         });
 
         // Event
-        btnCancelCreateStory.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
+//        btnCancelCreateStory.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                dialog.dismiss();
+//            }
+//        });
         btnCreateStory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -781,6 +786,26 @@ public class MediaItemFragment extends Fragment {
             }
         });
 
+    }
+
+    public void showAppInfoDialog(){
+        Dialog dialog = new Dialog(getContext());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+        dialog.setContentView(R.layout.app_info_screen);
+        Window window = dialog.getWindow();
+        window.setGravity(Gravity.CENTER);
+        window.setAttributes(window.getAttributes());
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT,WindowManager.LayoutParams.MATCH_PARENT);
+        dialog.setCancelable(true);
+        AppCompatImageButton btnReturn = dialog.findViewById(R.id.btnBack);
+        btnReturn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
     }
 
 

@@ -183,7 +183,7 @@ public class MyCustomView extends View {
                 case MotionEvent.ACTION_DOWN:
                     if (textBound.contains((int)event.getX(),(int)event.getY())){
                         check = true;
-                        Toast.makeText(ctx,String.valueOf(check),Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(ctx,String.valueOf(check),Toast.LENGTH_SHORT).show();
                     }
                     else{
                         check = false;
@@ -235,7 +235,7 @@ public class MyCustomView extends View {
             line.setStrokeWidth(size);
             drawLine = true;
             drawText = false;
-            Toast.makeText(ctx,text,Toast.LENGTH_SHORT).show();
+//            Toast.makeText(ctx,text,Toast.LENGTH_SHORT).show();
 
         }
         if(action == false){      //draw text

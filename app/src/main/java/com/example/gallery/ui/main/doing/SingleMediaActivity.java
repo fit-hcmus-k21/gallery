@@ -410,9 +410,12 @@ public class SingleMediaActivity extends AppCompatActivity  {
 
                         if(selectedMediaItem.isFavorite()){
                             favoriteImageView.setImageResource(R.drawable.heart_svgrepo_com_color);
+                            Toast.makeText(SingleMediaActivity.this,"Added to favorites",Toast.LENGTH_SHORT).show();
                         }
                         else{
                             favoriteImageView.setImageResource(R.drawable.baseline_heart_svgrepo_com);
+                            Toast.makeText(SingleMediaActivity.this,"Removed from favorites",Toast.LENGTH_SHORT).show();
+
                         }
                         MediaItemRepository.getInstance().updateFavorite(selectedMediaItem.getId(), selectedMediaItem.isFavorite());
 

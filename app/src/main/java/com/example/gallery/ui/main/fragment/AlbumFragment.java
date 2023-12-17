@@ -187,11 +187,11 @@ public class AlbumFragment extends Fragment {
             return;
         }
         window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
-        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+//        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         window.setGravity(Gravity.CENTER);
         window.setAttributes(window.getAttributes());
 
-        dialog.setCancelable(false);
+        dialog.setCancelable(true);
 
         // Ánh xạ các view
         Button btnCancel = dialog.findViewById(R.id.btn_cancel_create_album);
