@@ -108,19 +108,25 @@ public class MemoryFragment extends Fragment {
                 if(!flag.equals("red"))
                     tempi= (int) (daysDifference/365);
                 flag="red";
+                if(tempi!=(daysDifference/365))
+                    break;
                 temp.add(imgMemory.get(i));
 
             }
             if(flag.equals("blue")&& daysDifference<365&&daysDifference%30==0){
                 flagMemory="true";
-                temp.add(imgMemory.get(i));
                 if(flagBlock.equals("false")){
                     tempi= (int) (daysDifference/30);
                     flagBlock="true";
                 }
+
+                if(tempi!=(int) (daysDifference/30))
+                    break;
+                if(tempi!=0)
+                    temp.add(imgMemory.get(i));
             }
         }
-        if(flagMemory.equals("false")){
+        if(flagMemory.equals("false")&&tempi==0){
             textView.setText("NO MEMORY IN THIS DAY");
         }
         else{
