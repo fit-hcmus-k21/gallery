@@ -135,6 +135,32 @@ public class ProfileViewModel extends BaseViewModel<ProfileNavigator> {
     }
 
 
+    public static int totalTaskRestore = 0;
+    public static MutableLiveData<Integer> currentTaskRestore;
+
+    public static MutableLiveData<Integer> getCurrentTaskRestore() {
+
+        if (currentTaskRestore == null) {
+            currentTaskRestore = new MutableLiveData<>();
+        }
+        return currentTaskRestore;
+    }
+
+    public int getTotalTaskRestore() {
+        return totalTaskRestore;
+    }
+
+    public static void setTotalTaskRestore(int totalTask) {
+        totalTaskRestore = totalTask;
+    }
+
+    public static int getCurrentTaskRestoreValue() {
+        if (currentTaskRestore != null && currentTaskRestore.getValue() != null) {
+            return currentTaskRestore.getValue();
+        } else {
+            return 0;
+        }
+    }
 
     public void backup() {
         // TODO: backup all user data to local storage
@@ -330,6 +356,7 @@ public class ProfileViewModel extends BaseViewModel<ProfileNavigator> {
                                                     // Xử lý lỗi
                                                     System.out.println("Có lỗi khi sao lưu dữ liệu | mediaItems " + e.toString());
 
+
                                                 }
                                             })
                                             .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -345,6 +372,8 @@ public class ProfileViewModel extends BaseViewModel<ProfileNavigator> {
                             }).addOnFailureListener(exception -> {
                                 // ...
                                     System.out.println("Error when upload video to cloud storage " + exception.getMessage());
+                                    currentTask.postValue(currentTask.getValue() + 1);
+
                             });
                             });
                         } catch (FileNotFoundException e) {
@@ -392,6 +421,9 @@ public class ProfileViewModel extends BaseViewModel<ProfileNavigator> {
                         }).addOnFailureListener(exception -> {
                             // Xử lý lỗi khi tải ảnh lên
                             System.out.println("Error when upload image to cloud storage " + exception.getMessage());
+                            currentTask.postValue(currentTask.getValue() + 1);
+                            System.out.println("currentTask " + currentTask.getValue() + " totalTask " + totalTask);
+
                         });
                     }
 

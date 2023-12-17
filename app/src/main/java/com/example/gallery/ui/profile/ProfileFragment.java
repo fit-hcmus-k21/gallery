@@ -104,6 +104,19 @@ public class ProfileFragment extends BaseFragment<ProfileBinding, ProfileViewMod
             }
         });
 
+        mViewModel.getCurrentTaskRestore().observe(getViewLifecycleOwner(), new androidx.lifecycle.Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+                mProfileBinding.progressBarRestore.setProgress(integer);
+                int max = mViewModel.getTotalTaskRestore();
+                mProfileBinding.progressBarRestore.setMax(max);
+                System.out.println("Max: " + max + " current: " + integer);
+                int percent = (int) (integer * 100.0 / max);
+                mProfileBinding.textViewRestoreProgress.setText(  percent + "%" );
+                mProfileBinding.textViewRestoreProgress.setVisibility(View.VISIBLE);
+            }
+        });
+
 
         mViewModel.getUser().observe(getViewLifecycleOwner(), new androidx.lifecycle.Observer<com.example.gallery.data.models.db.User>() {
             @Override

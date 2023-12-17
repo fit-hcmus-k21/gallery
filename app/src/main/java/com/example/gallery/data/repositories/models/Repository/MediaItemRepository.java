@@ -194,7 +194,7 @@ public class MediaItemRepository {
             }
 
             // Show id, userID, album name
-            System.out.println("MediaItemRepository: insert on run: 121" + mediaItem.getPath());
+//            System.out.println("MediaItemRepository: insert on run: 121" + mediaItem.getPath());
 
             // Use synchronized block to ensure proper order of insertions
             synchronized (this) {

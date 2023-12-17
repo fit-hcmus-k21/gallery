@@ -6,6 +6,7 @@ import android.widget.Toast;
 
 import androidx.lifecycle.LiveData;
 
+import com.example.gallery.data.local.db.AppDatabase;
 import com.example.gallery.data.local.prefs.AppPreferencesHelper;
 import com.example.gallery.data.models.db.Album;
 import com.example.gallery.data.models.db.MediaItem;
@@ -14,6 +15,7 @@ import com.example.gallery.data.repositories.models.Repository.AlbumRepository;
 import com.example.gallery.data.repositories.models.Repository.MediaItemRepository;
 import com.example.gallery.data.repositories.models.Repository.UserRepository;
 import com.example.gallery.ui.main.doing.MainActivity;
+import com.example.gallery.ui.profile.ProfileViewModel;
 import com.example.gallery.utils.Utils;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -193,9 +195,15 @@ public class BackupManager {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         // Xử lý dữ liệu media items ở đây
                         if (dataSnapshot.exists()) {
+                            int totalMediaItem = (int) dataSnapshot.getChildrenCount();
+                            ProfileViewModel.setTotalTaskRestore(  totalMediaItem);
+
                             for (DataSnapshot itemSnapshot : dataSnapshot.getChildren()) {
                                 // Lấy key của node, chính là id của media item
                                 int mediaItemId = Integer.parseInt(itemSnapshot.getKey());
+
+                                // lấy tổng số media item
+
 
                                 // Lấy dữ liệu từ node và ánh xạ vào đối tượng MediaItem
                                 MediaItem mediaItem = itemSnapshot.getValue(MediaItem.class);
@@ -211,6 +219,7 @@ public class BackupManager {
 
                                     MediaItemRepository.getInstance().insert(mediaItem);
                                     System.out.println("Insert after restore media item completed " + mediaItem.getName());
+
 
                                 }
                             }
@@ -272,6 +281,8 @@ public class BackupManager {
                     // File đã được tải thành công, thực hiện các thao tác sau khi backup
                     // Ví dụ: thông báo backup thành công, cập nhật UI, vv.
                     System.out.println("Restore file completed");
+                    ProfileViewModel.currentTaskRestore.postValue(ProfileViewModel.getCurrentTaskRestoreValue() + 1);
+
 
                     // TODO: Thực hiện các thao tác sau khi backup thành công
                 })
@@ -279,6 +290,8 @@ public class BackupManager {
                     // Xử lý lỗi khi tải file từ Cloud Storage
                     // Ví dụ: thông báo lỗi, ghi log, vv.
                     System.out.println("Restore file failed " + exception.getMessage());
+                    ProfileViewModel.currentTaskRestore.postValue(ProfileViewModel.getCurrentTaskRestoreValue() + 1);
+
 
                     // TODO: Xử lý lỗi khi backup
                 });

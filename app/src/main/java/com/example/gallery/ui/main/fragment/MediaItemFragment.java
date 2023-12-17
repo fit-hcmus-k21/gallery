@@ -494,7 +494,7 @@ public class MediaItemFragment extends Fragment {
                 item.setCreationDate(new Date().getTime());
 
                 // Update thumbnail for "All" Album
-//                AlbumRepository.getInstance().updateAlbumCoverPhotoPath(AppPreferencesHelper.getInstance().getCurrentUserId(), "Camera", currentPhotoPath);
+                AlbumRepository.getInstance().updateAlbumCoverPhotoPath(AppPreferencesHelper.getInstance().getCurrentUserId(), "Camera", currentPhotoPath);
 
                 MediaItemRepository.getInstance().insert(item);
             }

@@ -105,6 +105,7 @@ public class AddImageFromDevice extends AppCompatActivity {
                                 }
                             } else {
                                 // Handle image file (similar to your existing code)
+
                                 String path = saveImageToInternalStorage(uri);
                                 if (path != null) {
                                     MediaItem item = new MediaItem();
@@ -145,9 +146,9 @@ public class AddImageFromDevice extends AppCompatActivity {
 
     // Function to save the video to internal storage and return the path
     private String moveVideoToInternalStorage(Uri videoUri) {
-        try {
             ContentResolver contentResolver = getContentResolver();
 
+            try {
             // Tạo cursor để truy vấn thông tin về video
             String[] projection = {MediaStore.Video.Media.DATA};
             Cursor cursor = contentResolver.query(videoUri, projection, null, null, null);
@@ -179,6 +180,7 @@ public class AddImageFromDevice extends AppCompatActivity {
                 cursor.close();
 
                 return internalVideoFile.getAbsolutePath();
+
             } else {
                 if (cursor != null) {
                     cursor.close();
@@ -189,44 +191,10 @@ public class AddImageFromDevice extends AppCompatActivity {
             e.printStackTrace();
             return null;
         }
+
     }
 
-    private String saveVideoToInternalStorage(Uri uri) {
-        try {
-            ContentResolver resolver = getContentResolver();
-            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
-            String videoFileName = "VIDEO_" + timeStamp + ".mp4";
 
-            // Mở InputStream từ URI của video
-            InputStream inputStream = resolver.openInputStream(uri);
-
-            // Tạo ContentValues để lưu thông tin về tệp video
-            ContentValues contentValues = new ContentValues();
-            contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, videoFileName);
-            contentValues.put(MediaStore.MediaColumns.MIME_TYPE, "mp4");
-
-            // Sử dụng ContentResolver để tạo Uri cho việc lưu trữ tệp video
-            Uri contentUri = resolver.insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, contentValues);
-
-            // Mở OutputStream từ Uri mới tạo
-            OutputStream outputStream = resolver.openOutputStream(contentUri);
-
-            // Copy dữ liệu từ InputStream sang OutputStream
-            byte[] buffer = new byte[1024];
-            int bytesRead;
-            while ((bytesRead = inputStream.read(buffer)) != -1) {
-                outputStream.write(buffer, 0, bytesRead);
-            }
-
-            inputStream.close();
-            outputStream.close();
-
-            return contentUri.toString();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
 
 
     // Function to save the image to internal storage and return the path
@@ -253,7 +221,8 @@ public class AddImageFromDevice extends AppCompatActivity {
             outputStream.close();
 
             return internalImageFile.getAbsolutePath();
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             e.printStackTrace();
             return null;
         }
