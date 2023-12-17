@@ -1,3 +1,5 @@
+import com.android.build.gradle.internal.tasks.factory.dependsOn
+
 plugins {
     id("com.android.application")
     id("com.google.gms.google-services")
@@ -7,6 +9,7 @@ plugins {
 android {
     namespace = "com.example.gallery"
     compileSdk = 34
+
 
     defaultConfig {
         applicationId = "com.example.gallery"
@@ -55,7 +58,7 @@ android {
         resources.excludes.add("META-INF/LICENSE")
         resources.excludes.add("META-INF/LICENSE.txt")
     }
-
+    buildToolsVersion = "33.0.1"
 
 
 }
