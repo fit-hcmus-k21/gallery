@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
@@ -173,34 +174,46 @@ public class MediaItemRepository {
         return allMediaItem;
     }
 
-    public synchronized void insert(MediaItem mediaItem) {
-        // Check if album name exists
-        String albumName = mediaItem.getAlbumName();
-        boolean albumExists = AlbumRepository.getInstance().isExistAlbum(albumName);
-
-        if (!albumExists) {
-            // Album does not exist, create and insert
-            Album album = new Album();
-            album.setUserID(AppPreferencesHelper.getInstance().getCurrentUserId());
-            album.setName(albumName);
-
-            AlbumRepository.getInstance().insert(album);
-        }
-
-        // Media item can be inserted without waiting for the album insertion
-//        //  System.out.println("MediaItemRepository: insert: " + mediaItem.getId() + " " + mediaItem.getUserID() + " " + albumName);
+    public void insert(MediaItem mediaItem) {
+        // Create a CountDownLatch with a count of 1
+        CountDownLatch latch = new CountDownLatch(1);
 
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         executorService.execute(() -> {
+            // Check if album name exists
+            String albumName = mediaItem.getAlbumName();
+            boolean albumExists = AlbumRepository.getInstance().isExistAlbum(albumName);
+
+            if (!albumExists) {
+                // Album does not exist, create and insert
+                Album album = new Album();
+                album.setUserID(AppPreferencesHelper.getInstance().getCurrentUserId());
+                album.setName(albumName);
+                System.out.println("alb not exist");
+                AppDatabase.getInstance().albumDao().insert(album);
+            }
+
+            // Show id, userID, album name
+            System.out.println("MediaItemRepository: insert on run: 121" + mediaItem.getPath());
+
             // Use synchronized block to ensure proper order of insertions
             synchronized (this) {
-                // Show id, userID, album name
-                //  System.out.println("MediaItemRepository: insert on run: 121" + mediaItem.getPath());
                 mediaItemDao.insert(mediaItem);
-                //  System.out.println("after insert in Media Repos: 123");
+                System.out.println("after insert in Media Repos: 123");
+
+                // Release the latch to signal that album insertion and mediaItem insertion are complete
+                latch.countDown();
             }
-            executorService.shutdown();
         });
+
+        try {
+            // Wait for the latch to be decremented to 0
+            latch.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        executorService.shutdown();
     }
 
     public  void insertAll(List<MediaItem> mediaItems) {

@@ -437,7 +437,7 @@ public class MediaItemFragment extends Fragment {
             if (photoFile != null) {
                 Uri uri = FileProvider.getUriForFile(App.getInstance(), App.getProcessName() + ".provider", new File(photoFile.getPath()));
 
-//                System.out.println("MediaItemFragment : takeAPicture: uri: " + uri);
+                System.out.println("MediaItemFragment : takeAPicture: uri: " + uri);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
 //                System.out.println("MediaItemFragment : before startActivityForResult: ");
 
@@ -470,6 +470,7 @@ public class MediaItemFragment extends Fragment {
         );
 
         currentPhotoPath = imageFile.getAbsolutePath();
+        System.out.println("Current Photo Path: " + currentPhotoPath);
         return imageFile;
     }
 
@@ -480,13 +481,12 @@ public class MediaItemFragment extends Fragment {
         System.out.println("MediaItemFragment : onActivityResult: ");
 
         if (requestCode == REQUEST_TAKE_PHOTO && resultCode == Activity.RESULT_OK) {
-            // Ảnh đã được chụp thành công
-            Toast.makeText(getContext(), "Chụp ảnh thành công", Toast.LENGTH_SHORT).show();
+
 
             // Sử dụng currentPhotoPath để truy cập đường dẫn của ảnh
             if (currentPhotoPath != null) {
                 // In đường dẫn ra Log (hoặc thực hiện các thao tác khác)
-                Log.d("YourFragment", "Đường dẫn ảnh đã chụp: " + currentPhotoPath);
+               System.out.println( "Đường dẫn ảnh đã chụp: " + currentPhotoPath);
                 MediaItem item = new MediaItem();
                 item.setUserID(AppPreferencesHelper.getInstance().getCurrentUserId());
                 item.setPath(currentPhotoPath);
@@ -494,10 +494,12 @@ public class MediaItemFragment extends Fragment {
                 item.setCreationDate(new Date().getTime());
 
                 // Update thumbnail for "All" Album
-                AlbumRepository.getInstance().updateAlbumCoverPhotoPath(AppPreferencesHelper.getInstance().getCurrentUserId(), "Camera", currentPhotoPath);
+//                AlbumRepository.getInstance().updateAlbumCoverPhotoPath(AppPreferencesHelper.getInstance().getCurrentUserId(), "Camera", currentPhotoPath);
 
                 MediaItemRepository.getInstance().insert(item);
             }
+            // Ảnh đã được chụp thành công
+            Toast.makeText(getContext(), "Chụp ảnh thành công", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -557,7 +559,7 @@ public class MediaItemFragment extends Fragment {
     }
 
 
-    // Hàm để hiển thị dialog
+    // Hàm để hiển thị dialog thêm ảnh
     private void showOptionsDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         LayoutInflater inflater = getLayoutInflater();
@@ -579,7 +581,7 @@ public class MediaItemFragment extends Fragment {
                 // Xử lý khi người dùng chọn tùy chọn 1
                 // ...
                 currentDialog.dismiss();
-                RequestPermissionHelper.checkAndRequestPermission(getActivity(), 42);
+                RequestPermissionHelper.checkAndRequestPermission(getActivity(), 225);
 
             }
         });
