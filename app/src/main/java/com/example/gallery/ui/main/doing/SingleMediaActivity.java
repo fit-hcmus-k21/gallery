@@ -50,6 +50,7 @@ import com.example.gallery.data.repositories.models.Repository.AlbumRepository;
 import com.example.gallery.data.repositories.models.Repository.MediaItemRepository;
 import com.example.gallery.data.repositories.models.ViewModel.QRCodeViewModel;
 import com.example.gallery.ui.main.adapter.ViewPagerSingleMediaAdapter;
+import com.example.gallery.ui.main.fragment.FindFragment;
 import com.example.gallery.utils.GetInDexOfHelper;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -84,7 +85,7 @@ public class SingleMediaActivity extends AppCompatActivity  {
     Menu mMenu;
     List<ExoPlayer> exoPlayerList = new ArrayList<>();
     int currentIndex = -1;
-
+    String key ="";
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         //  System.out.println("SingleMediaActivity | OnCreate");
@@ -119,14 +120,9 @@ public class SingleMediaActivity extends AppCompatActivity  {
         Bundle bundle = intent.getExtras();
         String albumName = bundle.getString("albumName");
         MediaItem mediaItemIntent = (MediaItem) bundle.getSerializable("mediaItem");
+        key = bundle.getString("key");
 
 
-//        editImageView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intentEdit = new Intent(SingleMediaActivity.this,)
-//            }
-//        });
 
         // Đây là biến dạng boolen để đảm bảo rằng việc di chuyển đến item đang được chọn chỉ được thực hiện 1 lần
         // Nếu không có biến này thì khi chúng ta thực hiện thao tác thay đổi trạng thái Favorite của item đang được chọn
@@ -291,12 +287,13 @@ public class SingleMediaActivity extends AppCompatActivity  {
                 if(mediaItemsList.get(position).getFileExtension() != null && !mediaItemsList.get(position).getFileExtension().equals("mp4")){
                     //  System.out.println("SingleMediaActivity | File extension = " + mediaItemsList.get(position).getFileExtension() + " | position = " + position);
 
-                    editImageView.setVisibility(View.VISIBLE);
+
+//                    editImageView.setVisibility(View.VISIBLE);
                     editImageView.setEnabled(true);
                     editImageView.setClickable(true);
                 }
                 else{
-                    editImageView.setVisibility(View.GONE);
+//                    editImageView.setVisibility(View.GONE);
                     editImageView.setEnabled(false);
                     editImageView.setClickable(false);
                 }
@@ -344,7 +341,9 @@ public class SingleMediaActivity extends AppCompatActivity  {
                                 MediaItemRepository.getInstance().updateMediaItemDeleteTs(mediaItemsList.get(position).getId(),currentDate);
                                 mediaItemsList.get(position).setDeletedTs(currentDate);
                                 viewPagerSingleMediaAdapter.notifyDataSetChanged();
-                                InnerAlbumScreen.mediaItemAdapter.notifyDataSetChanged();
+//                                InnerAlbumScreen.mediaItemAdapter.notifyDataSetChanged();
+
+
 
 
                                 //checking whether the item is coverphotopath of album or not
@@ -366,7 +365,10 @@ public class SingleMediaActivity extends AppCompatActivity  {
                                         }
                                     }
                                 });
-
+//                                if(!key.isEmpty() && key.equals("Find")){
+//                                    Intent response = new Intent(SingleMediaActivity.this, FindFragment.class);
+//                                    setResult(RESULT_OK);
+//                                }
 
                                 dialog.dismiss();
                                 finish();
@@ -408,9 +410,12 @@ public class SingleMediaActivity extends AppCompatActivity  {
 
                         if(selectedMediaItem.isFavorite()){
                             favoriteImageView.setImageResource(R.drawable.heart_svgrepo_com_color);
+                            Toast.makeText(SingleMediaActivity.this,"Added to favorites",Toast.LENGTH_SHORT).show();
                         }
                         else{
                             favoriteImageView.setImageResource(R.drawable.baseline_heart_svgrepo_com);
+                            Toast.makeText(SingleMediaActivity.this,"Removed from favorites",Toast.LENGTH_SHORT).show();
+
                         }
                         MediaItemRepository.getInstance().updateFavorite(selectedMediaItem.getId(), selectedMediaItem.isFavorite());
 

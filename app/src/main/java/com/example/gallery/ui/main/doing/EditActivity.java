@@ -113,7 +113,7 @@ public class EditActivity extends AppCompatActivity implements View.OnClickListe
         super.onActivityResult(requestCode, resultCode, receive);
         if(requestCode == 123456  && resultCode == RESULT_OK){
             String path = receive.getStringExtra("path");
-            Toast.makeText(EditActivity.this,path,Toast.LENGTH_SHORT).show();
+//            Toast.makeText(EditActivity.this,path,Toast.LENGTH_SHORT).show();
             Bitmap bitmap = BitmapFactory.decodeFile(path);
             File imageFile = new File(path);
 

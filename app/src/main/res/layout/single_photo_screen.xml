@@ -8,16 +8,17 @@
         android:id="@+id/appBarLayout_single_media_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        android:paddingBottom="10dp"
+        style="@style/AppBarTitle"
         android:layout_alignParentTop="true">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar_single_media_item"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/purple_700"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:titleTextAppearance="@style/ToolbarTitle"
+        android:background="#B2DFEE"
+
+
         />
     </com.google.android.material.appbar.AppBarLayout>
 

@@ -7,7 +7,7 @@
         android:id="@+id/nav_photos"
         android:enabled="true"
         android:icon="@drawable/multiple_image_svgrepo_com"
-        android:title="Media"
+        android:title="Ảnh"
         app:showAsAction="always"
 
         />
@@ -16,7 +16,7 @@
         android:id="@+id/nav_albums"
         android:enabled="true"
         android:icon="@drawable/folder_image_svgrepo_com"
-        android:title="Album"
+        android:title="Bộ sưu tập"
         app:showAsAction="always"
         />
 
@@ -24,7 +24,7 @@
         android:id="@+id/nav_finding"
         android:enabled="true"
         android:icon="@drawable/search_svgrepo_com"
-        android:title="Search"
+        android:title="Tìm kiếm"
         app:showAsAction="always"
 
         />
@@ -33,7 +33,7 @@
         android:id="@+id/nav_memories"
         android:enabled="true"
         android:icon="@drawable/rewind_back_svgrepo_com"
-        android:title="Memory"
+        android:title="Kỷ niệm"
         app:showAsAction="always"
 
         />
@@ -42,7 +42,7 @@
         android:id="@+id/nav_profile"
         android:enabled="true"
         android:icon="@drawable/baseline_person_outline_24"
-        android:title="Profile"
+        android:title="Tài khoản"
         app:showAsAction="always"
 
         />

@@ -34,10 +34,19 @@
 
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter Image URL"
-        android:layout_marginTop="20dp"
+        android:hint="Enter image URL: "
+        android:layout_marginTop="18dp"
         android:layout_marginBottom="20dp"
         android:inputType="text"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Supported formats: .jpg, .png, .gif, ..."
+        android:textSize="14dp"
+        android:layout_marginBottom="10dp"
+        android:textColor="@color/gray"
+        />
 
     <LinearLayout
         android:id="@+id/linearLayoutAddFromLink"
@@ -56,6 +65,7 @@
             android:layout_marginTop="6dp"
             android:layout_weight="1"
             android:backgroundTint="#C6E2FF"
+            android:textAllCaps="false"
 
             />
 
@@ -74,6 +84,7 @@
             android:layout_marginTop="6dp"
             android:layout_weight="1"
             android:backgroundTint="#C6E2FF"
+            android:textAllCaps="false"
 
 
             android:text="Clear "

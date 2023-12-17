@@ -120,7 +120,8 @@ public class MainActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+        // request code 225: load add media item from external storage
+        if (requestCode == 225 &&  grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
               System.out.println("in onRequestPermissionsResult main: " + requestCode);
             // Sử dụng Executor
             Executor executor = Executors.newSingleThreadExecutor();

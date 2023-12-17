@@ -25,4 +25,24 @@
          <item name="popupMenuBackground">@color/light_white</item>
      </style>
 
+    <!-- Define a custom style for the Toolbar title -->
+    <style name="ToolbarTitle" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textSize">18sp</item>
+        <item name="android:fontFamily">serif-monospace</item>
+        <item name="android:textColor">#00688B</item>
+        <!-- Add other styling attributes as needed -->
+    </style>
+
+    <style name="AppBarTitle" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:paddingBottom">2dp</item>
+        <item name="android:paddingTop">2dp</item>
+        <item name="android:background">"#8B658B"</item>
+
+    </style>
+
+    <style name="TextAppearanceInputLayout" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">"#8B658B"</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
  </resources>

@@ -10,7 +10,7 @@
     <ImageView
         android:id="@+id/img_media_item"
         android:layout_width="match_parent"
-        android:layout_height="120dp"
+        android:layout_height="180dp"
         android:src="@drawable/ic_launcher_background"
         android:scaleType="centerCrop"/>
     

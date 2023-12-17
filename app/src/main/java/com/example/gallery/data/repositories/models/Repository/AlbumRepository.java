@@ -57,6 +57,10 @@ public class AlbumRepository {
 //        });
     }
 
+    public int getStaticNumAlbs(){
+        return albumDao.getStaticNumAlbs(AppPreferencesHelper.getInstance().getCurrentUserId());
+    }
+
 
     public LiveData<List<Album>> getAlbums(){
 

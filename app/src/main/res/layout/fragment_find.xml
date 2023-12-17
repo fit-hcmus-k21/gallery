@@ -14,16 +14,16 @@
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="10dp"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        style="@style/AppBarTitle"
         tools:ignore="MissingConstraints"
         android:id="@+id/header">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar_album"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/purple_700"
+            android:layout_height="46dp"
+            android:background="#B2DFEE"
+            app:titleTextAppearance="@style/ToolbarTitle"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -109,8 +109,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/gray"
-                android:id="@+id/typeNote"
-                android:text="Note"
+                android:id="@+id/typeExtension"
+                android:text="Extension"
                 android:textSize="15dp"
                 android:padding="10dp"/>
         </LinearLayout>

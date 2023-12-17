@@ -33,17 +33,22 @@
         android:id="@+id/media_set_wallpaper_item"
         android:title="Đặt làm hình nền"
         app:showAsAction="never"/>
-    <item
-        android:id="@+id/media_set_security_item"
-        android:title="Bảo mật ảnh"
-        app:showAsAction="never"/>
+<!--    <item-->
+<!--        android:id="@+id/media_set_security_item"-->
+<!--        android:title="Bảo mật ảnh"-->
+<!--        app:showAsAction="never"/>-->
     <item
         android:id="@+id/media_convert_text_item"
-        android:title="Nhận diện text"
+        android:title="Nhận diện văn bản"
         app:showAsAction="never"/>
     <item
         android:id="@+id/media_note_media_item"
         android:title="Ghi chú ảnh"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/media_add_tag"
+        android:title="Thêm TAG"
         app:showAsAction="never"/>
 
 

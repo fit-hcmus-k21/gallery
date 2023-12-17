@@ -5,23 +5,48 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".ui.main.fragment.MemoryFragment"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+
     >
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="30dp"
-        android:textAlignment="center"
-        android:background="@color/colorAccent"
-        android:text="Amazing Memory" />
+        android:background="#8B658B"
+
+        android:paddingBottom="2dp"
+        android:paddingTop="2dp"
+        >
+
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar_media_item"
+            android:layout_width="match_parent"
+            android:layout_height="46dp"
+            android:background="#B2DFEE"
+            app:title="Gallery - Memory"
+            app:titleTextAppearance="@style/ToolbarTitle"
+
+            />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <!-- TODO: Update blank fragment layout -->
 
     <TextView
         android:id="@+id/dateMemory"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="dd/mm/yyyy"
+        android:layout_marginLeft="4dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="5dp"
+        android:paddingRight="8dp"
+        android:paddingLeft="8dp"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp"
         android:textSize="20dp"
-        android:text="Date"
+        android:textColor="#2F4F4F"
+        android:background="#E6E6FA"
         />
 
     <androidx.recyclerview.widget.RecyclerView

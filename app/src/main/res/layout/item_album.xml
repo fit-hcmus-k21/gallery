@@ -22,16 +22,23 @@
                 <ImageView
                     android:id="@+id/img_album"
                     android:layout_width="match_parent"
-                    android:layout_height="120dp"
-                    android:src="@drawable/ic_launcher_background"
+                    android:layout_height="160dp"
+                    android:src="@drawable/icon_album"
                     android:scaleType="centerCrop"/>
                 <TextView
                     android:id="@+id/txt_album_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="18sp"
                     android:text="Album name"
                     android:gravity="center"
+
+                    android:paddingRight="8dp"
+                    android:paddingLeft="8dp"
+                    android:paddingTop="2dp"
+                    android:paddingBottom="2dp"
+                    android:textSize="20dp"
+                    android:textColor="#2F4F4F"
+                    android:background="#E6E6FA"
                     />
         </LinearLayout>
     </androidx.cardview.widget.CardView>

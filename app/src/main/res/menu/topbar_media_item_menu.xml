@@ -16,10 +16,10 @@
         android:iconTint="@color/black"
         app:showAsAction="always"/>
 
-    <item
-        android:id="@+id/backup"
-        android:title="Đồng bộ sao lưu"
-        app:showAsAction="never"/>
+<!--    <item-->
+<!--        android:id="@+id/backup"-->
+<!--        android:title="Đồng bộ sao lưu"-->
+<!--        app:showAsAction="never"/>-->
     <item
         android:id="@+id/app_information"
         android:title="Thông tin ứng dụng"

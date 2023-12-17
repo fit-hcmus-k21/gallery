@@ -17,13 +17,16 @@ import com.example.gallery.R;
 import com.example.gallery.data.models.db.MediaItem;
 import com.example.gallery.ui.main.doing.SingleMediaDeleteActivity;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class DeleteAdapter extends RecyclerView.Adapter<DeleteAdapter.MyViewHolder> {
-    List<MediaItem> listDeleteItem;
+    List<MediaItem> listDeleteItem = new ArrayList<>();
+    public static final int TYPE_PHOTO = 1;
+    public static final int TYPE_VIDEO = 2;
 
     public class MyViewHolder extends RecyclerView.ViewHolder{
         ImageView image;
@@ -39,6 +42,18 @@ public class DeleteAdapter extends RecyclerView.Adapter<DeleteAdapter.MyViewHold
     public void setData(List<MediaItem> data){
         this.listDeleteItem = data;
         notifyDataSetChanged();
+    }
+    @Override
+    public int getItemViewType(int position) {
+        if(listDeleteItem != null && listDeleteItem.size() > 0) {
+            if(listDeleteItem.get(position).getFileExtension() != null && listDeleteItem.get(position).getFileExtension().equals("mp4")){
+                return TYPE_VIDEO;
+            }
+            else {
+                return TYPE_PHOTO;
+            }
+        }
+        return super.getItemViewType(position);
     }
     @NonNull
     @Override

@@ -120,5 +120,9 @@ public interface MediaItemDao {
 
     @Query("SELECT media_items.* FROM media_items LEFT JOIN albums ON media_items.albumName = albums.name WHERE media_items.userID = :userID AND albums.isPrivateAlb = 0 AND media_items.deletedTs = 0")
     LiveData<List<MediaItem>> getAllPublicMediaItem(String userID);
+
+    @Query(("SELECT COUNT(*) FROM media_items WHERE userID = :userID AND deletedTs = 0 "))
+    Integer getStaticNumItems(String userID);
+
 }
 

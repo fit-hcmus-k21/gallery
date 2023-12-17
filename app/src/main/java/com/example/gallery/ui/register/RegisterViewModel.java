@@ -1,5 +1,6 @@
 package com.example.gallery.ui.register;
 
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
@@ -62,6 +63,11 @@ public class RegisterViewModel extends BaseViewModel<RegisterNavigator> {
                 FirebaseUser currentUser = mAuth.getCurrentUser();
                 if (currentUser != null) {
                     // Update user profile
+
+                    // get avatar default from drawable
+//                    Uri uri = Uri.parse("android.resource://com.example.gallery/drawable/avatar_default");
+
+
                     currentUser.updateProfile(new UserProfileChangeRequest.Builder()
                             .setDisplayName(fullname)
                             .build()

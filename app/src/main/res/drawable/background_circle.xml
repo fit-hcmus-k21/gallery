@@ -1,0 +1,8 @@
+<!-- circle_background.xml -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+       android:shape="oval">
+    <solid android:color="#00000000"/> <!-- Transparent background -->
+    <stroke
+        android:width="2dp"
+        android:color="#ffffff"/> <!-- White border, adjust width and color as needed -->
+</shape>

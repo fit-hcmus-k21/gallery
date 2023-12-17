@@ -25,10 +25,12 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -79,6 +81,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -156,7 +159,7 @@ public class MediaItemFragment extends Fragment {
         btnPickFiles.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                System.out.println("openAddImageFromDeviceActivity");
+//                System.out.println("openAddImageFromDeviceActivity");
                 showOptionsDialog();
 
             }
@@ -202,14 +205,14 @@ public class MediaItemFragment extends Fragment {
                         filterData.add(iterator);
 
                 for(MediaItem mediaItem : filterData){
-                    System.out.println("MediaItemFragment 001: onViewCreated: getAllMediaItems: onChanged: in loop");
+//                    System.out.println("MediaItemFragment 001: onViewCreated: getAllMediaItems: onChanged: in loop");
                     mediaItem.setTypeDisplay(mCurrentType);
                 }
 
                 mediaItemGroupByDate = setMediaItemGroupByDate(filterData);
 
                 mainMediaItemAdapter.setData(filterData, mediaItemGroupByDate, dateListString); // trong adapter có hàm setData và có notifydatasetchanged
-                System.out.println("on observe : " + mediaItems.size() + " before set hash map");
+//                System.out.println("on observe : " + mediaItems.size() + " before set hash map");
                 HashMap<String, List<MediaItem>> mediaItemGroupByDate = setMediaItemGroupByDate(filterData);
 
                 mainMediaItemAdapter.setData(filterData, mediaItemGroupByDate, dateListString); // trong adapter có hàm setData và có notifydatasetchanged
@@ -250,18 +253,6 @@ public class MediaItemFragment extends Fragment {
             }
         }
 
-        // sort dateListString desc
-//        for(int i = 0 ; i < dateListString.size() - 1; i++){
-//            for(int j = i + 1; j < dateListString.size(); j++){
-//                String date1 = dateListString.get(i);
-//                String date2 = dateListString.get(j);
-//                if(date1.compareTo(date2) < 0){
-//                    String temp = date1;
-//                    dateListString.set(i, date2);
-//                    dateListString.set(j, temp);
-//                }
-//            }
-//        }
 
         return result;
     }
@@ -298,6 +289,10 @@ public class MediaItemFragment extends Fragment {
         else if(id == R.id.createStoryItem){
             showCreateStoryDialog();
         }
+        else if(id == R.id.app_information){
+            showAppInfoDialog();
+//            Toast.makeText(getContext(),"get app info",Toast.LENGTH_SHORT).show();
+        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -322,7 +317,7 @@ public class MediaItemFragment extends Fragment {
         // Anh xa cac view
         RecyclerView recyclerView = dialog.findViewById(R.id.rcv_story_item);
         Button btnCreateStory = dialog.findViewById(R.id.btn_create_story);
-        Button btnCancelCreateStory = dialog.findViewById(R.id.btn_cancel_create_story);
+//        Button btnCancelCreateStory = dialog.findViewById(R.id.btn_cancel_create_story);
 
         // Layout manager
         GridLayoutManager gridLayoutManager1 = new GridLayoutManager(getContext(), 3);
@@ -348,12 +343,12 @@ public class MediaItemFragment extends Fragment {
         });
 
         // Event
-        btnCancelCreateStory.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
+//        btnCancelCreateStory.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                dialog.dismiss();
+//            }
+//        });
         btnCreateStory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -444,13 +439,13 @@ public class MediaItemFragment extends Fragment {
 
                 System.out.println("MediaItemFragment : takeAPicture: uri: " + uri);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-                System.out.println("MediaItemFragment : before startActivityForResult: ");
+//                System.out.println("MediaItemFragment : before startActivityForResult: ");
 
                     startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
 
 
 
-                System.out.println("MediaItemFragment : after startActivityForResult: ");
+//                System.out.println("MediaItemFragment : after startActivityForResult: ");
 
             }
         }
@@ -475,6 +470,7 @@ public class MediaItemFragment extends Fragment {
         );
 
         currentPhotoPath = imageFile.getAbsolutePath();
+        System.out.println("Current Photo Path: " + currentPhotoPath);
         return imageFile;
     }
 
@@ -485,13 +481,12 @@ public class MediaItemFragment extends Fragment {
         System.out.println("MediaItemFragment : onActivityResult: ");
 
         if (requestCode == REQUEST_TAKE_PHOTO && resultCode == Activity.RESULT_OK) {
-            // Ảnh đã được chụp thành công
-            Toast.makeText(getContext(), "Chụp ảnh thành công", Toast.LENGTH_SHORT).show();
+
 
             // Sử dụng currentPhotoPath để truy cập đường dẫn của ảnh
             if (currentPhotoPath != null) {
                 // In đường dẫn ra Log (hoặc thực hiện các thao tác khác)
-                Log.d("YourFragment", "Đường dẫn ảnh đã chụp: " + currentPhotoPath);
+               System.out.println( "Đường dẫn ảnh đã chụp: " + currentPhotoPath);
                 MediaItem item = new MediaItem();
                 item.setUserID(AppPreferencesHelper.getInstance().getCurrentUserId());
                 item.setPath(currentPhotoPath);
@@ -503,6 +498,8 @@ public class MediaItemFragment extends Fragment {
 
                 MediaItemRepository.getInstance().insert(item);
             }
+            // Ảnh đã được chụp thành công
+            Toast.makeText(getContext(), "Chụp ảnh thành công", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -562,7 +559,7 @@ public class MediaItemFragment extends Fragment {
     }
 
 
-    // Hàm để hiển thị dialog
+    // Hàm để hiển thị dialog thêm ảnh
     private void showOptionsDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         LayoutInflater inflater = getLayoutInflater();
@@ -584,7 +581,7 @@ public class MediaItemFragment extends Fragment {
                 // Xử lý khi người dùng chọn tùy chọn 1
                 // ...
                 currentDialog.dismiss();
-                RequestPermissionHelper.checkAndRequestPermission(getActivity(), 42);
+                RequestPermissionHelper.checkAndRequestPermission(getActivity(), 225);
 
             }
         });
@@ -640,6 +637,7 @@ public class MediaItemFragment extends Fragment {
             public void onClick(View v) {
                 // Xử lý khi người dùng nhấn nút "Download"
                 addImageFromLink(tvStatus, etUrl, imageView, btnDownload, btnClear);
+
             }
         });
 
@@ -660,9 +658,10 @@ public class MediaItemFragment extends Fragment {
     }
 
     // tải ảnh qua url
+    private MutableLiveData<Boolean> isGif = new MutableLiveData<>(false);
     public  void addImageFromLink(TextView tvStatus, EditText etUrl, ImageView imageView, Button btnDownload, Button btnClear) {
 
-        tvStatus.setText("Downloaded Status: downloading");
+        tvStatus.setText("Status: đang tải ảnh ...");
         tvStatus.setTextColor(Color.parseColor("#808080"));
 
         String imageUrl = etUrl.getText().toString();
@@ -700,6 +699,11 @@ public class MediaItemFragment extends Fragment {
                     // Get the file extension from the Content-Type header
                     String contentType = response.header("Content-Type");
                     String fileExtension = getFileExtension(contentType);
+
+                    if (fileExtension.equals(".gif")) {
+                        isGif.postValue(true);
+                    }
+
                     if (!isImageContentType(contentType)) {
                         tvStatus.setText("Error: Invalid image URL");
                         tvStatus.setTextColor(Color.parseColor("#FF0000"));
@@ -721,8 +725,15 @@ public class MediaItemFragment extends Fragment {
 
                     File imageFile = new File(appDirectory, fileName);
 
-                    try (OutputStream stream = new FileOutputStream(imageFile)) {
-                        stream.write(response.body().bytes());
+                    try (InputStream inputStream = response.body().byteStream();
+                         OutputStream outputStream = new FileOutputStream(imageFile)) {
+
+                        byte[] buffer = new byte[4096];
+                        int bytesRead;
+                        while ((bytesRead = inputStream.read(buffer)) != -1) {
+                            outputStream.write(buffer, 0, bytesRead);
+                        }
+
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -752,20 +763,51 @@ public class MediaItemFragment extends Fragment {
                     // Get the number of rows in the database
 //                    //  System.out.println("Number of media items after download image: " + MediaItemViewModel.getInstance().getNumberOfMediaItems().getValue());
 
-                    tvStatus.setText("Status: download a " + fileExtension +" successfully!");
+                    tvStatus.setText("Status: Tải ảnh " + fileExtension +" thành công !");
                     tvStatus.setTextColor(Color.parseColor("#008000"));
                 }
             }
         });
 
-        // display image
-        Glide.with(App.getInstance())
-                .asBitmap()
-                .load(imageUrl)
-                .into(imageView);
-        imageView.setVisibility(View.VISIBLE);
+        isGif.observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if(aBoolean){
+                    Glide.with(App.getInstance())
+                            .asGif()
+                            .load(imageUrl)
+                            .into(imageView);
+                    imageView.setVisibility(View.VISIBLE);
+                }else{
+                    Glide.with(App.getInstance())
+                            .asBitmap()
+                            .load(imageUrl)
+                            .into(imageView);
+                    imageView.setVisibility(View.VISIBLE);
+                }
+            }
+        });
 
+    }
 
+    public void showAppInfoDialog(){
+        Dialog dialog = new Dialog(getContext());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+        dialog.setContentView(R.layout.app_info_screen);
+        Window window = dialog.getWindow();
+        window.setGravity(Gravity.CENTER);
+        window.setAttributes(window.getAttributes());
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT,WindowManager.LayoutParams.MATCH_PARENT);
+        dialog.setCancelable(true);
+        AppCompatImageButton btnReturn = dialog.findViewById(R.id.btnBack);
+        btnReturn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
     }
 
 

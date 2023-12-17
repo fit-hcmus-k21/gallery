@@ -6,13 +6,17 @@
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        style="@style/AppBarTitle"
+        >
 
             <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/topAppBar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="@color/purple_700"
+                app:titleTextAppearance="@style/ToolbarTitle"
+                android:background="#B2DFEE"
+
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
                 />
 

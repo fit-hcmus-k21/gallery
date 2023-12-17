@@ -418,6 +418,8 @@ public class LoginActivity extends BaseActivity<Slide02LoginScreenBinding, Login
 
     // Handle the Facebook access token to authenticate with your server or perform other actions
     private void handleFacebookAccessToken(AccessToken token) {
+        mViewModel.setIsLoading(true);
+
         Toast.makeText(App.getInstance(), "Retrieving Information ", Toast.LENGTH_SHORT).show();
 
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
@@ -446,10 +448,11 @@ public class LoginActivity extends BaseActivity<Slide02LoginScreenBinding, Login
                                 System.out.println("New user");
 
                                 FirebaseUser userFirebase = mAuth.getCurrentUser();
-                                System.out.println("Auth with google ok !");
+                                System.out.println("Auth with facebook ok !");
                                 // ...
                                 Toast.makeText(App.getInstance(), "Authentication success, " + userFirebase.getDisplayName() +".",
                                         Toast.LENGTH_SHORT).show();
+
 
 
                                 User user = new User();
@@ -505,8 +508,8 @@ public class LoginActivity extends BaseActivity<Slide02LoginScreenBinding, Login
                                 });
 
                                 mViewModel.setIsLoading(true);
-                                Toast.makeText(App.getInstance(), "Sign up with google successfully !", Toast.LENGTH_SHORT).show();
-                                System.out.println("Sign up with google successfully 314 !");
+                                Toast.makeText(App.getInstance(), "Sign in with facebook successfully !", Toast.LENGTH_SHORT).show();
+                                System.out.println("Sign up with facebook successfully 314 !");
                                 openMainActivity();
 
 
