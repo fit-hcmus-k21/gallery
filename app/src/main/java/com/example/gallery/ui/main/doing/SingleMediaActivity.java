@@ -731,7 +731,7 @@ public class SingleMediaActivity extends AppCompatActivity  {
                     Album alb = new Album();
                     alb.setName(albumName);
                     alb.setUserID(AppPreferencesHelper.getInstance().getCurrentUserId());
-                    alb.setCoverPhotoPath(path); // TODO: Chưa thể cập nhật được cover photo cho lần đầu
+                    alb.setCoverPhotoPath(path);
                     AlbumRepository.getInstance().insert(alb);
                     Toast.makeText(App.getInstance(), "Album " + albumName + " created", Toast.LENGTH_SHORT).show();
                 }

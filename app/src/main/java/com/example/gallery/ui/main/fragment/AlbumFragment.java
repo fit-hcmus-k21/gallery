@@ -46,6 +46,7 @@ import com.example.gallery.data.repositories.models.Repository.MediaItemReposito
 import com.example.gallery.ui.main.adapter.AlbumAdapter;
 import com.example.gallery.ui.main.doing.DeleteActivity;
 import com.example.gallery.ui.main.doing.InnerAlbumScreen;
+import com.example.gallery.utils.LiveDataUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -121,17 +122,18 @@ public class AlbumFragment extends Fragment {
                 startActivity(intent);
             }
         });
-
+        // This is for delete album
         albumAdapter.setOnItemClickListener(new AlbumAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Album album, int position) {
-                MediaItemRepository.getInstance().getAllMediaItemsByAlbumName(album.getName()).observe(getViewLifecycleOwner(), new Observer<List<MediaItem>>() {
+                LiveDataUtil.observeOnce(MediaItemRepository.getInstance().getAllMediaItemsByAlbumName(album.getName()), new Observer<List<MediaItem>>() {
                     @Override
                     public void onChanged(List<MediaItem> mediaItems) {
+                        MediaItemRepository.getInstance().getAllMediaItemsByAlbumName(album.getName()).removeObserver(this);
                         for(MediaItem mediaItem : mediaItems){
                             mediaItem.setPreviousAlbum(mediaItem.getAlbumName());
                             MediaItemRepository.getInstance().updateMediaPreviousAlbum(mediaItem.getId(), mediaItem.getAlbumName());
-
+                            Log.e("MyTask again", "onChanged: ");
                             mediaItem.setAlbumName("Bin");
                             MediaItemRepository.getInstance().updateMediaItemAlbum(mediaItem.getId(),"Bin");
 
@@ -143,7 +145,29 @@ public class AlbumFragment extends Fragment {
 
                         }
                     }
+
                 });
+//                MediaItemRepository.getInstance().getAllMediaItemsByAlbumName(album.getName()).observe(getViewLifecycleOwner(), new Observer<List<MediaItem>>() {
+//                    @Override
+//                    public void onChanged(List<MediaItem> mediaItems) {
+//                        MediaItemRepository.getInstance().getAllMediaItemsByAlbumName(album.getName()).removeObserver(this);
+//                        for(MediaItem mediaItem : mediaItems){
+//                            mediaItem.setPreviousAlbum(mediaItem.getAlbumName());
+//                            MediaItemRepository.getInstance().updateMediaPreviousAlbum(mediaItem.getId(), mediaItem.getAlbumName());
+//                            Log.e("MyTask again", "onChanged: ");
+//                            mediaItem.setAlbumName("Bin");
+//                            MediaItemRepository.getInstance().updateMediaItemAlbum(mediaItem.getId(),"Bin");
+//
+//                            Calendar calendar = Calendar.getInstance();
+//                            long currentDate = calendar.getTimeInMillis();
+//                            MediaItemRepository.getInstance().updateMediaItemDeleteTs(mediaItem.getId(),currentDate);
+//                            mediaItem.setDeletedTs(currentDate);
+//                            albumAdapter.notifyItemChanged(position);
+//
+//                        }
+//                    }
+//
+//                });
                 AlbumRepository.getInstance().deleteAlbum(AppPreferencesHelper.getInstance().getCurrentUserId(), album.getName());
 
             }

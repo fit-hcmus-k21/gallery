@@ -302,7 +302,7 @@ public class MediaItemRepository {
 
         // Check if album name exists
         boolean albumExists = AlbumRepository.getInstance().isExistAlbum(newAlbum);
-
+        Log.e("Mytask", "Checking albumExists: " + newAlbum);
         if (!albumExists) {
             // Album does not exist, create and insert
             Album album = new Album();

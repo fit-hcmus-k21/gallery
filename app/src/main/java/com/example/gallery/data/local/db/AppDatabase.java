@@ -26,7 +26,7 @@ import javax.annotation.Nonnull;
  * Created on 27/10/2023
  */
 
-@Database(entities = {User.class, Album.class, MediaItem.class }, version = 2, exportSchema = false)
+@Database(entities = {User.class, Album.class, MediaItem.class }, version = 3, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
     public abstract UserDao userDao();
     public abstract AlbumDao albumDao();
