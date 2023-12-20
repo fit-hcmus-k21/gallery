@@ -125,4 +125,23 @@ public class MediaItemAdapter extends RecyclerView.Adapter<MediaItemAdapter.Medi
     public interface OnItemClickListener {
         void onItemClick(MediaItem mediaItem);
     }
+    class ViewHolder extends RecyclerView.ViewHolder {
+        // ...
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+
+            // ...
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION && listener != null) {
+                        listener.onItemClick(mediaItemList.get(position));
+                    }
+                }
+            });
+        }
+    }
 }
