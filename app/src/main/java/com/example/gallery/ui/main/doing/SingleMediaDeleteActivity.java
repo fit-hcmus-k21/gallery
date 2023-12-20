@@ -108,39 +108,21 @@ public class SingleMediaDeleteActivity extends AppCompatActivity {
                     return;
 
                 MediaItem selectedMediaItem = listMediaItem.get(position);
+                String oldAlbumName = mediaItemLiveData.getValue().getPreviousAlbum();
                 // xử lý các thao tác bên trong
                 bottomNavigationView.setOnNavigationItemReselectedListener(new BottomNavigationView.OnNavigationItemReselectedListener() {
                     @Override
                     public void onNavigationItemReselected(@NonNull MenuItem item) {
                         if(item.getItemId() == R.id.btnRestore){                // failed
+                            selectedMediaItem.setAlbumName(oldAlbumName);
+                            listMediaItem.remove(position);
+                            MediaItemRepository.getInstance().updateMediaItemAlbum(selectedMediaItem.getId(),oldAlbumName);
+                            MediaItemRepository.getInstance().updateMediaPreviousAlbum(selectedMediaItem.getId(),"");
+                            MediaItemRepository.getInstance().updateMediaItemDeleteTs(selectedMediaItem.getId(),0);
+                            viewPagerSingleMediaAdapter.setData(listMediaItem);
+                            AlbumRepository.getInstance().updateAlbumCoverPhotoPath(AppPreferencesHelper.getInstance().getCurrentUserId(), oldAlbumName,selectedMediaItem.getPath());
 
-                            // Kiểm tra và tạo mới album nếu album chưa tồn tại
-                            AlbumRepository.getInstance().getAlbumByAlbumName(AppPreferencesHelper.getInstance().getCurrentUserId(), selectedMediaItem.getPreviousAlbum()).observe(SingleMediaDeleteActivity.this, new Observer<Album>() {
-                                @Override
-                                public void onChanged(Album album) {
-                                    if(album == null){
-                                        Album newAlbum = new Album();
-                                        newAlbum.setName(selectedMediaItem.getPreviousAlbum());
-                                        newAlbum.setUserID(AppPreferencesHelper.getInstance().getCurrentUserId());
-                                        newAlbum.setCoverPhotoPath(selectedMediaItem.getPath());
-                                        AlbumRepository.getInstance().insert(newAlbum);
-
-                                        Log.e("Mytask1", "selectedMediaItem.getPreviousAlbum() " + selectedMediaItem.getPreviousAlbum());
-                                    }
-                                    selectedMediaItem.setAlbumName(selectedMediaItem.getPreviousAlbum());
-                                    MediaItemRepository.getInstance().updateMediaItemAlbum(selectedMediaItem.getId(),selectedMediaItem.getPreviousAlbum());
-                                    MediaItemRepository.getInstance().updateMediaPreviousAlbum(selectedMediaItem.getId(),"");
-                                    MediaItemRepository.getInstance().updateMediaItemDeleteTs(selectedMediaItem.getId(),0);
-//                                    listMediaItem.remove(position);
-                                    viewPagerSingleMediaAdapter.setData(listMediaItem);
-//                                    viewPagerSingleMediaAdapter.notifyDataSetChanged();
-                                    finish();
-
-                                }
-                            });
-
-
-
+                            finish();
                         }
                         if(item.getItemId() == R.id.btnDelete){
                             MediaItem itemDelete = listMediaItem.get(position);
