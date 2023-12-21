@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.gallery.R;
 import com.example.gallery.data.local.db.repositories.MediaItemRepository;
@@ -120,20 +121,22 @@ public class MemoryFragment extends Fragment implements MediaItemAdapter.OnItemC
 
         if(yearFlag.equals("T")&&year!=0){
             textView.setText(year+" years ago");
+            return temp;
         }
         if(monthFlag.equals("T")&&month!=0){
             textView.setText(month+" months ago");
+            return temp;
         }
-        if(yearFlag.equals("F")&&monthFlag.equals("F"))
-            textView.setText("NO MEMORY TODAY");
+        textView.setText("NO MEMORY TODAY");
 
-        return temp;
+        return temp=new ArrayList<>();
     }
 
     @Override
     public void onItemClick(MediaItem mediaItem) {
         Intent intent = new Intent(getContext(), FullImageActivity.class);
         intent.putExtra("image_path", mediaItem.getPath()); // Truyền đường dẫn hình ảnh đến Activity mới
+        Toast.makeText(getContext(), mediaItem.getName(), Toast.LENGTH_SHORT).show();
         startActivity(intent);
     }
 }
