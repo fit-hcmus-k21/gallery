@@ -689,7 +689,8 @@ public class MediaItemFragment extends Fragment {
                 //  System.out.println("Have something wrong ");
                 tvStatus.setText("Downloaded Status: failed");
                 tvStatus.setTextColor(Color.parseColor("#FF0000"));
-
+                System.out.println("Download img url failed: " + e.getMessage().toString());
+                e.printStackTrace();
 
             }
 

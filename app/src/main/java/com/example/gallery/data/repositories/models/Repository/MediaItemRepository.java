@@ -200,7 +200,8 @@ public class MediaItemRepository {
             synchronized (this) {
                 mediaItemDao.insert(mediaItem);
                 System.out.println("after insert in Media Repos: 123");
-
+                String path = mediaItem.getPath();
+                AlbumRepository.getInstance().updateAlbumCoverPhotoPath(AppPreferencesHelper.getInstance().getCurrentUserId(), albumName, path);    // TODO: mới thêm vào
                 // Release the latch to signal that album insertion and mediaItem insertion are complete
                 latch.countDown();
             }

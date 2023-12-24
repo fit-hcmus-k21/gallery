@@ -46,6 +46,7 @@ public class AlbumRepository {
         albumDao = galleryDatabase.albumDao();
         allAlbums = albumDao.getAllAlbums(AppPreferencesHelper.getInstance().getCurrentUserId());
 
+
 //        insertAllComplete.observe(, new Observer<Boolean>() {
 //            @Override
 //            public void onChanged(Boolean aBoolean) {
@@ -86,58 +87,6 @@ public class AlbumRepository {
         // ...
 
 
-
-        public LiveData<Boolean> getInsertAllComplete() {
-            return insertAllComplete;
-        }
-
-        public void _fetchData() {
-            allAlbums.observeForever(new Observer<List<Album>>() {
-                @Override
-                public void onChanged(List<Album> albumsDatabase) {
-                    allAlbums.removeObserver(this);
-
-                    ExecutorService executorService = Executors.newSingleThreadExecutor();
-                    Future<List<Album>> futureExternal = executorService.submit(new Callable<List<Album>>() {
-                        @Override
-                        public List<Album> call() throws Exception {
-                            //  System.out.println("Alb Repos | fetch data: listabums: " + AlbumFromExternalStorage.listAlbums(application).size());
-                            return AlbumFromExternalStorage.listAlbums(application);
-                        }
-                    });
-
-                    try {
-                        List<Album> albumsExternal = futureExternal.get();
-                        if (albumsDatabase != null && albumsExternal != null) {
-                            for (Album albumExternal : albumsExternal) {
-                                for (Album albumDatabase : albumsDatabase) {
-                                    if (albumExternal.getPath().equals(albumDatabase.getPath())) {
-                                        if (albumDatabase.getDeletedTs() != 0) {
-                                            albumExternal.setDeletedTs(albumDatabase.getDeletedTs());
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        if (albumsExternal != null) {
-                            insertAllAlbums(albumsExternal).observeForever(new Observer<Boolean>() {
-                                @Override
-                                public void onChanged(Boolean aBoolean) {
-                                    // Chèn xong hết, thông báo tới nơi cần
-                                    insertAllComplete.setValue(true);
-                                }
-                            });
-                        }
-                    } catch (ExecutionException e) {
-                        //  System.out.println("Error insert all album");
-                        throw new RuntimeException(e);
-                    } catch (InterruptedException e) {
-                        //  System.out.println("Error insert all album 2");
-                        throw new RuntimeException(e);
-                    }
-                }
-            });
-        }
 
         public LiveData<Boolean> insertAllAlbums(List<Album> albums) {
             MutableLiveData<Boolean> resultLiveData = new MutableLiveData<>();
