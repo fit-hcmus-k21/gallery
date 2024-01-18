@@ -65,7 +65,7 @@ public class AddImageFromDevice extends AppCompatActivity {
 
         // --------------------
 
-        openImagePicker();
+        onRequestPermissionsResult(REQUEST_READ_EXTERNAL_STORAGE, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, new int[]{PackageManager.PERMISSION_GRANTED});
     }
 
 
@@ -79,6 +79,8 @@ public class AddImageFromDevice extends AppCompatActivity {
             maxSelection = MediaStore.getPickImagesMaxLimit();
         }
 
+
+
         ActivityResultLauncher<PickVisualMediaRequest> pickMultipleMedia =
                 registerForActivityResult(new ActivityResultContracts.PickMultipleVisualMedia(maxSelection), uris -> {
                     if (!uris.isEmpty()) {
@@ -86,15 +88,10 @@ public class AddImageFromDevice extends AppCompatActivity {
                             // Check if the selected media is an image or video
                             if (isVideoFile(uri)) {
                                 // Handle video file
-                                String path = moveVideoToInternalStorage(uri);
-                                if (path != null) {
-                                    MediaItem item = new MediaItem();
-                                    item.setCreationDate(System.currentTimeMillis());
-                                    item.setUserID(AppPreferencesHelper.getInstance().getCurrentUserId());
-                                    item.setAlbumName( albumNameFromIntent != null && !albumNameFromIntent.isEmpty() ? albumNameFromIntent : "Videos");
-                                    item.setPath(path);
-                                    item.setFileExtension("mp4");
+                                MediaItem item = new MediaItem();
 
+                                String path = getPathFromUri(uri, item, 2);
+                                if (path != null) {
 
                                     MediaItemRepository.getInstance().insert(item);
 
@@ -105,10 +102,10 @@ public class AddImageFromDevice extends AppCompatActivity {
                                 }
                             } else {
                                 // Handle image file (similar to your existing code)
+                                MediaItem item = new MediaItem();
 
-                                String path = saveImageToInternalStorage(uri);
+                                String path = getPathFromUri(uri, item, 1);
                                 if (path != null) {
-                                    MediaItem item = new MediaItem();
                                     item.setCreationDate(System.currentTimeMillis());
                                     item.setUserID(AppPreferencesHelper.getInstance().getCurrentUserId());
                                     item.setAlbumName(albumNameFromIntent != null && !albumNameFromIntent.isEmpty() ? albumNameFromIntent : "Tất cả");
@@ -144,95 +141,29 @@ public class AddImageFromDevice extends AppCompatActivity {
         return mimeType != null && mimeType.startsWith("video/");
     }
 
-    // Function to save the video to internal storage and return the path
-    private String moveVideoToInternalStorage(Uri videoUri) {
-            ContentResolver contentResolver = getContentResolver();
-
-            try {
-            // Tạo cursor để truy vấn thông tin về video
-            String[] projection = {MediaStore.Video.Media.DATA};
-            Cursor cursor = contentResolver.query(videoUri, projection, null, null, null);
-
-            if (cursor != null && cursor.moveToFirst()) {
-                // Lấy đường dẫn của video từ cursor
-                int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
-                String videoPath = cursor.getString(columnIndex);
-
-                // Tạo tệp mới trong bộ nhớ trong
-                File internalStorageDir = getFilesDir();
-                String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
-                String videoFileName = "VIDEO_" + timeStamp + ".mp4";
-                File internalVideoFile = new File(internalStorageDir, videoFileName);
-
-                // Di chuyển dữ liệu từ tệp gốc đến tệp mới
-                FileInputStream inputStream = new FileInputStream(videoPath);
-                FileOutputStream outputStream = new FileOutputStream(internalVideoFile);
-
-                byte[] buffer = new byte[1024];
-                int bytesRead;
-                while ((bytesRead = inputStream.read(buffer)) != -1) {
-                    outputStream.write(buffer, 0, bytesRead);
-                }
-
-                inputStream.close();
-                outputStream.close();
-
-                cursor.close();
-
-                return internalVideoFile.getAbsolutePath();
-
-            } else {
-                if (cursor != null) {
-                    cursor.close();
-                }
-                return null;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-
-    }
-
-
-
-
-    // Function to save the image to internal storage and return the path
-    private String saveImageToInternalStorage(Uri uri) {
-        try {
-            InputStream inputStream = getContentResolver().openInputStream(uri);
-            File internalStorageDir = getFilesDir();
-
-            String random = String.valueOf(System.currentTimeMillis()) + new Random().nextInt(1000);
-            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
-            String imageFileName = "JPEG_" + timeStamp + random + ".jpg";
-
-            File internalImageFile = new File(internalStorageDir, imageFileName);
-
-            OutputStream outputStream = new FileOutputStream(internalImageFile);
-
-            byte[] buffer = new byte[1024];
-            int bytesRead;
-            while ((bytesRead = inputStream.read(buffer)) != -1) {
-                outputStream.write(buffer, 0, bytesRead);
-            }
-
-            inputStream.close();
-            outputStream.close();
-
-            return internalImageFile.getAbsolutePath();
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-
 
 //    --------------------
-    private String getPathFromUri(Uri uri, int typeMedia) {
+    private String getPathFromUri(Uri uri, MediaItem item, int typeMedia) {
         String path = null;
+
+        String[] projections = new String[]{
+                MediaStore.Images.Media._ID,
+                // USER ID IS NOT HERE, MAYBE WE CAN ASSIGN IT TO 0
+                MediaStore.Images.Media.DISPLAY_NAME,
+                // TAG IS NOT HERE, MAYBE WE CAN ASSIGN IT TO ""
+                MediaStore.Images.Media.DESCRIPTION, // DESCRIPTION MAY BE NULL, SO WE INITIALIZE IT TO ""
+                MediaStore.Images.Media.DATA, // THIS IS PATH
+                MediaStore.Images.Media.WIDTH, // THIS IS WIDTH
+                MediaStore.Images.Media.HEIGHT, // THIS IS HEIGHT
+                MediaStore.Images.Media.SIZE, // THIS IS FILE SIZE
+                MediaStore.Images.Media.MIME_TYPE, // THIS IS FILE EXTENSION
+                MediaStore.Images.Media.DATE_ADDED, // THIS IS CREATION DATE
+//                MediaStore.Images.Media.RELATIVE_PATH, // THIS IS LOCATION
+                MediaStore.Images.Media.BUCKET_DISPLAY_NAME, // THIS IS ALBUM NAME
+                MediaStore.Images.Media.DATE_MODIFIED,
+//                MediaStore.Images.Media.IS_FAVORITE
+                // URL IS NOT HERE, MAYBE WE CAN ASSIGN IT TO ""
+        };
 
         if(typeMedia == 1){
             // Handle image file
@@ -241,19 +172,67 @@ public class AddImageFromDevice extends AppCompatActivity {
             Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
             if(cursor != null){
                 cursor.moveToFirst();
+
+
+
                 int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
                 path = cursor.getString(columnIndex);
             }
         }
         else if(typeMedia == 2){
             // Handle video file
-            String[] projection = new String[]{MediaStore.Video.Media.DATA};
 
-            Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
+            Cursor cursor = getContentResolver().query(uri, projections, null, null, null);
             if(cursor != null){
                 cursor.moveToFirst();
+
                 int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
                 path = cursor.getString(columnIndex);
+
+                String userID = AppPreferencesHelper.getInstance().getCurrentUserId();
+                String name = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DISPLAY_NAME));
+                String tag = "";
+
+                String discription = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DESCRIPTION));
+                if (discription == null) {
+                    discription = "";
+                }
+
+                path = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA));
+                int width = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.WIDTH));
+                int height = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.HEIGHT));
+                long fileSize = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.SIZE));
+                String fileExtension = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.MIME_TYPE));
+
+                // CreationDate is milisecond format
+                long creationDate = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATE_ADDED)) * 1000L; // convert to millisecond. Must multiply by 1000L
+
+                String albumName = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.BUCKET_DISPLAY_NAME));
+                String url = "";
+
+
+
+                // lastModifed is milisecond format
+                long lastModified = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATE_MODIFIED)) * 1000L; // convert to millisecond. Must multiply by 1000L
+
+                // Get parentPath
+                String parentPath = path.substring(0, path.lastIndexOf("/"));
+
+                item.setPath(path);
+                item.setUserID(userID);
+                item.setName(name);
+                item.setTag(tag);
+                item.setDescription(discription);
+                item.setWidth(width);
+                item.setHeight(height);
+                item.setFileSize(fileSize);
+                item.setFileExtension(fileExtension);
+                item.setCreationDate(creationDate);
+                item.setAlbumName(albumName);
+                item.setUrl(url);
+                item.setLastModified(lastModified);
+                item.setParentPath(parentPath);
+
             }
         }
         return path;
