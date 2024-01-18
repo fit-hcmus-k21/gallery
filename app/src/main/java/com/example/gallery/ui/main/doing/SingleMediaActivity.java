@@ -394,7 +394,7 @@ public class SingleMediaActivity extends AppCompatActivity  {
                 shareImageView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        shareImageToInternet(selectedMediaItem);
+                        shareMediaToInternet(selectedMediaItem);
                     }
                 });
                 favoriteImageView.setOnClickListener(new View.OnClickListener() {
@@ -813,23 +813,31 @@ public class SingleMediaActivity extends AppCompatActivity  {
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
     }
-    private void shareImageToInternet(MediaItem mediaItem){
-        //  System.out.println("Share image : 337 | mediaitem: " + mediaItem + " | path: " + mediaItem.getPath());
 
-//        Uri uri = FileProvider.getUriForFile(this, getPackageName() + ".provider", new File(mediaItem.getPath()));
+    private void shareMediaToInternet(MediaItem mediaItem) {
+        File mediaFile = new File(mediaItem.getPath());
 
-        Uri uri = Uri.parse(mediaItem.getPath());
-        //  System.out.print("Uri: "  + uri);
+        // Tạo Uri sử dụng FileProvider
+        Uri mediaUri = FileProvider.getUriForFile(this, getPackageName() + ".provider", mediaFile);
+
         Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setType("image/*");
+
+        // Kiểm tra loại của media (image hoặc video) và set type tương ứng
+        if (mediaItem.getFileExtension().equals("mp4")) {
+            intent.setType("video/*");
+        } else {
+            intent.setType("image/*");
+        }
+
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
-        //  System.out.println("Share image : 342");
-        intent.putExtra(Intent.EXTRA_STREAM, uri);
-        startActivity(Intent.createChooser(intent, "Share this image with..."));
-        //  System.out.println("Share image : 347");
+        // Chia sẻ Uri với ứng dụng khác
+        intent.putExtra(Intent.EXTRA_STREAM, mediaUri);
 
+        // Mở bảng chọn ứng dụng để chia sẻ
+        startActivity(Intent.createChooser(intent, "Chia sẻ với"));
     }
+
     private void showNoteDialog() {
         final Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);

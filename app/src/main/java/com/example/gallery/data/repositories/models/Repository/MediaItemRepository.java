@@ -113,62 +113,40 @@ public class MediaItemRepository {
     }
 
     public void fetchDataFromExternalStorage() {
-            System.out.println("Lấy dữ liệu từ external storage và insert vào db");
-        LiveData<List<MediaItem>> liveData = allMediaItem;
+        System.out.println("Lấy dữ liệu từ external storage và insert vào db");
 
-        liveData.observeForever(new Observer<List<MediaItem>>() {
-            @Override
-            public void onChanged(List<MediaItem> mediaItems) {
-                // Dữ liệu đã được truy vấn và có sẵn trong allMediaItem
-                Log.d("Mytask", "Checking mediaItemDb: " + mediaItems.size());
-                // Gỡ bỏ observer sau khi đã kiểm tra dữ liệu
-                liveData.removeObserver(this);
+        ExecutorService executorService = Executors.newFixedThreadPool(10);
 
-                ExecutorService executorService = Executors.newFixedThreadPool(2);
-                Future<List<MediaItem>> futureExternal = executorService.submit(new Callable<List<MediaItem>>() {
-                    @Override
-                    public List<MediaItem> call() throws Exception {
-                        List<MediaItem> mediaItems = MediaItemFromExternalStorage.listMediaItems(application);
-                        return mediaItems;
-                    }
-                });
-                try {
-                    List<MediaItem> mediaItemsFromExternalStorage = futureExternal.get();
-                    Log.d("Mytask", "Checking mediafromexternalstorage size: " + mediaItemsFromExternalStorage.size());
+        executorService.execute(() -> {
+            // Sử dụng Callable để lấy dữ liệu từ external storage
+            Callable<List<MediaItem>> externalMediaCallable = () -> MediaItemFromExternalStorage.listMediaItems(application);
 
-                    if(mediaItems != null){
+            // Submit Callable vào ExecutorService để thực hiện trong luồng nền
+            Future<List<MediaItem>> futureExternal = executorService.submit(externalMediaCallable);
 
-                        for(MediaItem mediaItemExternal : mediaItemsFromExternalStorage){
+            // Thực hiện công việc trên luồng chính sau khi lấy dữ liệu từ external storage xong
+            try {
+                List<MediaItem> mediaItemsFromExternalStorage = futureExternal.get();
+                Log.d("Mytask", "Checking mediafromexternalstorage size: " + mediaItemsFromExternalStorage.size());
 
-                            for(MediaItem mediaItemDb : mediaItems){
+                // Cập nhật cơ sở dữ liệu nếu có dữ liệu từ external storage
+                if (mediaItemsFromExternalStorage != null && !mediaItemsFromExternalStorage.isEmpty()) {
 
-                                if(mediaItemExternal.getId() == mediaItemDb.getId()){
-                                    if(mediaItemDb.getDeletedTs() != 0){
-                                        mediaItemExternal.setDeletedTs(mediaItemDb.getDeletedTs());
-                                    }
-                                    if(mediaItemDb.getDescription() != ""){
-                                        mediaItemExternal.setDescription(mediaItemDb.getDescription());
 
-                                    }
-                                    if(mediaItemDb.getTag() != ""){
-                                        mediaItemExternal.setTag(mediaItemDb.getTag());
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    // Insert dữ liệu mới vào cơ sở dữ liệu
                     insertAll(mediaItemsFromExternalStorage);
-                } catch (ExecutionException e) {
-                    throw new RuntimeException(e);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
                 }
 
+            } catch (ExecutionException | InterruptedException e) {
+                // Xử lý ngoại lệ nếu có
+                Log.e("Mytask", "Error fetching data from external storage", e);
             }
+
+            // Tắt ExecutorService sau khi công việc hoàn thành
+            executorService.shutdown();
         });
-
-
     }
+
     public LiveData<List<MediaItem>> getAllMediaItems(){
 
         return allMediaItem;
@@ -254,6 +232,8 @@ public class MediaItemRepository {
 
                             try {
                                 mediaItemDao.insert(mediaItem);
+                                // update album cover
+                                AlbumRepository.getInstance().updateAlbumCoverPhotoPath(AppPreferencesHelper.getInstance().getCurrentUserId(),mediaItem.getAlbumName(), mediaItem.getPath());
                             } catch (Exception e) {
                                 System.out.println("MediaItemRepository: insert on run:  " + e.getMessage());
                             }

@@ -86,7 +86,7 @@ public class AddImageFromDevice extends AppCompatActivity {
                             // Check if the selected media is an image or video
                             if (isVideoFile(uri)) {
                                 // Handle video file
-                                String path = moveVideoToInternalStorage(uri);
+                                String path = moveVideoToExternalStorage(uri);
                                 if (path != null) {
                                     MediaItem item = new MediaItem();
                                     item.setCreationDate(System.currentTimeMillis());
@@ -106,28 +106,29 @@ public class AddImageFromDevice extends AppCompatActivity {
                             } else {
                                 // Handle image file (similar to your existing code)
 
-                                String path = saveImageToInternalStorage(uri);
+                                String path = saveImageToExternalStorage(uri);
                                 if (path != null) {
                                     MediaItem item = new MediaItem();
                                     item.setCreationDate(System.currentTimeMillis());
                                     item.setUserID(AppPreferencesHelper.getInstance().getCurrentUserId());
-                                    item.setAlbumName(albumNameFromIntent != null && !albumNameFromIntent.isEmpty() ? albumNameFromIntent : "Tất cả");
+                                    item.setAlbumName(albumNameFromIntent != null && !albumNameFromIntent.isEmpty() ? albumNameFromIntent : "Từ thiết bị");
                                     item.setPath(path);
 
                                     MediaItemRepository.getInstance().insert(item);
 
                                     // Update thumbnail for "All" Album
-                                    AlbumRepository.getInstance().updateAlbumCoverPhotoPath(AppPreferencesHelper.getInstance().getCurrentUserId(), albumNameFromIntent != null && !albumNameFromIntent.isEmpty() ? albumNameFromIntent : "Tất cả", path);
+                                    AlbumRepository.getInstance().updateAlbumCoverPhotoPath(AppPreferencesHelper.getInstance().getCurrentUserId(), albumNameFromIntent != null && !albumNameFromIntent.isEmpty() ? albumNameFromIntent : "Từ thiết bị", path);
 
                                     System.out.println("add image from device success: " + item.getPath());
                                 }
                             }
                         }
 
-                        Toast.makeText(this, "Thêm ảnh thành công !", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Đã thêm thành công !", Toast.LENGTH_SHORT).show();
                         finish();
                     } else {
                         Log.d("PhotoPicker", "No media selected");
+                        finish();
                     }
                 });
 
@@ -145,10 +146,10 @@ public class AddImageFromDevice extends AppCompatActivity {
     }
 
     // Function to save the video to internal storage and return the path
-    private String moveVideoToInternalStorage(Uri videoUri) {
-            ContentResolver contentResolver = getContentResolver();
+    private String moveVideoToExternalStorage(Uri videoUri) {
+        ContentResolver contentResolver = getContentResolver();
 
-            try {
+        try {
             // Tạo cursor để truy vấn thông tin về video
             String[] projection = {MediaStore.Video.Media.DATA};
             Cursor cursor = contentResolver.query(videoUri, projection, null, null, null);
@@ -158,15 +159,18 @@ public class AddImageFromDevice extends AppCompatActivity {
                 int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
                 String videoPath = cursor.getString(columnIndex);
 
-                // Tạo tệp mới trong bộ nhớ trong
-                File internalStorageDir = getFilesDir();
+                File appDirectory = new File(App.getInstance().getExternalFilesDir(null), "Videos/FromDevice");
+                if (!appDirectory.exists()) {
+                    appDirectory.mkdirs();
+                }
+
                 String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
                 String videoFileName = "VIDEO_" + timeStamp + ".mp4";
-                File internalVideoFile = new File(internalStorageDir, videoFileName);
+                File videoFile = new File(appDirectory, videoFileName);
 
                 // Di chuyển dữ liệu từ tệp gốc đến tệp mới
                 FileInputStream inputStream = new FileInputStream(videoPath);
-                FileOutputStream outputStream = new FileOutputStream(internalVideoFile);
+                FileOutputStream outputStream = new FileOutputStream(videoFile);
 
                 byte[] buffer = new byte[1024];
                 int bytesRead;
@@ -179,7 +183,7 @@ public class AddImageFromDevice extends AppCompatActivity {
 
                 cursor.close();
 
-                return internalVideoFile.getAbsolutePath();
+                return videoFile.getAbsolutePath();
 
             } else {
                 if (cursor != null) {
@@ -198,18 +202,24 @@ public class AddImageFromDevice extends AppCompatActivity {
 
 
     // Function to save the image to internal storage and return the path
-    private String saveImageToInternalStorage(Uri uri) {
+    private String saveImageToExternalStorage(Uri uri) {
         try {
             InputStream inputStream = getContentResolver().openInputStream(uri);
-            File internalStorageDir = getFilesDir();
 
             String random = String.valueOf(System.currentTimeMillis()) + new Random().nextInt(1000);
             String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
-            String imageFileName = "JPEG_" + timeStamp + random + ".jpg";
+            String imageFileName = "JPEG_" + timeStamp + random + "." + getExtensionFromUri(uri);
 
-            File internalImageFile = new File(internalStorageDir, imageFileName);
 
-            OutputStream outputStream = new FileOutputStream(internalImageFile);
+            File appDirectory = new File(App.getInstance().getExternalFilesDir(null), "Images/FromDevice");
+            if (!appDirectory.exists()) {
+                appDirectory.mkdirs();
+            }
+
+            File imageFile = new File(appDirectory, imageFileName);
+
+
+            OutputStream outputStream = new FileOutputStream(imageFile);
 
             byte[] buffer = new byte[1024];
             int bytesRead;
@@ -220,7 +230,7 @@ public class AddImageFromDevice extends AppCompatActivity {
             inputStream.close();
             outputStream.close();
 
-            return internalImageFile.getAbsolutePath();
+            return imageFile.getAbsolutePath();
         }
         catch (IOException e) {
             e.printStackTrace();
@@ -228,9 +238,24 @@ public class AddImageFromDevice extends AppCompatActivity {
         }
     }
 
+    private String getExtensionFromUri(Uri uri) {
+        ContentResolver contentResolver = getContentResolver();
+        String mimeType = contentResolver.getType(uri);
+        String extension = null;
+
+        if (mimeType != null) {
+            extension = mimeType.substring(mimeType.lastIndexOf("/") + 1);
+        }
+
+        if (extension == null) {
+            extension = "jpg"; // default extension for unknown file types
+        }
+
+        return extension;
+    }
 
 
-//    --------------------
+    //    --------------------
     private String getPathFromUri(Uri uri, int typeMedia) {
         String path = null;
 

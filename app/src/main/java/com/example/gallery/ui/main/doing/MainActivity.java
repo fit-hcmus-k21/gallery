@@ -37,11 +37,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.doing_main_activity);
-        //  System.out.println("in oncreate main: 42");
-
-
-        // TODO: Kiểm tra quyền truy cập cấp phép lấy hết ảnh trong điện thoại hay không
-//        RequestPermissionHelper.checkAndRequestPermission(this, 42);
 
         fetchData();
 
@@ -116,25 +111,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        // request code 225: load add media item from external storage
-        if (requestCode == 225 &&  grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-              System.out.println("in onRequestPermissionsResult main: " + requestCode);
-            // Sử dụng Executor
-            Executor executor = Executors.newSingleThreadExecutor();
-
-            executor.execute(() -> {
-                  System.out.println("in executor main: " + requestCode);
-
-                new Handler(Looper.getMainLooper()).post(() -> MediaItemRepository.getInstance().fetchDataFromExternalStorage());
-
-
-            });
-        }
-
-    }
 
 }
