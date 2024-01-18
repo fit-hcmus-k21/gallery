@@ -18,6 +18,7 @@ import com.example.gallery.data.AppDataManager;
 import com.example.gallery.data.DataManager;
 import com.example.gallery.data.local.db.AppDBHelper;
 import com.example.gallery.data.local.db.DBHelper;
+import com.example.gallery.data.local.prefs.AppPreferencesHelper;
 import com.example.gallery.data.models.db.User;
 import com.example.gallery.data.repositories.models.ViewModel.UserViewModel;
 import com.example.gallery.ui.backup.BackupManager;
@@ -90,8 +91,8 @@ public class LoginViewModel extends BaseViewModel<LoginNavigator> {
 
     public void startSeeding() {
         // TODO: check if not have data in local db, then fetch data from server
-        if (AppDBHelper.getInstance().isUserExist(getDataManager().getCurrentUserId())) {
-            //  System.out.println("User" + getDataManager().getCurrentUserId() + " exist");
+        if (AppDBHelper.getInstance().isUserExist(AppPreferencesHelper.getInstance().getCurrentUserId())) {
+              System.out.println("User" + getDataManager().getCurrentUserId() + " exist");
         } else {
             //  System.out.println("User not exist");
             // fetch data from server
@@ -104,7 +105,7 @@ public class LoginViewModel extends BaseViewModel<LoginNavigator> {
 
             // TODO: fetch data from server
 //            Toast.makeText(App.getInstance(), "Đang đồng bộ dữ liệu, bạn chờ xíu nhé :))", Toast.LENGTH_SHORT).show();
-//            BackupManager.RestoreCloudToLocal();
+            BackupManager.RestoreCloudToLocal();
 
 
         }
