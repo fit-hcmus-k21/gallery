@@ -1,30 +1,54 @@
-# Gallery 
+# Photo Gallery Management App
 ## [Table of contents]()
-### I. Introduction to main features
-### II. Analysis 
+### I. Overview
+### II. Introduction to main features 
+___
+## [I. Overview]()
+### Execution Environment:
+- Supported Operating System Versions: Android 10, 11, 12, 13, 14.
+- The application requires a minimum of Android 10 (API 29) and is designed to work well on Android 14 (API 33).
+
+### SDK Versions:
+- Compile SDK: Utilizes Compile SDK version 34.
+- Target SDK: The application targets SDK version 33.
+- Min SDK: The application requires a minimum SDK version of 29.
+
+### Compilation Configuration:
+- Java Compatibility: Java compatibility version is set to 1.8, enabling the use of features and improvements from Java 8.
+
+### Dependencies:
+1. Room Database (v2.6.0): Used for managing the internal database of the application.
+2. Glide (v4.8.0): Library used for efficient loading and displaying of images.
+3. Retrofit (v2.4.0): Used for making and receiving data from remote sources, facilitating interaction with remote APIs.
+4. Firebase (BOM v32.4.0): Includes modules such as Authentication, Realtime Database, and Cloud Storage from Firebase, providing cloud services.
+5. Facebook SDK (v15.2.0): Integrated to support Facebook-related functionalities, such as login.
+6. ZXing Android Embedded (v4.3.0): Utilizes the library to generate QR codes, supporting barcode interactions.
+7. ExoPlayer (v1.2.0): Integrated to support video playback within the application.
+8. Firebase ML Vision (v24.0.3): Used for text recognition from images, expanding image processing capabilities.
+___
+## [II. Introduction to main features]()
+
+| No. | Feature Name                                    | Description                                                            |
+| --- | ----------------------------------------------- | ---------------------------------------------------------------------- |
+| 1   | Sign Up/Login                                   | Utilize fingerprint, register accounts based on existing Google, Facebook accounts. |
+| 2   | Create Story                                    | System randomly selects images, gifs, videos within a specific time range, automatically organizes and merges with music into a short TikTok-style video. |
+| 3   | Album Management                                | Organize photos into favorite albums, albums from Facebook, Zalo. Users can create, edit, and delete custom albums. |
+| 4   | Photo Sorting                                    | Sort photos based on name, capture date, tags, etc. |
+| 5   | Add Photos                                        | Allow users to add photos from devices or capture using the camera. |
+| 6   | Photo Editing and Filters               | Collection of photo editing tools, drawing, cropping, rotating images, applying color filters, adjusting contrast. |
+| 7   | View and Display Photos                 | View photos with options for zooming, shrinking, rotating 90 degrees, and 360 degrees. |
+| 8   | Upload Photos via QR Code      | Enable users to upload photos to the internet and generate QR codes. |
+| 9   | Search for Photos                               | Search for photos by name, image extension type, image size. |
+| 10  | Share Photos over the Internet   | Share and send photos via platforms such as Facebook, Zalo, Gmail. |
+| 11  | Delete Photos                                    | Temporarily delete photos, move them to the trash, allowing restoration or permanent deletion. |
+| 12  | Security and Access Rights            | Album security through password or fingerprint lock. |
+| 13  | Synchronization and Backup        | Synchronize photos in the app to Cloud Storage. |
+| 14  | Photo Notes                                       | Each photo can be marked as a favorite, and notes can be added to photos. |
+| 15  | Convert to Text                                | Text within images will be processed and converted to text for user copying. |
+| 16  | Set Photo as Lock/Home Screen | Users can select photos as their device's lock screen or home screen wallpaper. |
+| 17  | Statistics                                           | Statistics feature displaying total number of photos in albums and total size of photos and videos. |
+| 18  | Photo Reminders                              | Monthly reminders of memorable moments with a series of related photos. |
+| 19  | Filter Duplicate Photos                 | During photo capture, suggest similar photos to users for interaction. |
+| 20  | Photo Viewer                                     | Allow users to view photos in grid, list with additional information, or full-screen mode. |
 
 ___
-## [I. Introduction to main features]()
-
-| STT | Tên chức năng                                     | Mô tả                                                            |
-| --- | ---------------------------------------------- | ----------------------------------------------------------------- |
-| 1   | Đăng ký đăng nhập                           | Sử dụng vân tay, đăng ký tài khoản dựa trên tài khoản Google, Facebook có sẵn. |
-| 2   | Tạo câu chuyện                                 | Hệ thống chọn ngẫu nhiên ảnh, gif, video trong khoảng thời gian nhất định, tự động tổ chức ghép nhạc thành 1 video ngắn dạng Tiktok. |
-| 3   | Quản lý Album                                | Tổ chức ảnh theo album yêu thích, album ảnh từ facebook, Zalo. Album ảnh được tạo bởi người dùng. Tạo chỉnh sửa, xóa các album ảnh. |
-| 4   | Sắp xếp ảnh                                   | Sắp xếp dựa vào tên, ngày chụp, thẻ,... |
-| 5   | Thêm ảnh                                       | Thêm ảnh, cho phép người dùng thêm ảnh từ thiết bị hoặc từ camera. |
-| 6   | Chỉnh sửa ảnh và bộ lọc            | Tập hợp các công cụ chỉnh sửa ảnh, vẽ, cắt, xoay ảnh, filter ảnh về màu sắc, độ tương phản. |
-| 7   | Xem và hiển thị ảnh                     | Xem ảnh có thêm chế độ phóng to, thu nhỏ, xoay 90 độ, 360 độ. |
-| 8   | Tải ảnh lên thông qua QR Code | Cho phép người dùng tải ảnh lên internet và tạo QR code. |
-| 9   | Tìm kiếm ảnh                                | Chức năng tìm kiếm ảnh theo tên, theo loại extension của ảnh, kích thước ảnh. |
-| 10  | Chia sẻ ảnh qua Internet            | Chức năng chia sẻ, gửi ảnh qua các nền tảng Facebook, Zalo, Gmail. |
-| 11  | Xóa ảnh                                      | Xóa ảnh tạm thời sẽ đưa ảnh vào thùng rác, ảnh có thể phục hồi lại vào album hoặc tiếp tục xóa đi vĩnh viễn. |
-| 12  | Bảo mật và quyền truy cập         | Album ảnh được bảo mật thông qua mật khẩu hoặc dấu vân tay. |
-| 13  | Đồng bộ hóa và sao lưu              | Tiếng hành đồng bộ hóa ảnh ở ứng dụng lên Drive. |
-| 14  | Ghi chú ảnh                                 | Mỗi ảnh sẽ có tính năng đặt làm ảnh yêu thích, ghi chú lên ảnh. |
-| 15  | Chuyển đổi sang text                    | Các dòng văn bản trong ảnh sẽ được xử lý và chuyển đổi sang text để người dùng có thể sao chép. |
-| 16  | Đặt ảnh làm hình nền màn hình khóa, màn hình chính | Ảnh được chọn sẽ có chức năng được chọn làm màn hình chính hoặc màn hình khóa cho thiết bị. |
-| 17  | Thống kê                                       | Chức năng thống kê sẽ thống kê toàn bộ về số lượng ảnh có trong album, tổng kích thước của ảnh và video. |
-| 18  | Gợi nhớ ảnh                               | Thời gian trong tháng sẽ có những nhắc nhở về kỉ niệm với một loạt các bức ảnh có liên quan với nhau. |
-| 19  | Lọc ảnh trùng                            | Trong quá trình chụp ảnh sẽ có nhiều ảnh được chụp mang tính chất tương tự nhau, chức năng cung cấp các đề xuất các ảnh trùng để người dùng tương tác. |
-| 20  | Xem ảnh                                      | Cho phép người dùng xem ảnh ở chế độ lưới, danh sách với thông tin kèm theo hoặc dạng toàn màn hình. |
