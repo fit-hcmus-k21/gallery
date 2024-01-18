@@ -2,10 +2,12 @@ package com.example.gallery.ui.backup;
 
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.lifecycle.LiveData;
 
+import com.example.gallery.App;
 import com.example.gallery.data.local.db.AppDatabase;
 import com.example.gallery.data.local.prefs.AppPreferencesHelper;
 import com.example.gallery.data.models.db.Album;
@@ -34,6 +36,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.Semaphore;
 
 public class BackupManager {
 
@@ -196,6 +199,7 @@ public class BackupManager {
                         // Xử lý dữ liệu media items ở đây
                         if (dataSnapshot.exists()) {
                             int totalMediaItem = (int) dataSnapshot.getChildrenCount();
+
                             ProfileViewModel.setTotalTaskRestore(  totalMediaItem);
 
                             for (DataSnapshot itemSnapshot : dataSnapshot.getChildren()) {
@@ -215,12 +219,8 @@ public class BackupManager {
                                     // TODO: Tải file media item từ Cloud Storage về local storage theo url
                                     String cloudStoragePath = Utils.getStoragePathFile(mediaItem.getId() + "", mediaItem.getCreationDate(), mediaItem.getFileExtension());
 
-                                    RestoreFile(cloudStoragePath, mediaItem.getPath());
 
-                                    MediaItemRepository.getInstance().insert(mediaItem);
-                                    System.out.println("Insert after restore media item completed " + mediaItem.getName());
-
-
+                                    RestoreFile(cloudStoragePath, mediaItem.getPath(), mediaItem);
                                 }
                             }
                         }
@@ -263,7 +263,7 @@ public class BackupManager {
     // TODO: download file from cloud storage
     private static FirebaseStorage storage = FirebaseStorage.getInstance();
     private static StorageReference storageRef = storage.getReference().child(AppPreferencesHelper.getInstance().getCurrentUserId());
-    public static void RestoreFile(String cloudStoragePath, String localBackupPath) {
+    public static void RestoreFile(String cloudStoragePath, String localBackupPath, MediaItem mediaItem) {
 
         System.out.println("Cloud storage path: " + cloudStoragePath);
         System.out.println("Local backup path: " + localBackupPath);
@@ -275,26 +275,60 @@ public class BackupManager {
         // Tạo đối tượng File cho local storage
         File localFile = new File(localBackupPath);
 
-        // Bắt đầu quá trình tải file từ Cloud Storage
-        fileRef.getFile(localFile)
-                .addOnSuccessListener(taskSnapshot -> {
-                    // File đã được tải thành công, thực hiện các thao tác sau khi backup
-                    // Ví dụ: thông báo backup thành công, cập nhật UI, vv.
-                    System.out.println("Restore file completed");
-                    ProfileViewModel.currentTaskRestore.postValue(ProfileViewModel.getCurrentTaskRestoreValue() + 1);
+        // check if parent dir not exist, create it
+        // Lấy đường dẫn đến thư mục cha
+
+        String parentDir = localFile.getParent();
+
+// Kiểm tra xem thư mục cha có tồn tại không và tạo nếu cần
+        if (parentDir != null) {
+            File appDirectory = new File(parentDir);
+            if (!appDirectory.exists()) {
+                if (!appDirectory.mkdirs()) {
+                    System.out.println("Failed to create directory 225");
+                    return; // hoặc xử lý lỗi khác tùy thuộc vào logic của bạn
+                }
+            }
+        } else {
+            System.out.println("Parent dir is null 225");
+        }
+
+        // nếu file không tồn tại
+        if (!localFile.exists()) {
+            System.out.println("File not exist 225, create new file");
+            localFile = new File(localBackupPath);
+
+        }
+
+            // Bắt đầu quá trình tải file từ Cloud Storage
+            fileRef.getFile(localFile)
+                    .addOnSuccessListener(taskSnapshot -> {
+                        // File đã được tải thành công, thực hiện các thao tác sau khi backup
+                        // Ví dụ: thông báo backup thành công, cập nhật UI, vv.
+                        System.out.println("Restore file completed");
+
+                        MediaItemRepository.getInstance().insert(mediaItem);
+
+                        if (ProfileViewModel.getCurrentTaskRestore() != null) {
+                            ProfileViewModel.currentTaskRestore.postValue(ProfileViewModel.getCurrentTaskRestoreValue() + 1);
+                        }
+
+                        // TODO: Thực hiện các thao tác sau khi backup thành công
+                    })
+                    .addOnFailureListener(exception -> {
+                        // Xử lý lỗi khi tải file từ Cloud Storage
+                        // Ví dụ: thông báo lỗi, ghi log, vv.
+                        System.out.println("Restore file failed " + exception.getMessage());
+                        if (ProfileViewModel.getCurrentTaskRestore() != null) {
+                            ProfileViewModel.currentTaskRestore.postValue(ProfileViewModel.getCurrentTaskRestoreValue() + 1);
+                        }
+
+                        // TODO: Xử lý lỗi khi backup
+                    });
 
 
-                    // TODO: Thực hiện các thao tác sau khi backup thành công
-                })
-                .addOnFailureListener(exception -> {
-                    // Xử lý lỗi khi tải file từ Cloud Storage
-                    // Ví dụ: thông báo lỗi, ghi log, vv.
-                    System.out.println("Restore file failed " + exception.getMessage());
-                    ProfileViewModel.currentTaskRestore.postValue(ProfileViewModel.getCurrentTaskRestoreValue() + 1);
 
 
-                    // TODO: Xử lý lỗi khi backup
-                });
     }
 
     public static void RestoreCloudToLocal() {
@@ -304,6 +338,10 @@ public class BackupManager {
         int numberOfThreads = 3; // Số luồng muốn sử dụng
         ExecutorService executor = Executors.newFixedThreadPool(numberOfThreads);
 
+        // set current task restore
+        if (ProfileViewModel.getCurrentTaskRestore() != null) {
+            ProfileViewModel.currentTaskRestore.postValue(0);
+        }
 
 
         // Tạo danh sách các Callable (các tác vụ cần thực hiện)
