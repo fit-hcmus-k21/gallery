@@ -734,6 +734,7 @@ public class MediaItemFragment extends Fragment {
                             outputStream.write(buffer, 0, bytesRead);
                         }
 
+
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -750,11 +751,15 @@ public class MediaItemFragment extends Fragment {
                     item.setCreationDate(Date.parse(new Date().toString()));
 //                    item.setId(new Random().nextInt(10000));
                     item.setUserID(AppPreferencesHelper.getInstance().getCurrentUserId());
-                    item.setAlbumName("Download");
+                    item.setAlbumName("Tải xuống");
 
                     // check if album not exist in table albums
 
                     MediaItemViewModel.getInstance().insert(item);
+
+                    // Update thumbnail for "All" Album
+                    AlbumRepository.getInstance().updateAlbumCoverPhotoPath(AppPreferencesHelper.getInstance().getCurrentUserId(), "Tải xuống", imgPath);
+
 //                    Toast.makeText(App.getInstance(), "Insert successfully", Toast.LENGTH_SHORT).show();
                     //  System.out.println("Insert media item success from profile view model");
 

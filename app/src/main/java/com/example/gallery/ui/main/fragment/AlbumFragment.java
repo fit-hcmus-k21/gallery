@@ -108,7 +108,7 @@ public class AlbumFragment extends Fragment {
             public void onChanged(List<Album> albums) {
                 List<Album> data = new ArrayList<>();
                 for(Album iterator : albums)
-                    if(!iterator.getName().equals("Bin"))
+                    if(iterator.getName() != null && !iterator.getName().equals("Bin"))
                         data.add(iterator);
                 albumAdapter.setData(data);
             }

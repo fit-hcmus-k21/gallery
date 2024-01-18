@@ -835,9 +835,9 @@ public class SingleMediaActivity extends AppCompatActivity  {
         intent.putExtra(Intent.EXTRA_STREAM, mediaUri);
 
         // Mở bảng chọn ứng dụng để chia sẻ
-        startActivity(Intent.createChooser(intent, "Chia sẻ ảnh với..."));
+        startActivity(Intent.createChooser(intent, "Chia sẻ với"));
     }
-    
+
     private void showNoteDialog() {
         final Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
