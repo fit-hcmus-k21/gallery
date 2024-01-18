@@ -27,6 +27,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
@@ -103,6 +104,7 @@ public class MediaItemFragment extends Fragment {
     public static final int REQUEST_TAKE_PHOTO = 256;
     public static final int REQUEST_SIMILAR_PHOTO = 123;
     private static final int MY_CAMERA_PERMISSION_CODE = 10001;
+    private static final int REQUEST_CODE_READ_EXTERNAL_STORAGE = 10002;
 
     private static final int REQUEST_IMAGE_PICK = 1;
 
@@ -503,9 +505,6 @@ public class MediaItemFragment extends Fragment {
         }
     }
 
-
-
-
     public void onClickChangeTypeDisplay(){ // Bao gồm việc thây đổi type hiển thị cho item, và đổi icon của menu, đổi thêm layoutmanager
         if(mCurrentType == MediaItem.TYPE_GRID){
 //            setTypeDisplayRecyclerView(MediaItem.TYPE_LIST);
@@ -559,6 +558,23 @@ public class MediaItemFragment extends Fragment {
     }
 
 
+    // Hàm để tải ảnh từ bộ nhớ ngoại
+    private void loadImages() {
+        System.out.println("Start load all images from device !");
+
+        // Sử dụng ThreadPoolExecutor để thực hiện công việc tải ảnh trong một luồng nền
+        Executor executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+
+        executor.execute(() -> {
+            // Công việc tải ảnh từ bộ nhớ ngoại
+            MediaItemRepository.getInstance().fetchDataFromExternalStorage();
+        });
+
+//
+    }
+
+
+
     // Hàm để hiển thị dialog thêm ảnh
     private void showOptionsDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -581,7 +597,28 @@ public class MediaItemFragment extends Fragment {
                 // Xử lý khi người dùng chọn tùy chọn 1
                 // ...
                 currentDialog.dismiss();
-                RequestPermissionHelper.checkAndRequestPermission(getActivity(), 225);
+
+                // Kiểm tra quyền đọc từ bộ nhớ ngoại
+                if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)
+                        != PackageManager.PERMISSION_GRANTED) {
+
+                    // Yêu cầu quyền nếu chưa có
+                    ActivityCompat.requestPermissions(getActivity(),
+                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                            REQUEST_CODE_READ_EXTERNAL_STORAGE);
+                }
+
+
+
+                if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)
+                        == PackageManager.PERMISSION_GRANTED) {
+                    // Quyền đã được cấp, thực hiện các thao tác liên quan
+                    loadImages();
+                }
+
+
+
+
 
             }
         });

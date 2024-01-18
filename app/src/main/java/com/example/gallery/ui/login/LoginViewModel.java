@@ -104,7 +104,7 @@ public class LoginViewModel extends BaseViewModel<LoginNavigator> {
 
             // TODO: fetch data from server
 //            Toast.makeText(App.getInstance(), "Đang đồng bộ dữ liệu, bạn chờ xíu nhé :))", Toast.LENGTH_SHORT).show();
-            BackupManager.RestoreCloudToLocal();
+//            BackupManager.RestoreCloudToLocal();
 
 
         }
